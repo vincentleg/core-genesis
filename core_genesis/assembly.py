@@ -8,6 +8,10 @@ def assemble_design(parent, design, name, memory=()):
     if not isinstance(design, dict) or set(design) - {"instructions", "workers", "coordination", "review_policy", "memory_policy", "cache_evidence", "extra_review", "procedure_source"}:
         raise ValueError("Unknown team design field")
     workers = design.get("workers")
+    if isinstance(workers, dict):
+        if any(not isinstance(specification, dict) for specification in workers.values()):
+            raise ValueError("Worker specifications must be objects")
+        workers = [{"specialty": specialty, **specification} for specialty, specification in workers.items()]
     if not isinstance(workers, list) or not 1 <= len(workers) <= 4:
         raise ValueError("Design requires 1–4 workers")
     style = design.get("coordination", "shared_evidence")

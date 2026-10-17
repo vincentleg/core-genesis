@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from core_genesis.budget import BudgetError, RequestBudget, ROOT
 from core_genesis.crusoe import DEFAULT_MODEL, CrusoeError
@@ -77,6 +78,20 @@ class BudgetTests(unittest.TestCase):
         with self.assertRaises(BudgetError):
             self.ask(cycle=2)
         self.assertEqual(self.client.calls, 2)
+
+    def test_provider_cooldown_is_respected_without_background_retry(self):
+        client = IsolatedTransport(fail_once=True)
+        client.last_headers = {"Retry-After": "4"}
+        with patch("core_genesis.budget.time.sleep") as wait:
+            self.ask(client)
+        wait.assert_called_once_with(4.0)
+        client = IsolatedTransport(fail_once=True)
+        client.last_headers = {"Retry-After": "60"}
+        with patch("core_genesis.budget.time.sleep") as wait:
+            with self.assertRaisesRegex(BudgetError, "cooldown exceeds"):
+                self.ask(client, run="long-cooldown")
+        wait.assert_not_called()
+        self.assertEqual(client.calls, 1)
 
     def test_missing_expired_and_unknown_pricing_fail_before_transport(self):
         good = self.price.read_text()

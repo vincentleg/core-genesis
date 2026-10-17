@@ -214,6 +214,18 @@ class RequestBudget:
                                           "cost_estimate_usd": entry["charge_usd"], "http_status": client.last_status}
                     retryable = isinstance(failure, urllib.error.URLError) or isinstance(failure, CrusoeError) and failure.status in {429, 500, 502, 503, 504}
                     if retry == 0 and retryable:
+                        # Never hammer a throttled endpoint. Longer cooldowns stop
+                        # this explicit run rather than scheduling background work.
+                        wait = 2.0
+                        raw_wait = getattr(client, "last_headers", {}).get("Retry-After")
+                        if raw_wait is not None:
+                            try:
+                                wait = max(wait, float(raw_wait))
+                            except (TypeError, ValueError):
+                                raise BudgetError("Unrecognized provider cooldown; run stopped") from None
+                        if not 0 <= wait <= 10:
+                            raise BudgetError("Provider cooldown exceeds bounded retry wait; run stopped")
+                        time.sleep(wait)
                         continue
                     if failure:
                         raise failure

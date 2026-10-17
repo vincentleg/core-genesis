@@ -6,11 +6,11 @@ import secrets
 import time
 
 from .budget import BudgetError
-from .crusoe import CrusoeClient
+from .crusoe import CrusoeClient, CrusoeError
 from .engine import Engine, ROOT, parse_json
 from .suites import manifest, VERSION
 from .team import CONTROL, OWNERSHIP, TOOLS, ACTIONS, OPERATIONS, REFERENCES, validate_team, assemble_team, normalize_program, aggregate, compare, mutation_diff, fingerprint, execute
-from .schemas import program_schema, design_schema
+from .schemas import program_schema, design_schema, architect_schema
 from .assembly import assemble_design
 
 DEFAULT_OBJECTIVE = "Restore service availability while respecting latency, retry, connection-capacity and readiness contracts. Preserve unrelated worker settings."
@@ -158,7 +158,7 @@ class EvolutionEngine(Engine):
                 "memory_policy": ["none", "inherit_verified"],
                 "worker_specialties": ["general", "latency", "capacity", "routing", "verifier"],
                 "practical_preconditions": "A contract-based repair requires inspect_contract somewhere before apply_rules. A contract review also needs inspect_config. General covers all families; otherwise include every missing family specialist."},
-            "operators": {"workers": "1–4 unique specialties; general owns all families, or combine latency/capacity/routing. Every worker specifies tools and instructions; IDs are derived automatically.",
+            "operators": {"workers": "A list of 1–4 workers with UNIQUE specialty names, e.g. [{specialty:general,tools:[inspect_config,inspect_contract],instructions:...}]. General owns all families. Each worker has specialty, tools and instructions; IDs are derived automatically.",
                 "coordination": {"shared_evidence": "Retrieve each selected tool once, share evidence, then dispatch every repair worker", "specialist_pipeline": "Each worker retrieves its own tools then applies its rules", "memory_first": "Recall development-verified rules first, then gather unique tools and dispatch workers"},
                 "extra_review": "Optional separate controller review. Commit ALWAYS independently reviews, even when false.",
                 "procedure_source": {"compile": "Nemotron compiles new general reference rules", "reuse_memory": "No compiler request; use ONLY inherited development-verified rules, with automatic memory recall capability"}},
@@ -225,20 +225,23 @@ class EvolutionEngine(Engine):
                 case.pop("config", None)
                 case.pop("service_contract", None)
         answer, metrics = self.reason("Executor", json.dumps({
-            "task": "Compile a small GENERAL repair procedure for EACH team. Fill the provided response_skeleton with rules. Use the ACTUAL node IDs and ACTUAL agent IDs, never the literal placeholder agent_id. Programs execute locally on unseen incidents: no per-incident answers. Agents may apply rules only for fields owned by their specialty. Use exact grammar. Reference config/contract only after workflow retrieves it. Initial log-only team may use symptom-based literal defaults; later teams should prefer general references. Missing evidence blocks rules. Do not change teams. Keep programs minimal; skip fields absent from incident schema. A literal uses value (integer/string), NOT source. A reference uses source.",
+            "task": "Compile a small GENERAL repair procedure for EACH team. Fill response_skeleton with rules. Return programs as an OBJECT keyed by actual node IDs, then actual agent IDs, then rule lists. Never use placeholder agent_id. Programs execute locally on unseen incidents, not per-incident answers. Agents apply only owned fields. Reference config/contract only after workflow retrieves it. Initial log-only control may use literal guesses. Mutations must use general references. Missing evidence blocks rules. Do not change teams. Minimize rules; absent fields are skipped. Literal uses value, reference uses source.",
             "teams": teams, "development_fixtures": context, "development_feedback": brief(development) if not initial else [],
             "contract_semantics": CONTRACT_SEMANTICS,
-            "response_skeleton": {"programs": [{"node_id": node["id"], "program": {agent["id"]: [] for agent in node["team"]["agents"]}} for node in nodes]},
+            "response_skeleton": {"programs": {node["id"]: {agent["id"]: [] for agent in node["team"]["agents"]} for node in nodes}},
             "grammar": {"targets": sorted(OWNERSHIP["general"]), "operations": sorted(OPERATIONS), "sources": sorted(REFERENCES),
                         "examples": [{"target": "timeout_ms", "operation": "increment", "source": "contract.upstream_p99_ms"},
                                      {"target": "retries", "operation": "copy", "source": "contract.max_retries"},
                                      {"target": "retries", "operation": "literal", "value": 0}]},
             "constraints": "At most 12 rules/team. Initial control alone may use literal symptom guesses (integers for numeric fields, strings only health_path). Every mutation MUST use reference-based rules with source; no instance-specific literals. increment/decrement only integers. Independent final verification cannot be disabled."}), response_format=program_schema(nodes, allow_literals=initial))
         programs = answer.get("programs")
-        if not isinstance(programs, list) or len(programs) != len(nodes):
+        if isinstance(programs, dict):
+            indexed = programs
+        elif isinstance(programs, list):
+            indexed = {item.get("node_id"): item.get("program") for item in programs if isinstance(item, dict)}
+        else:
             raise ValueError("Executor must compile every proposed team")
-        indexed = {item.get("node_id"): item.get("program") for item in programs if isinstance(item, dict)}
-        if set(indexed) != {node["id"] for node in nodes}:
+        if len(programs) != len(nodes) or set(indexed) != {node["id"] for node in nodes}:
             raise ValueError("Compiled program identities mismatch")
         valid = []
         for node in nodes:
@@ -283,7 +286,7 @@ class EvolutionEngine(Engine):
     def run(self):
         try:
             self.client = self.client or CrusoeClient(max_retries=0, timeout=30)
-            architecture, _ = self.reason("Architect", json.dumps({"task": "Translate the scoped incident-remediation objective into a concise measurable plan AND assemble the initial worker team. Return {approach,success_criteria:[short strings],initial_specialties:[general OR latency OR capacity OR routing]}. Choose 1–3 unique specialties. General can handle all field families; specialized workers own only their family. Initial workers see logs only, as the experimental control. Later mutations can grant config/contract access. Fixed safety and promotion criteria cannot be relaxed. Do not invent results.", "objective": self.state["objective"], "mandatory_criteria": CRITERIA}), max_tokens=350)
+            architecture, _ = self.reason("Architect", json.dumps({"task": "Translate the scoped incident-remediation objective into a concise measurable plan AND assemble the initial worker team. Return {approach,success_criteria:[short strings],initial_specialties:[general OR latency OR capacity OR routing]}. Choose 1–3 unique specialties. General can handle all field families; specialized workers own only their family. Initial workers see logs only, as the experimental control. Later mutations can grant config/contract access. Fixed safety and promotion criteria cannot be relaxed. Do not invent results.", "objective": self.state["objective"], "mandatory_criteria": CRITERIA}), max_tokens=350, response_format=architect_schema())
             self.event("Architect", "Objective and measurable criteria defined", analysis=architecture)
             with self.lock:
                 self.state["objective_analysis"] = architecture
@@ -293,6 +296,8 @@ class EvolutionEngine(Engine):
                 if isinstance(architecture.get("approach"), str) and architecture["approach"]:
                     initial["instructions"] = architecture["approach"][:1200]
                 specialties = architecture.get("initial_specialties", ["general"])
+                if isinstance(specialties, list) and all(isinstance(specialty, str) for specialty in specialties):
+                    specialties = list(dict.fromkeys(specialty.strip().lower() for specialty in specialties))
                 if not isinstance(specialties, list) or not 1 <= len(specialties) <= 3 or len(set(specialties)) != len(specialties) or any(s not in {"general", "latency", "capacity", "routing"} for s in specialties):
                     raise ValueError("Architect must select 1–3 unique allowed specialties")
                 initial["agents"] = [{"id": "executor" if specialty == "general" else specialty, "specialty": specialty, "tools": ["read_logs"], "instructions": "Diagnose " + specialty + " symptoms from available log evidence"} for specialty in specialties]
@@ -366,6 +371,9 @@ class EvolutionEngine(Engine):
                 self.state["status"] = "error"
                 self.state["error"] = type(exc).__name__
                 self.state["error_detail"] = str(exc) if isinstance(exc, (BudgetError, ValueError)) else "Inference or execution failure; no unverified promotion"
+                if isinstance(exc, CrusoeError):
+                    self.state["error_http_status"] = exc.status
+                    self.state["error_detail"] = "Crusoe HTTP %s; run stopped after bounded retry. No background restart." % exc.status
         finally:
             try:
                 audit = self.budget.run_snapshot(self.state["id"])

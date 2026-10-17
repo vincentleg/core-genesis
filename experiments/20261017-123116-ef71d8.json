@@ -1,0 +1,1920 @@
+{
+  "id": "20261017-123116-ef71d8",
+  "status": "error",
+  "started_at": 1792265476.826241,
+  "suite": "incidents-v2-fresh-shards",
+  "suite_sha256": "601cc568038949fca6c2a261ad61db20c177855d1eb1a031ab09c884d5f1fde2",
+  "events": [
+    {
+      "time": 1792265476.831981,
+      "role": "Architect",
+      "message": "Reasoning started",
+      "cycle": 0,
+      "execution_kind": "remote_model"
+    },
+    {
+      "time": 1792265479.647844,
+      "role": "Architect",
+      "message": "Inference completed",
+      "request_id": "4dce8b7fb6b44cdaa965064fd1ff1b79",
+      "latency_s": 2.809,
+      "usage": {
+        "prompt_tokens": 317,
+        "total_tokens": 460,
+        "completion_tokens": 143,
+        "prompt_tokens_details": null
+      },
+      "cost_estimate_usd": "0.0000444500",
+      "http_status": 200,
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"approach\": \"Begin with a controlled log-only investigation. Route each incident through a triage worker who extracts timestamps, error codes, and saturation metrics. Feed extracted signals into a shared pattern library. If a pattern matches a known family, delegate to the corresponding specialist; otherwise route to General. Record every decision path to enable later procedure extraction.\",\n  \"success_criteria\": [\n    \"All independent incident contract checks sealed_pass_rate reaches 1.0\",\n    \"Zero regressions on previously passing cases\",\n    \"Work units minimized after correctness is established\"\n  ],\n  \"initial_specialties\": [\n    \"routing\",\n    \"latency\",\n    \"capacity\"\n  ]\n}",
+      "input_context": {
+        "task": "Translate the scoped incident-remediation objective into a concise measurable plan AND assemble the initial worker team. Return {approach,success_criteria:[short strings],initial_specialties:[general OR latency OR capacity OR routing]}. Choose 1\u20133 unique specialties. General can handle all field families; specialized workers own only their family. Initial workers see logs only, as the experimental control. Later mutations can grant config/contract access. Fixed safety and promotion criteria cannot be relaxed. Do not invent results.",
+        "objective": "Restore latency, connection saturation and readiness incidents under hard service limits. Preserve worker counts, learn reusable procedures, and remove unnecessary inspections after correctness is established.",
+        "mandatory_criteria": [
+          {
+            "id": "behavior",
+            "description": "Pass all independent incident contract checks",
+            "target": 1.0,
+            "metric": "sealed_pass_rate"
+          },
+          {
+            "id": "regression",
+            "description": "Never regress a previously passing case",
+            "target": 0,
+            "metric": "regressions"
+          },
+          {
+            "id": "efficiency",
+            "description": "After full correctness, prefer less actual tool/rule/review work",
+            "metric": "work_units"
+          }
+        ]
+      },
+      "cycle": 0,
+      "execution_kind": "remote_model"
+    },
+    {
+      "time": 1792265479.650979,
+      "role": "Architect",
+      "message": "Objective and measurable criteria defined",
+      "analysis": {
+        "approach": "Begin with a controlled log-only investigation. Route each incident through a triage worker who extracts timestamps, error codes, and saturation metrics. Feed extracted signals into a shared pattern library. If a pattern matches a known family, delegate to the corresponding specialist; otherwise route to General. Record every decision path to enable later procedure extraction.",
+        "success_criteria": [
+          "All independent incident contract checks sealed_pass_rate reaches 1.0",
+          "Zero regressions on previously passing cases",
+          "Work units minimized after correctness is established"
+        ],
+        "initial_specialties": [
+          "routing",
+          "latency",
+          "capacity"
+        ]
+      }
+    },
+    {
+      "time": 1792265479.653284,
+      "role": "Architect",
+      "message": "Candidate registered: Log-first control",
+      "node_id": "g0",
+      "parent_id": null,
+      "generation": 0
+    },
+    {
+      "time": 1792265479.655819,
+      "role": "Executor",
+      "message": "Reasoning started",
+      "cycle": 0,
+      "execution_kind": "remote_model"
+    },
+    {
+      "time": 1792265481.788967,
+      "role": "Executor",
+      "message": "Inference completed",
+      "request_id": "a228d811ace8453f92fdeeae694d944b",
+      "latency_s": 2.123,
+      "usage": {
+        "prompt_tokens": 1287,
+        "total_tokens": 1497,
+        "completion_tokens": 210,
+        "prompt_tokens_details": null
+      },
+      "cost_estimate_usd": "0.0001063500",
+      "http_status": 200,
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"programs\": {\n    \"g0\": {\n      \"routing\": [\n        {\n          \"target\": \"health_path\",\n          \"operation\": \"literal\",\n          \"value\": \"health\"\n        },\n        {\n          \"target\": \"port\",\n          \"operation\": \"literal\",\n          \"value\": 8080\n        }\n      ],\n      \"latency\": [\n        {\n          \"target\": \"timeout_ms\",\n          \"operation\": \"literal\",\n          \"value\": 5000\n        },\n        {\n          \"target\": \"retries\",\n          \"operation\": \"literal\",\n          \"value\": 3\n        }\n      ],\n      \"capacity\": [\n        {\n          \"target\": \"pool_size\",\n          \"operation\": \"literal\",\n          \"value\": 10\n        },\n        {\n          \"target\": \"workers\",\n          \"operation\": \"literal\",\n          \"value\": 4\n        }\n      ]\n    }\n  }\n}",
+      "input_context": {
+        "task": "Compile a small GENERAL repair procedure for EACH team. Fill response_skeleton with rules. Return programs as an OBJECT keyed by actual node IDs, then actual agent IDs, then rule lists. Never use placeholder agent_id. Programs execute locally on unseen incidents, not per-incident answers. Agents apply only owned fields. Reference config/contract only after workflow retrieves it. Initial log-only control may use literal guesses. Mutations must use general references. Missing evidence blocks rules. Do not change teams. Minimize rules; absent fields are skipped. Literal uses value, reference uses source.",
+        "teams": [
+          {
+            "node_id": "g0",
+            "team": {
+              "name": "Log-first control",
+              "instructions": "Begin with a controlled log-only investigation. Route each incident through a triage worker who extracts timestamps, error codes, and saturation metrics. Feed extracted signals into a shared pattern library. If a pattern matches a known family, delegate to the corresponding specialist; otherwise route to General. Record every decision path to enable later procedure extraction.",
+              "agents": [
+                {
+                  "id": "routing",
+                  "specialty": "routing",
+                  "tools": [
+                    "read_logs"
+                  ],
+                  "instructions": "Diagnose routing symptoms from available log evidence"
+                },
+                {
+                  "id": "latency",
+                  "specialty": "latency",
+                  "tools": [
+                    "read_logs"
+                  ],
+                  "instructions": "Diagnose latency symptoms from available log evidence"
+                },
+                {
+                  "id": "capacity",
+                  "specialty": "capacity",
+                  "tools": [
+                    "read_logs"
+                  ],
+                  "instructions": "Diagnose capacity symptoms from available log evidence"
+                }
+              ],
+              "workflow": [
+                {
+                  "agent": "routing",
+                  "action": "read_logs"
+                },
+                {
+                  "agent": "routing",
+                  "action": "apply_rules"
+                },
+                {
+                  "agent": "latency",
+                  "action": "read_logs"
+                },
+                {
+                  "agent": "latency",
+                  "action": "apply_rules"
+                },
+                {
+                  "agent": "capacity",
+                  "action": "read_logs"
+                },
+                {
+                  "agent": "capacity",
+                  "action": "apply_rules"
+                },
+                {
+                  "agent": "controller",
+                  "action": "commit"
+                }
+              ],
+              "review_policy": "schema",
+              "memory_policy": "none",
+              "cache_evidence": false
+            }
+          }
+        ],
+        "development_fixtures": [
+          {
+            "id": "development-latency-00",
+            "title": "Latency contract incident",
+            "logs": "Gateway 504; upstream completes normally; retry amplification observed.",
+            "config_schema": {
+              "timeout_ms": "int",
+              "retries": "int"
+            }
+          },
+          {
+            "id": "development-capacity-01",
+            "title": "Capacity contract incident",
+            "logs": "Connection acquisition deadline exceeded under load; database remains healthy.",
+            "config_schema": {
+              "pool_size": "int",
+              "workers": "int"
+            }
+          },
+          {
+            "id": "development-routing-02",
+            "title": "Routing contract incident",
+            "logs": "Readiness returns 404; application listener is running after migration.",
+            "config_schema": {
+              "health_path": "str",
+              "port": "int"
+            }
+          },
+          {
+            "id": "development-latency-03",
+            "title": "Latency contract incident",
+            "logs": "Gateway 504; upstream completes normally; retry amplification observed.",
+            "config_schema": {
+              "timeout_ms": "int",
+              "retries": "int"
+            }
+          },
+          {
+            "id": "development-capacity-04",
+            "title": "Capacity contract incident",
+            "logs": "Connection acquisition deadline exceeded under load; database remains healthy.",
+            "config_schema": {
+              "pool_size": "int",
+              "workers": "int"
+            }
+          },
+          {
+            "id": "development-routing-05",
+            "title": "Routing contract incident",
+            "logs": "Readiness returns 404; application listener is running after migration.",
+            "config_schema": {
+              "health_path": "str",
+              "port": "int"
+            }
+          }
+        ],
+        "development_feedback": [],
+        "contract_semantics": [
+          "Latency: upstream_p99_ms < timeout_ms <= deadline_ms; 0 <= retries <= max_retries. Deadline is an upper bound, not an offset.",
+          "Capacity: concurrent_queries <= pool_size <= connection_budget. Workers are unrelated and MUST remain unchanged; they are not part of the connection budget.",
+          "Routing: health_path must equal registered_health_path AND port must equal listening_port.",
+          "These are generic task definitions, not instance answers. Actual config/contract values remain accessible only through granted runtime tools."
+        ],
+        "response_skeleton": {
+          "programs": {
+            "g0": {
+              "routing": [],
+              "latency": [],
+              "capacity": []
+            }
+          }
+        },
+        "grammar": {
+          "targets": [
+            "health_path",
+            "pool_size",
+            "port",
+            "retries",
+            "timeout_ms",
+            "workers"
+          ],
+          "operations": [
+            "copy",
+            "decrement",
+            "increment",
+            "literal"
+          ],
+          "sources": [
+            "config.health_path",
+            "config.pool_size",
+            "config.port",
+            "config.retries",
+            "config.timeout_ms",
+            "config.workers",
+            "contract.concurrent_queries",
+            "contract.connection_budget",
+            "contract.deadline_ms",
+            "contract.listening_port",
+            "contract.max_retries",
+            "contract.registered_health_path",
+            "contract.upstream_p99_ms"
+          ],
+          "examples": [
+            {
+              "target": "timeout_ms",
+              "operation": "increment",
+              "source": "contract.upstream_p99_ms"
+            },
+            {
+              "target": "retries",
+              "operation": "copy",
+              "source": "contract.max_retries"
+            },
+            {
+              "target": "retries",
+              "operation": "literal",
+              "value": 0
+            }
+          ]
+        },
+        "constraints": "At most 12 rules/team. Initial control alone may use literal symptom guesses (integers for numeric fields, strings only health_path). Every mutation MUST use reference-based rules with source; no instance-specific literals. increment/decrement only integers. Independent final verification cannot be disabled."
+      },
+      "cycle": 0,
+      "execution_kind": "remote_model"
+    },
+    {
+      "time": 1792265481.813993,
+      "role": "Executor",
+      "message": "Bounded repair procedure compiled",
+      "node_id": "g0",
+      "rules": 6,
+      "request_id": "a228d811ace8453f92fdeeae694d944b"
+    },
+    {
+      "time": 1792265481.817469,
+      "role": "System",
+      "message": "Generation 1 begins",
+      "generation": 1,
+      "parent_id": "g0"
+    },
+    {
+      "time": 1792265481.820361,
+      "role": "Executor",
+      "message": "Executing g0 on development",
+      "node_id": "g0",
+      "suite": "development",
+      "execution_kind": "local_team_runtime"
+    },
+    {
+      "time": 1792265481.821493,
+      "role": "Verifier",
+      "message": "FAIL",
+      "node_id": "g0",
+      "case_id": "development-latency-00",
+      "suite": "development",
+      "tool_calls": 3,
+      "work_units": 9,
+      "execution_kind": "deterministic_verifier"
+    },
+    {
+      "time": 1792265481.8225548,
+      "role": "Verifier",
+      "message": "FAIL",
+      "node_id": "g0",
+      "case_id": "development-capacity-01",
+      "suite": "development",
+      "tool_calls": 3,
+      "work_units": 9,
+      "execution_kind": "deterministic_verifier"
+    },
+    {
+      "time": 1792265481.823717,
+      "role": "Verifier",
+      "message": "FAIL",
+      "node_id": "g0",
+      "case_id": "development-routing-02",
+      "suite": "development",
+      "tool_calls": 3,
+      "work_units": 9,
+      "execution_kind": "deterministic_verifier"
+    },
+    {
+      "time": 1792265481.825032,
+      "role": "Verifier",
+      "message": "FAIL",
+      "node_id": "g0",
+      "case_id": "development-latency-03",
+      "suite": "development",
+      "tool_calls": 3,
+      "work_units": 9,
+      "execution_kind": "deterministic_verifier"
+    },
+    {
+      "time": 1792265481.826315,
+      "role": "Verifier",
+      "message": "FAIL",
+      "node_id": "g0",
+      "case_id": "development-capacity-04",
+      "suite": "development",
+      "tool_calls": 3,
+      "work_units": 9,
+      "execution_kind": "deterministic_verifier"
+    },
+    {
+      "time": 1792265481.827878,
+      "role": "Verifier",
+      "message": "FAIL",
+      "node_id": "g0",
+      "case_id": "development-routing-05",
+      "suite": "development",
+      "tool_calls": 3,
+      "work_units": 9,
+      "execution_kind": "deterministic_verifier"
+    },
+    {
+      "time": 1792265481.834581,
+      "role": "Observer + Scientist",
+      "message": "Reasoning started",
+      "cycle": 0,
+      "execution_kind": "remote_model"
+    },
+    {
+      "time": 1792265483.718658,
+      "role": "Observer + Scientist",
+      "message": "Inference completed",
+      "request_id": "463d7f0ac728492fb3265e310e8bcc45",
+      "latency_s": 1.868,
+      "usage": {
+        "prompt_tokens": 2807,
+        "total_tokens": 2808,
+        "completion_tokens": 1,
+        "prompt_tokens_details": null
+      },
+      "cost_estimate_usd": "0.0001405500",
+      "http_status": 200,
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "",
+      "input_context": {
+        "task": "FIRST Observer diagnoses development failures and missing family coverage. THEN Scientist proposes TWO competing complete team designs. Preserve working capabilities and ADD coverage for unsolved families, rather than replacing one narrow specialist with another. Candidate A can specialize; candidate B should explore an alternative full-coverage composition or coordination. At full correctness remove genuinely unnecessary inspections/reviews/dispatches. Return {observation:{weakness,lesson},mutations:[{name,reason,design:{...}},{name,reason,design:{...}}]}. All design fields are required by the output grammar. Designs select typed assembly operators, not raw workflow IDs. Executor later compiles GENERAL reference rules; fixture-specific literals are prohibited for mutations.",
+        "objective": "Restore latency, connection saturation and readiness incidents under hard service limits. Preserve worker counts, learn reusable procedures, and remove unnecessary inspections after correctness is established.",
+        "criteria": [
+          {
+            "id": "behavior",
+            "description": "Pass all independent incident contract checks",
+            "target": 1.0,
+            "metric": "sealed_pass_rate"
+          },
+          {
+            "id": "regression",
+            "description": "Never regress a previously passing case",
+            "target": 0,
+            "metric": "regressions"
+          },
+          {
+            "id": "efficiency",
+            "description": "After full correctness, prefer less actual tool/rule/review work",
+            "metric": "work_units"
+          }
+        ],
+        "parent_team": {
+          "name": "Log-first control",
+          "instructions": "Begin with a controlled log-only investigation. Route each incident through a triage worker who extracts timestamps, error codes, and saturation metrics. Feed extracted signals into a shared pattern library. If a pattern matches a known family, delegate to the corresponding specialist; otherwise route to General. Record every decision path to enable later procedure extraction.",
+          "agents": [
+            {
+              "id": "routing",
+              "specialty": "routing",
+              "tools": [
+                "read_logs"
+              ],
+              "instructions": "Diagnose routing symptoms from available log evidence"
+            },
+            {
+              "id": "latency",
+              "specialty": "latency",
+              "tools": [
+                "read_logs"
+              ],
+              "instructions": "Diagnose latency symptoms from available log evidence"
+            },
+            {
+              "id": "capacity",
+              "specialty": "capacity",
+              "tools": [
+                "read_logs"
+              ],
+              "instructions": "Diagnose capacity symptoms from available log evidence"
+            }
+          ],
+          "workflow": [
+            {
+              "agent": "routing",
+              "action": "read_logs"
+            },
+            {
+              "agent": "routing",
+              "action": "apply_rules"
+            },
+            {
+              "agent": "latency",
+              "action": "read_logs"
+            },
+            {
+              "agent": "latency",
+              "action": "apply_rules"
+            },
+            {
+              "agent": "capacity",
+              "action": "read_logs"
+            },
+            {
+              "agent": "capacity",
+              "action": "apply_rules"
+            },
+            {
+              "agent": "controller",
+              "action": "commit"
+            }
+          ],
+          "review_policy": "schema",
+          "memory_policy": "none",
+          "cache_evidence": false,
+          "program": {
+            "routing": [
+              {
+                "target": "health_path",
+                "operation": "literal",
+                "value": "health"
+              },
+              {
+                "target": "port",
+                "operation": "literal",
+                "value": 8080
+              }
+            ],
+            "latency": [
+              {
+                "target": "timeout_ms",
+                "operation": "literal",
+                "value": 5000
+              },
+              {
+                "target": "retries",
+                "operation": "literal",
+                "value": 3
+              }
+            ],
+            "capacity": [
+              {
+                "target": "pool_size",
+                "operation": "literal",
+                "value": 10
+              },
+              {
+                "target": "workers",
+                "operation": "literal",
+                "value": 4
+              }
+            ]
+          }
+        },
+        "contract_semantics": [
+          "Latency: upstream_p99_ms < timeout_ms <= deadline_ms; 0 <= retries <= max_retries. Deadline is an upper bound, not an offset.",
+          "Capacity: concurrent_queries <= pool_size <= connection_budget. Workers are unrelated and MUST remain unchanged; they are not part of the connection budget.",
+          "Routing: health_path must equal registered_health_path AND port must equal listening_port.",
+          "These are generic task definitions, not instance answers. Actual config/contract values remain accessible only through granted runtime tools."
+        ],
+        "development_evidence": [
+          {
+            "case_id": "development-latency-00",
+            "family": "latency",
+            "passed": false,
+            "patch": {
+              "timeout_ms": 5000,
+              "retries": 3
+            },
+            "checks": {
+              "request_completes": false,
+              "retry_budget": false
+            },
+            "work_units": 9,
+            "review_failures": [],
+            "blocked": []
+          },
+          {
+            "case_id": "development-capacity-01",
+            "family": "capacity",
+            "passed": false,
+            "patch": {
+              "pool_size": 10
+            },
+            "checks": {
+              "load_served": false,
+              "workers_preserved": true
+            },
+            "work_units": 9,
+            "review_failures": [],
+            "blocked": [
+              {
+                "target": "workers",
+                "status": "denied",
+                "reason": "Specialization does not own this field"
+              }
+            ]
+          },
+          {
+            "case_id": "development-routing-02",
+            "family": "routing",
+            "passed": false,
+            "patch": {
+              "health_path": "health",
+              "port": 8080
+            },
+            "checks": {
+              "probe_reaches_route": false,
+              "probe_reaches_listener": false
+            },
+            "work_units": 9,
+            "review_failures": [],
+            "blocked": []
+          },
+          {
+            "case_id": "development-latency-03",
+            "family": "latency",
+            "passed": false,
+            "patch": {
+              "timeout_ms": 5000,
+              "retries": 3
+            },
+            "checks": {
+              "request_completes": false,
+              "retry_budget": false
+            },
+            "work_units": 9,
+            "review_failures": [],
+            "blocked": []
+          },
+          {
+            "case_id": "development-capacity-04",
+            "family": "capacity",
+            "passed": false,
+            "patch": {
+              "pool_size": 10
+            },
+            "checks": {
+              "load_served": false,
+              "workers_preserved": true
+            },
+            "work_units": 9,
+            "review_failures": [],
+            "blocked": [
+              {
+                "target": "workers",
+                "status": "denied",
+                "reason": "Specialization does not own this field"
+              }
+            ]
+          },
+          {
+            "case_id": "development-routing-05",
+            "family": "routing",
+            "passed": false,
+            "patch": {
+              "health_path": "health",
+              "port": 8080
+            },
+            "checks": {
+              "probe_reaches_route": false,
+              "probe_reaches_listener": false
+            },
+            "work_units": 9,
+            "review_failures": [],
+            "blocked": []
+          }
+        ],
+        "development_fixtures": [
+          {
+            "id": "development-latency-00",
+            "title": "Latency contract incident",
+            "logs": "Gateway 504; upstream completes normally; retry amplification observed.",
+            "config_schema": {
+              "timeout_ms": "int",
+              "retries": "int"
+            },
+            "config": {
+              "timeout_ms": 759,
+              "retries": 5
+            },
+            "service_contract": {
+              "upstream_p99_ms": 851,
+              "deadline_ms": 1168,
+              "max_retries": 0
+            }
+          },
+          {
+            "id": "development-capacity-01",
+            "title": "Capacity contract incident",
+            "logs": "Connection acquisition deadline exceeded under load; database remains healthy.",
+            "config_schema": {
+              "pool_size": "int",
+              "workers": "int"
+            },
+            "config": {
+              "pool_size": 3,
+              "workers": 36
+            },
+            "service_contract": {
+              "concurrent_queries": 26,
+              "connection_budget": 30
+            }
+          },
+          {
+            "id": "development-routing-02",
+            "title": "Routing contract incident",
+            "logs": "Readiness returns 404; application listener is running after migration.",
+            "config_schema": {
+              "health_path": "str",
+              "port": "int"
+            },
+            "config": {
+              "health_path": "/old/1362fba0",
+              "port": 8000
+            },
+            "service_contract": {
+              "registered_health_path": "/ready/1362fba0",
+              "listening_port": 5000
+            }
+          },
+          {
+            "id": "development-latency-03",
+            "title": "Latency contract incident",
+            "logs": "Gateway 504; upstream completes normally; retry amplification observed.",
+            "config_schema": {
+              "timeout_ms": "int",
+              "retries": "int"
+            },
+            "config": {
+              "timeout_ms": 267,
+              "retries": 4
+            },
+            "service_contract": {
+              "upstream_p99_ms": 955,
+              "deadline_ms": 1142,
+              "max_retries": 1
+            }
+          },
+          {
+            "id": "development-capacity-04",
+            "title": "Capacity contract incident",
+            "logs": "Connection acquisition deadline exceeded under load; database remains healthy.",
+            "config_schema": {
+              "pool_size": "int",
+              "workers": "int"
+            },
+            "config": {
+              "pool_size": 24,
+              "workers": 34
+            },
+            "service_contract": {
+              "concurrent_queries": 29,
+              "connection_budget": 36
+            }
+          },
+          {
+            "id": "development-routing-05",
+            "title": "Routing contract incident",
+            "logs": "Readiness returns 404; application listener is running after migration.",
+            "config_schema": {
+              "health_path": "str",
+              "port": "int"
+            },
+            "config": {
+              "health_path": "/old/b66134b1",
+              "port": 8080
+            },
+            "service_contract": {
+              "registered_health_path": "/ready/b66134b1",
+              "listening_port": 5000
+            }
+          }
+        ],
+        "development_memory": [],
+        "family_coverage": {
+          "latency": {
+            "passed": 0,
+            "total": 2,
+            "capable_workers": [
+              "latency"
+            ]
+          },
+          "capacity": {
+            "passed": 0,
+            "total": 2,
+            "capable_workers": [
+              "capacity"
+            ]
+          },
+          "routing": {
+            "passed": 0,
+            "total": 2,
+            "capable_workers": [
+              "routing"
+            ]
+          }
+        },
+        "prior_proposal_errors": [],
+        "capability_catalog": {
+          "control_restriction": "The log-only restriction applies ONLY to Generation 0 control. Scientist mutations are explicitly allowed to grant the tools below. You MUST change tools to gather missing evidence; repeating read_logs does not retrieve configuration or contracts.",
+          "tools": {
+            "read_logs": "Provides symptom logs ONLY; cannot resolve config.* or contract.* references",
+            "inspect_config": "Provides current config.* values, including immutable workers",
+            "inspect_contract": "Provides actual contract.* limits, capacity requirements, registered health path and listening port",
+            "recall_memory": "Provides only previously development-verified generic repair rules"
+          },
+          "review_policy": [
+            "schema",
+            "contract",
+            "protected_fields"
+          ],
+          "memory_policy": [
+            "none",
+            "inherit_verified"
+          ],
+          "worker_specialties": [
+            "general",
+            "latency",
+            "capacity",
+            "routing",
+            "verifier"
+          ],
+          "practical_preconditions": "A contract-based repair requires inspect_contract somewhere before apply_rules. A contract review also needs inspect_config. General covers all families; otherwise include every missing family specialist."
+        },
+        "operators": {
+          "workers": "An object keyed by 1\u20134 unique specialty names, e.g. {general:{tools:[inspect_config,inspect_contract],instructions:...}} or {latency:{...},capacity:{...},routing:{...}}. General owns all families. Each worker has tools and instructions; IDs are derived automatically.",
+          "coordination": {
+            "shared_evidence": "Retrieve each selected tool once, share evidence, then dispatch every repair worker",
+            "specialist_pipeline": "Each worker retrieves its own tools then applies its rules",
+            "memory_first": "Recall development-verified rules first, then gather unique tools and dispatch workers"
+          },
+          "extra_review": "Optional separate controller review. Commit ALWAYS independently reviews, even when false.",
+          "procedure_source": {
+            "compile": "Nemotron compiles new general reference rules",
+            "reuse_memory": "No compiler request; use ONLY inherited development-verified rules, with automatic memory recall capability"
+          }
+        },
+        "operator_preconditions": {
+          "reuse_memory_available": false,
+          "reason": "Compiler-free reuse is available only after all three families have actual development-verified reference rules. Otherwise compile is mandatory; there is no fictional or preloaded rule bank."
+        },
+        "bounds": "Never change worker counts in incidents. General can repair all families; latency/capacity/routing workers only their own. All contracts need reference-based rules, not hardcoded values. Each design must explicitly supply instructions, workers, coordination, review_policy, memory_policy, cache_evidence, extra_review, procedure_source."
+      },
+      "cycle": 0,
+      "execution_kind": "remote_model"
+    },
+    {
+      "time": 1792265483.736351,
+      "role": "System",
+      "message": "Evolution stopped safely: JSONDecodeError"
+    }
+  ],
+  "runs": [
+    {
+      "case_id": "development-latency-00",
+      "title": "Latency contract incident",
+      "family": "latency",
+      "split": "development",
+      "passed": false,
+      "patch": {
+        "timeout_ms": 5000,
+        "retries": 3
+      },
+      "verification": {
+        "passed": false,
+        "checks": {
+          "request_completes": false,
+          "retry_budget": false
+        },
+        "resulting_config": {
+          "timeout_ms": 5000,
+          "retries": 3
+        }
+      },
+      "trace": [
+        {
+          "step": 0,
+          "agent": "routing",
+          "specialty": "routing",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Gateway 504; upstream completes normally; retry amplification observed."
+        },
+        {
+          "step": 1,
+          "agent": "routing",
+          "specialty": "routing",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": []
+        },
+        {
+          "step": 2,
+          "agent": "latency",
+          "specialty": "latency",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Gateway 504; upstream completes normally; retry amplification observed."
+        },
+        {
+          "step": 3,
+          "agent": "latency",
+          "specialty": "latency",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": [
+            {
+              "target": "timeout_ms",
+              "status": "applied",
+              "value": 5000,
+              "rule": {
+                "target": "timeout_ms",
+                "operation": "literal",
+                "value": 5000
+              }
+            },
+            {
+              "target": "retries",
+              "status": "applied",
+              "value": 3,
+              "rule": {
+                "target": "retries",
+                "operation": "literal",
+                "value": 3
+              }
+            }
+          ]
+        },
+        {
+          "step": 4,
+          "agent": "capacity",
+          "specialty": "capacity",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Gateway 504; upstream completes normally; retry amplification observed."
+        },
+        {
+          "step": 5,
+          "agent": "capacity",
+          "specialty": "capacity",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": []
+        },
+        {
+          "step": 6,
+          "agent": "controller",
+          "specialty": "verifier",
+          "action": "commit",
+          "kind": "local_tool",
+          "status": "complete",
+          "patch": {
+            "timeout_ms": 5000,
+            "retries": 3
+          }
+        }
+      ],
+      "metrics": {
+        "tool_calls": 3,
+        "rule_steps": 2,
+        "workflow_steps": 7,
+        "work_units": 9,
+        "memory_hits": 0,
+        "latency_s": 4.4e-05
+      },
+      "provenance": "Executed by the bounded local team interpreter; model-generated program, no per-incident inference or simulated API response",
+      "node_id": "g0",
+      "generation": 0,
+      "suite": "development",
+      "evaluation_id": "round-1",
+      "id": "round-1:g0:development-latency-00"
+    },
+    {
+      "case_id": "development-capacity-01",
+      "title": "Capacity contract incident",
+      "family": "capacity",
+      "split": "development",
+      "passed": false,
+      "patch": {
+        "pool_size": 10
+      },
+      "verification": {
+        "passed": false,
+        "checks": {
+          "load_served": false,
+          "workers_preserved": true
+        },
+        "resulting_config": {
+          "pool_size": 10,
+          "workers": 36
+        }
+      },
+      "trace": [
+        {
+          "step": 0,
+          "agent": "routing",
+          "specialty": "routing",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Connection acquisition deadline exceeded under load; database remains healthy."
+        },
+        {
+          "step": 1,
+          "agent": "routing",
+          "specialty": "routing",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": []
+        },
+        {
+          "step": 2,
+          "agent": "latency",
+          "specialty": "latency",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Connection acquisition deadline exceeded under load; database remains healthy."
+        },
+        {
+          "step": 3,
+          "agent": "latency",
+          "specialty": "latency",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": []
+        },
+        {
+          "step": 4,
+          "agent": "capacity",
+          "specialty": "capacity",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Connection acquisition deadline exceeded under load; database remains healthy."
+        },
+        {
+          "step": 5,
+          "agent": "capacity",
+          "specialty": "capacity",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": [
+            {
+              "target": "pool_size",
+              "status": "applied",
+              "value": 10,
+              "rule": {
+                "target": "pool_size",
+                "operation": "literal",
+                "value": 10
+              }
+            },
+            {
+              "target": "workers",
+              "status": "denied",
+              "reason": "Specialization does not own this field"
+            }
+          ]
+        },
+        {
+          "step": 6,
+          "agent": "controller",
+          "specialty": "verifier",
+          "action": "commit",
+          "kind": "local_tool",
+          "status": "complete",
+          "patch": {
+            "pool_size": 10
+          }
+        }
+      ],
+      "metrics": {
+        "tool_calls": 3,
+        "rule_steps": 2,
+        "workflow_steps": 7,
+        "work_units": 9,
+        "memory_hits": 0,
+        "latency_s": 1.9e-05
+      },
+      "provenance": "Executed by the bounded local team interpreter; model-generated program, no per-incident inference or simulated API response",
+      "node_id": "g0",
+      "generation": 0,
+      "suite": "development",
+      "evaluation_id": "round-1",
+      "id": "round-1:g0:development-capacity-01"
+    },
+    {
+      "case_id": "development-routing-02",
+      "title": "Routing contract incident",
+      "family": "routing",
+      "split": "development",
+      "passed": false,
+      "patch": {
+        "health_path": "health",
+        "port": 8080
+      },
+      "verification": {
+        "passed": false,
+        "checks": {
+          "probe_reaches_route": false,
+          "probe_reaches_listener": false
+        },
+        "resulting_config": {
+          "health_path": "health",
+          "port": 8080
+        }
+      },
+      "trace": [
+        {
+          "step": 0,
+          "agent": "routing",
+          "specialty": "routing",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Readiness returns 404; application listener is running after migration."
+        },
+        {
+          "step": 1,
+          "agent": "routing",
+          "specialty": "routing",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": [
+            {
+              "target": "health_path",
+              "status": "applied",
+              "value": "health",
+              "rule": {
+                "target": "health_path",
+                "operation": "literal",
+                "value": "health"
+              }
+            },
+            {
+              "target": "port",
+              "status": "applied",
+              "value": 8080,
+              "rule": {
+                "target": "port",
+                "operation": "literal",
+                "value": 8080
+              }
+            }
+          ]
+        },
+        {
+          "step": 2,
+          "agent": "latency",
+          "specialty": "latency",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Readiness returns 404; application listener is running after migration."
+        },
+        {
+          "step": 3,
+          "agent": "latency",
+          "specialty": "latency",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": []
+        },
+        {
+          "step": 4,
+          "agent": "capacity",
+          "specialty": "capacity",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Readiness returns 404; application listener is running after migration."
+        },
+        {
+          "step": 5,
+          "agent": "capacity",
+          "specialty": "capacity",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": []
+        },
+        {
+          "step": 6,
+          "agent": "controller",
+          "specialty": "verifier",
+          "action": "commit",
+          "kind": "local_tool",
+          "status": "complete",
+          "patch": {
+            "health_path": "health",
+            "port": 8080
+          }
+        }
+      ],
+      "metrics": {
+        "tool_calls": 3,
+        "rule_steps": 2,
+        "workflow_steps": 7,
+        "work_units": 9,
+        "memory_hits": 0,
+        "latency_s": 1.9e-05
+      },
+      "provenance": "Executed by the bounded local team interpreter; model-generated program, no per-incident inference or simulated API response",
+      "node_id": "g0",
+      "generation": 0,
+      "suite": "development",
+      "evaluation_id": "round-1",
+      "id": "round-1:g0:development-routing-02"
+    },
+    {
+      "case_id": "development-latency-03",
+      "title": "Latency contract incident",
+      "family": "latency",
+      "split": "development",
+      "passed": false,
+      "patch": {
+        "timeout_ms": 5000,
+        "retries": 3
+      },
+      "verification": {
+        "passed": false,
+        "checks": {
+          "request_completes": false,
+          "retry_budget": false
+        },
+        "resulting_config": {
+          "timeout_ms": 5000,
+          "retries": 3
+        }
+      },
+      "trace": [
+        {
+          "step": 0,
+          "agent": "routing",
+          "specialty": "routing",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Gateway 504; upstream completes normally; retry amplification observed."
+        },
+        {
+          "step": 1,
+          "agent": "routing",
+          "specialty": "routing",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": []
+        },
+        {
+          "step": 2,
+          "agent": "latency",
+          "specialty": "latency",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Gateway 504; upstream completes normally; retry amplification observed."
+        },
+        {
+          "step": 3,
+          "agent": "latency",
+          "specialty": "latency",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": [
+            {
+              "target": "timeout_ms",
+              "status": "applied",
+              "value": 5000,
+              "rule": {
+                "target": "timeout_ms",
+                "operation": "literal",
+                "value": 5000
+              }
+            },
+            {
+              "target": "retries",
+              "status": "applied",
+              "value": 3,
+              "rule": {
+                "target": "retries",
+                "operation": "literal",
+                "value": 3
+              }
+            }
+          ]
+        },
+        {
+          "step": 4,
+          "agent": "capacity",
+          "specialty": "capacity",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Gateway 504; upstream completes normally; retry amplification observed."
+        },
+        {
+          "step": 5,
+          "agent": "capacity",
+          "specialty": "capacity",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": []
+        },
+        {
+          "step": 6,
+          "agent": "controller",
+          "specialty": "verifier",
+          "action": "commit",
+          "kind": "local_tool",
+          "status": "complete",
+          "patch": {
+            "timeout_ms": 5000,
+            "retries": 3
+          }
+        }
+      ],
+      "metrics": {
+        "tool_calls": 3,
+        "rule_steps": 2,
+        "workflow_steps": 7,
+        "work_units": 9,
+        "memory_hits": 0,
+        "latency_s": 1.8e-05
+      },
+      "provenance": "Executed by the bounded local team interpreter; model-generated program, no per-incident inference or simulated API response",
+      "node_id": "g0",
+      "generation": 0,
+      "suite": "development",
+      "evaluation_id": "round-1",
+      "id": "round-1:g0:development-latency-03"
+    },
+    {
+      "case_id": "development-capacity-04",
+      "title": "Capacity contract incident",
+      "family": "capacity",
+      "split": "development",
+      "passed": false,
+      "patch": {
+        "pool_size": 10
+      },
+      "verification": {
+        "passed": false,
+        "checks": {
+          "load_served": false,
+          "workers_preserved": true
+        },
+        "resulting_config": {
+          "pool_size": 10,
+          "workers": 34
+        }
+      },
+      "trace": [
+        {
+          "step": 0,
+          "agent": "routing",
+          "specialty": "routing",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Connection acquisition deadline exceeded under load; database remains healthy."
+        },
+        {
+          "step": 1,
+          "agent": "routing",
+          "specialty": "routing",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": []
+        },
+        {
+          "step": 2,
+          "agent": "latency",
+          "specialty": "latency",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Connection acquisition deadline exceeded under load; database remains healthy."
+        },
+        {
+          "step": 3,
+          "agent": "latency",
+          "specialty": "latency",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": []
+        },
+        {
+          "step": 4,
+          "agent": "capacity",
+          "specialty": "capacity",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Connection acquisition deadline exceeded under load; database remains healthy."
+        },
+        {
+          "step": 5,
+          "agent": "capacity",
+          "specialty": "capacity",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": [
+            {
+              "target": "pool_size",
+              "status": "applied",
+              "value": 10,
+              "rule": {
+                "target": "pool_size",
+                "operation": "literal",
+                "value": 10
+              }
+            },
+            {
+              "target": "workers",
+              "status": "denied",
+              "reason": "Specialization does not own this field"
+            }
+          ]
+        },
+        {
+          "step": 6,
+          "agent": "controller",
+          "specialty": "verifier",
+          "action": "commit",
+          "kind": "local_tool",
+          "status": "complete",
+          "patch": {
+            "pool_size": 10
+          }
+        }
+      ],
+      "metrics": {
+        "tool_calls": 3,
+        "rule_steps": 2,
+        "workflow_steps": 7,
+        "work_units": 9,
+        "memory_hits": 0,
+        "latency_s": 1.7e-05
+      },
+      "provenance": "Executed by the bounded local team interpreter; model-generated program, no per-incident inference or simulated API response",
+      "node_id": "g0",
+      "generation": 0,
+      "suite": "development",
+      "evaluation_id": "round-1",
+      "id": "round-1:g0:development-capacity-04"
+    },
+    {
+      "case_id": "development-routing-05",
+      "title": "Routing contract incident",
+      "family": "routing",
+      "split": "development",
+      "passed": false,
+      "patch": {
+        "health_path": "health",
+        "port": 8080
+      },
+      "verification": {
+        "passed": false,
+        "checks": {
+          "probe_reaches_route": false,
+          "probe_reaches_listener": false
+        },
+        "resulting_config": {
+          "health_path": "health",
+          "port": 8080
+        }
+      },
+      "trace": [
+        {
+          "step": 0,
+          "agent": "routing",
+          "specialty": "routing",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Readiness returns 404; application listener is running after migration."
+        },
+        {
+          "step": 1,
+          "agent": "routing",
+          "specialty": "routing",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": [
+            {
+              "target": "health_path",
+              "status": "applied",
+              "value": "health",
+              "rule": {
+                "target": "health_path",
+                "operation": "literal",
+                "value": "health"
+              }
+            },
+            {
+              "target": "port",
+              "status": "applied",
+              "value": 8080,
+              "rule": {
+                "target": "port",
+                "operation": "literal",
+                "value": 8080
+              }
+            }
+          ]
+        },
+        {
+          "step": 2,
+          "agent": "latency",
+          "specialty": "latency",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Readiness returns 404; application listener is running after migration."
+        },
+        {
+          "step": 3,
+          "agent": "latency",
+          "specialty": "latency",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": []
+        },
+        {
+          "step": 4,
+          "agent": "capacity",
+          "specialty": "capacity",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Readiness returns 404; application listener is running after migration."
+        },
+        {
+          "step": 5,
+          "agent": "capacity",
+          "specialty": "capacity",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": []
+        },
+        {
+          "step": 6,
+          "agent": "controller",
+          "specialty": "verifier",
+          "action": "commit",
+          "kind": "local_tool",
+          "status": "complete",
+          "patch": {
+            "health_path": "health",
+            "port": 8080
+          }
+        }
+      ],
+      "metrics": {
+        "tool_calls": 3,
+        "rule_steps": 2,
+        "workflow_steps": 7,
+        "work_units": 9,
+        "memory_hits": 0,
+        "latency_s": 1.7e-05
+      },
+      "provenance": "Executed by the bounded local team interpreter; model-generated program, no per-incident inference or simulated API response",
+      "node_id": "g0",
+      "generation": 0,
+      "suite": "development",
+      "evaluation_id": "round-1",
+      "id": "round-1:g0:development-routing-05"
+    }
+  ],
+  "strategies": [],
+  "decisions": [],
+  "current_generation": 0,
+  "baseline_version": 0,
+  "fresh_baseline": true,
+  "mode": "live",
+  "budget_policy": "structured-v2-six-per-cycle",
+  "cycles": 1,
+  "limits": {
+    "max_requests_per_cycle": 6,
+    "max_cycles_per_run": 2,
+    "planned_model_requests": 8,
+    "concurrency": 1,
+    "project_cap_usd": "2.00",
+    "automatic_retries": 1,
+    "max_output_tokens": 1800,
+    "max_input_bytes": 24000,
+    "max_generations": 3,
+    "max_candidates_per_generation": 2,
+    "max_agents": 4,
+    "max_workflow_steps": 24,
+    "max_program_rules": 12
+  },
+  "cost_usd": "0.0002913500",
+  "cost_note": "Estimate from verified public Crusoe prices; conservative reserves retained for unknown usage",
+  "pricing": {
+    "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+    "input_usd_per_million": "0.05",
+    "output_usd_per_million": "0.20",
+    "cached_input_usd_per_million": "0.03",
+    "source": "https://www.crusoe.ai/cloud/pricing",
+    "model_source": "https://docs.crusoecloud.com/serverless-inference/index.html",
+    "verified_at": "2026-10-17T18:30:00+00:00",
+    "expires_at": "2026-10-18T18:30:00+00:00",
+    "note": "Serverless Inference table, Nemotron 3.5 Lightning. Cached discounts are deliberately ignored for conservative estimates. Exact existing Crusoe model alias is pinned."
+  },
+  "engine_version": 2,
+  "suite_manifest": {
+    "version": "incidents-v2-fresh-shards",
+    "seed": "13543333162152727550",
+    "sha256": "89b84b893c7d48fa4ce966e0ff2b7f905ab6935720b7e49ceb0f95eebf0c2e74",
+    "suites": {
+      "development": [
+        "development-latency-00",
+        "development-capacity-01",
+        "development-routing-02",
+        "development-latency-03",
+        "development-capacity-04",
+        "development-routing-05"
+      ],
+      "regression": [
+        "dev-timeout",
+        "dev-pool",
+        "dev-route",
+        "eval-timeout",
+        "eval-pool",
+        "eval-route"
+      ],
+      "validation-g1": [
+        "validation-g1-latency-00",
+        "validation-g1-capacity-01",
+        "validation-g1-routing-02",
+        "validation-g1-latency-03",
+        "validation-g1-capacity-04",
+        "validation-g1-routing-05"
+      ],
+      "validation-g2": [
+        "validation-g2-latency-00",
+        "validation-g2-capacity-01",
+        "validation-g2-routing-02",
+        "validation-g2-latency-03",
+        "validation-g2-capacity-04",
+        "validation-g2-routing-05"
+      ],
+      "validation-g3": [
+        "validation-g3-latency-00",
+        "validation-g3-capacity-01",
+        "validation-g3-routing-02",
+        "validation-g3-latency-03",
+        "validation-g3-capacity-04",
+        "validation-g3-routing-05"
+      ],
+      "sealed": [
+        "sealed-latency-00",
+        "sealed-capacity-01",
+        "sealed-routing-02",
+        "sealed-latency-03",
+        "sealed-capacity-04",
+        "sealed-routing-05"
+      ]
+    },
+    "note": "Fresh validation shard per generation; sealed challenge never enters synthesis prompts. Development is fixed for fair iteration."
+  },
+  "objective": "Restore latency, connection saturation and readiness incidents under hard service limits. Preserve worker counts, learn reusable procedures, and remove unnecessary inspections after correctness is established.",
+  "criteria": [
+    {
+      "id": "behavior",
+      "description": "Pass all independent incident contract checks",
+      "target": 1.0,
+      "metric": "sealed_pass_rate"
+    },
+    {
+      "id": "regression",
+      "description": "Never regress a previously passing case",
+      "target": 0,
+      "metric": "regressions"
+    },
+    {
+      "id": "efficiency",
+      "description": "After full correctness, prefer less actual tool/rule/review work",
+      "metric": "work_units"
+    }
+  ],
+  "requested_generations": 3,
+  "nodes": [
+    {
+      "id": "g0",
+      "generation": 0,
+      "parent_id": null,
+      "team": {
+        "name": "Log-first control",
+        "instructions": "Begin with a controlled log-only investigation. Route each incident through a triage worker who extracts timestamps, error codes, and saturation metrics. Feed extracted signals into a shared pattern library. If a pattern matches a known family, delegate to the corresponding specialist; otherwise route to General. Record every decision path to enable later procedure extraction.",
+        "agents": [
+          {
+            "id": "routing",
+            "specialty": "routing",
+            "tools": [
+              "read_logs"
+            ],
+            "instructions": "Diagnose routing symptoms from available log evidence"
+          },
+          {
+            "id": "latency",
+            "specialty": "latency",
+            "tools": [
+              "read_logs"
+            ],
+            "instructions": "Diagnose latency symptoms from available log evidence"
+          },
+          {
+            "id": "capacity",
+            "specialty": "capacity",
+            "tools": [
+              "read_logs"
+            ],
+            "instructions": "Diagnose capacity symptoms from available log evidence"
+          }
+        ],
+        "workflow": [
+          {
+            "agent": "routing",
+            "action": "read_logs"
+          },
+          {
+            "agent": "routing",
+            "action": "apply_rules"
+          },
+          {
+            "agent": "latency",
+            "action": "read_logs"
+          },
+          {
+            "agent": "latency",
+            "action": "apply_rules"
+          },
+          {
+            "agent": "capacity",
+            "action": "read_logs"
+          },
+          {
+            "agent": "capacity",
+            "action": "apply_rules"
+          },
+          {
+            "agent": "controller",
+            "action": "commit"
+          }
+        ],
+        "review_policy": "schema",
+        "memory_policy": "none",
+        "cache_evidence": false,
+        "program": {
+          "routing": [
+            {
+              "target": "health_path",
+              "operation": "literal",
+              "value": "health"
+            },
+            {
+              "target": "port",
+              "operation": "literal",
+              "value": 8080
+            }
+          ],
+          "latency": [
+            {
+              "target": "timeout_ms",
+              "operation": "literal",
+              "value": 5000
+            },
+            {
+              "target": "retries",
+              "operation": "literal",
+              "value": 3
+            }
+          ],
+          "capacity": [
+            {
+              "target": "pool_size",
+              "operation": "literal",
+              "value": 10
+            },
+            {
+              "target": "workers",
+              "operation": "literal",
+              "value": 4
+            }
+          ]
+        }
+      },
+      "memory_snapshot": [],
+      "status": "compiled",
+      "reason": "Initial control team",
+      "changes": [],
+      "team_sha256": "9c40b790722d2c8c86e177c1bf37bb8a18b385b7c27d2c7a7535c68b486ab708",
+      "metrics": {
+        "development": {
+          "passed": 0,
+          "total": 6,
+          "pass_rate": 0.0,
+          "tool_calls": 18,
+          "rule_steps": 12,
+          "work_units": 54,
+          "memory_hits": 0,
+          "latency_s": 0.000134
+        }
+      },
+      "created_at": 1792265479.652509,
+      "program_normalizations": [],
+      "compilation_request_id": "a228d811ace8453f92fdeeae694d944b",
+      "procedure_origin": "nemotron_compiler"
+    }
+  ],
+  "rounds": [],
+  "memory": [],
+  "ancestor": null,
+  "active_node_id": "g0",
+  "source_hashes": {
+    "team.py": "9e0598fecd41b6359f83cd92b4ea1c70bd414b238ab8ba00de4302bedfa2fc4c",
+    "suites.py": "c199084718cdb84266d9e8c928d41de05f49f2ef7d8cf7186439f5ef59b1749b",
+    "benchmark.py": "601cc568038949fca6c2a261ad61db20c177855d1eb1a031ab09c884d5f1fde2",
+    "assembly.py": "59be76f4425fc71f417b6833b9fe9fc53d82bdd7d036792e9a5a5b6d1aee0915"
+  },
+  "inference_calls": 3,
+  "total_tokens": 4765,
+  "objective_analysis": {
+    "approach": "Begin with a controlled log-only investigation. Route each incident through a triage worker who extracts timestamps, error codes, and saturation metrics. Feed extracted signals into a shared pattern library. If a pattern matches a known family, delegate to the corresponding specialist; otherwise route to General. Record every decision path to enable later procedure extraction.",
+    "success_criteria": [
+      "All independent incident contract checks sealed_pass_rate reaches 1.0",
+      "Zero regressions on previously passing cases",
+      "Work units minimized after correctness is established"
+    ],
+    "initial_specialties": [
+      "routing",
+      "latency",
+      "capacity"
+    ]
+  },
+  "error": "JSONDecodeError",
+  "error_detail": "Expecting value: line 1 column 1 (char 0)",
+  "finished_at": 1792265483.748627,
+  "budget_audit": {
+    "physical_requests": 3,
+    "reported_tokens": 4765,
+    "cost_estimate_usd": "0.0002913500",
+    "entries": [
+      {
+        "id": "4dce8b7fb6b44cdaa965064fd1ff1b79",
+        "run_id": "20261017-123116-ef71d8",
+        "cycle": 0,
+        "role": "Architect",
+        "time": 1792265476.8339992,
+        "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+        "retry": 0,
+        "input_token_bound": 3130,
+        "max_output_tokens": 350,
+        "reserved_usd": "0.0002265000",
+        "status": "complete",
+        "output_schema_sha256": "e949802288f050893884212387db7d4251c4c8c38255424514927dc82ef168f2",
+        "latency_s": 2.809,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 317,
+          "total_tokens": 460,
+          "completion_tokens": 143,
+          "prompt_tokens_details": null
+        },
+        "charge_usd": "0.0000444500"
+      },
+      {
+        "id": "a228d811ace8453f92fdeeae694d944b",
+        "run_id": "20261017-123116-ef71d8",
+        "cycle": 0,
+        "role": "Executor",
+        "time": 1792265479.65759,
+        "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+        "retry": 0,
+        "input_token_bound": 11124,
+        "max_output_tokens": 1800,
+        "reserved_usd": "0.0009162000",
+        "status": "complete",
+        "output_schema_sha256": "ac4fd75278a3c3424928c3193a568d12d378b793711239ee2507c4cf5fc4cbbc",
+        "latency_s": 2.123,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 1287,
+          "total_tokens": 1497,
+          "completion_tokens": 210,
+          "prompt_tokens_details": null
+        },
+        "charge_usd": "0.0001063500"
+      },
+      {
+        "id": "463d7f0ac728492fb3265e310e8bcc45",
+        "run_id": "20261017-123116-ef71d8",
+        "cycle": 0,
+        "role": "Observer + Scientist",
+        "time": 1792265481.837447,
+        "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+        "retry": 0,
+        "input_token_bound": 15752,
+        "max_output_tokens": 1800,
+        "reserved_usd": "0.0011476000",
+        "status": "complete",
+        "output_schema_sha256": "66c405487e7250b5b730c30c9f96027685b31427dae01a6c48ae8b7ecd8017ad",
+        "latency_s": 1.868,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 2807,
+          "total_tokens": 2808,
+          "completion_tokens": 1,
+          "prompt_tokens_details": null
+        },
+        "charge_usd": "0.0001405500"
+      }
+    ]
+  }
+}

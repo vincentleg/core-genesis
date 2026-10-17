@@ -121,7 +121,8 @@ function renderActivity() {
   const markup=visible.map(e=>{
     const kind=e.execution_kind==='remote_model'?'NEMOTRON API':e.execution_kind==='local_team_runtime'?'LOCAL TEAM RUNTIME':e.role==='Verifier'?'DETERMINISTIC CHECK':'CONTROLLER';
     const detail=[e.node_id,e.case_id,e.suite,e.usage?e.usage.total_tokens+' tokens':null,e.latency_s?e.latency_s+'s':null,e.tool_calls!=null?e.tool_calls+' tool calls':null].filter(Boolean).join(' · ');
-    return '<div class="activity-entry '+(e.role==='Gate'?'gate':'')+' '+(e.message==='FAIL'?'failure':'')+'"><time>'+new Date(e.time*1000).toLocaleTimeString([],{hour12:false})+'</time><div><b>'+esc(e.role)+'</b><span class="event-kind">'+kind+'</span><p>'+esc(e.message)+'</p>'+(detail?'<small>'+esc(detail)+'</small>':'')+'</div></div>';
+    const reasoning=e.request_id&&e.output!==undefined?'<button class="reasoning-link" data-reasoning="'+esc(e.request_id)+'">Inspect real reasoning ↗</button>':'';
+    return '<div class="activity-entry '+(e.role==='Gate'?'gate':'')+' '+(e.message==='FAIL'?'failure':'')+'"><time>'+new Date(e.time*1000).toLocaleTimeString([],{hour12:false})+'</time><div><b>'+esc(e.role)+'</b><span class="event-kind">'+kind+'</span><p>'+esc(e.message)+'</p>'+(detail?'<small>'+esc(detail)+'</small>':'')+reasoning+'</div></div>';
   }).join('');
   html('activity-feed',markup || empty('No inference activity in this view.','Local execution and remote reasoning will be labeled separately.'));
   if(stick)feed.scrollTop=feed.scrollHeight;
@@ -218,6 +219,18 @@ function showEvidence(id) {
   $('evidence-dialog').showModal();
 }
 
+function showReasoning(requestId) {
+  const event=(state.events||[]).find(e=>e.request_id===requestId&&e.output!==undefined);
+  if(!event)return;
+  $('evidence-title').textContent=event.role+' / actual inference';
+  let content='<div class="evidence-facts"><span class="chip">CRUSOE · NEMOTRON</span><span class="chip">HTTP '+esc(event.http_status)+'</span><span class="chip">'+esc(event.usage?.total_tokens)+' reported tokens</span><span class="chip">'+esc(event.latency_s)+'s</span></div>';
+  content+='<p class="program-note">Model: '+esc(event.model)+'<br>Ledger request: '+esc(requestId)+' · cycle '+esc(event.cycle)+' · estimated $'+esc(event.cost_estimate_usd)+'. This is captured reasoning, not a new API request.</p>';
+  content+='<div class="workflow-label">ACTUAL MODEL OUTPUT</div><pre class="code">'+esc(event.output||'(Empty provider output; no response invented)')+'</pre>';
+  content+='<details class="reasoning-input"><summary>Inspect the actual input context</summary><p class="program-note">Mutation and compiler contexts contain development evidence only. Independent validation and sealed cases are excluded.</p><pre class="code">'+json(event.input_context||'Input capture was not available in this historical record')+'</pre></details>';
+  html('evidence-content',content);
+  $('evidence-dialog').showModal();
+}
+
 function renderLocal(report) {
   localReport=report;
   state={status:report.status,nodes:[],runs:[],events:[]};
@@ -286,6 +299,8 @@ document.addEventListener('click',event=>{
   if(node){selection=node.dataset.node;renderGraph();renderInspector();}
   const evidence=event.target.closest('[data-evidence]');
   if(evidence)showEvidence(evidence.dataset.evidence);
+  const reasoning=event.target.closest('[data-reasoning]');
+  if(reasoning)showReasoning(reasoning.dataset.reasoning);
   const tab=event.target.closest('[data-inspect]');
   if(tab){inspectorTab=tab.dataset.inspect;document.querySelectorAll('[data-inspect]').forEach(b=>b.classList.toggle('active',b===tab));renderInspector();}
   const feed=event.target.closest('[data-feed]');

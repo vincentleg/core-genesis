@@ -2,146 +2,137 @@
 
 **The AI Team That Rewrites How It Thinks.**
 
-An experimental agent evolution engine for the Recursive Agents Hackathon's **Version N+1** track. Real NVIDIA Nemotron reasoning runs through Crusoe Managed Inference. Strategy mutations earn promotion through deterministic incident-repair tests.
+A bounded research platform for the Recursive Agents Hackathon's **Version N+1** track. NVIDIA Nemotron, hosted by Crusoe Managed Inference, designs competing agent teams and compiles their repair procedures. A separate deterministic evaluator decides which team survives.
 
-[60-second actual live demonstration](docs/demo.webm) · [Execution evidence](experiments/20261017-114030-02b57b.json)
-
-![Evolution Arena showing the actual six-request promotion](docs/arena.png)
-
-The system evolves instructions, role assignments and duties, tool permissions, execution order, and verification/retry policy. It records model outputs, patches, assertions, selection rationale, usage, latency and decisions as local JSON. Generated output is data: it never executes generated commands or code.
+V2 evolves executable team structure: worker specialization, tool permissions, coordination, review policy, instructions and verified procedural memory. It runs up to **three evolutionary rounds with two competing mutations per round**, preserving real ancestry and every rejected candidate. The original working Crusoe integration and V0 evidence remain in the repository.
 
 ## Run locally
 
-Requires Python 3.9+ and an existing Crusoe API key. The engine and web interface have **zero third-party runtime dependencies**.
+Python 3.9+. Zero third-party runtime dependencies.
 
-```sh
-git clone https://github.com/vincentleg/core-genesis.git
-cd core-genesis
-cp .env.example .env
-# Set CRUSOE_API_KEY in .env using your existing credentials.
-python3 -m core_genesis.server --fresh
-```
+    git clone https://github.com/vincentleg/core-genesis.git
+    cd core-genesis
+    cp .env.example .env
+    # Set CRUSOE_API_KEY in .env using existing credits.
+    python3 -m core_genesis.server --fresh
 
-Open **http://127.0.0.1:8080**. The default mode is **RECORDED EVIDENCE**, clearly labeled as replay of genuine prior results. Choose **LIVE EVOLUTION** and click **Start live evolution** to explicitly authorize new, bounded inference. No page load, polling, refresh, or background timer calls a model. The Arena shows live activity, competing workflows, before/after results, patch evidence, decisions and archives.
+Open **http://127.0.0.1:8080**. Recorded evidence is the default. Enter an incident-remediation objective, choose one to three rounds, and explicitly start LIVE EVOLUTION to authorize inference.
 
-| Mode | What actually runs | External API calls |
+| Mode | Behavior | New external API calls |
 | --- | --- | --- |
-| LOCAL TEST | Deterministic verifier, budget, isolation and lifecycle tests with network disabled | 0 |
-| RECORDED EVIDENCE | Read-only replay of genuine saved experiments; labeled as historical | 0 |
-| LIVE EVOLUTION | Actual Crusoe-hosted NVIDIA Nemotron reasoning behind the centralized budget manager | At most 6 per cycle, counting retries |
+| LOCAL TEST | Network-disabled deterministic tests of runtime, gates, isolation and budget | 0 |
+| RECORDED EVIDENCE | Clearly labeled playback of genuine saved execution records | 0 |
+| LIVE EVOLUTION | Real Nemotron reasoning through the centralized Crusoe request budget | Maximum 12 physical attempts across two six-attempt cycles |
 
-For a separate explicit connection check, `python3 scripts/smoke_crusoe.py` uses the same budget manager. It is optional and consumes a real request.
+Page loads, refresh, polling, archive selection and evidence inspection never call a model. No video is being produced for V2; the existing video and screenshot document the earlier V0 only.
 
-`--fresh` starts each experiment from the intentionally constrained log-first baseline for a reproducible demo. Omit it to continue evolving the last completed experiment's verified team. The verified configuration survives restarts in experiment history. Rollback keeps that experiment's baseline active.
+Headless execution:
 
-Headless:
+    python3 scripts/run_evolution.py --fresh --generations 3
+    python3 scripts/run_evolution.py --fresh --generations 3 --seed 1729 --objective "Restore service contracts while preserving unrelated settings"
+    # Continue the most recent completed verified team and its earned memory:
+    python3 scripts/run_evolution.py --generations 3
 
-```sh
-python3 scripts/run_evolution.py --fresh
-# Continue the last verified team:
-python3 scripts/run_evolution.py
-```
+The optional seed reproduces benchmark instances, not stochastic provider output. Omitting --fresh restores the last completed experiment's active team, including when later candidates were rolled back.
 
-## How it works
+## What actually evolves
 
-```mermaid
-flowchart LR
-    A[Architect: approach] --> B[Execute baseline]
-    B --> C[Observer: development failures]
-    C --> D[Scientist: two mutations]
-    D --> E[Evaluate both on development]
-    E --> F[Select development winner]
-    F --> G[Held-out evaluation]
-    G --> H{Deterministic gate}
-    H -->|strict gains, no regressions| I[Promote]
-    H -->|tie, regression, error| J[Rollback]
-    I --> K[Persist verified team and evidence]
-    J --> K
-```
-
-| Role | Actual responsibility |
+| Component | Operational effect |
 | --- | --- |
-| Architect | Designs initial instructions within the tool budget; assesses later teams without changing their verified baseline. |
-| Executor | Receives evidence gathered by permitted tools before `repair`; proposes an allowlisted JSON patch. |
-| Observer | Analyzes development failures against development fixtures; receives no held-out cases. |
-| Scientist | Proposes two structured strategies; invalid capabilities are rejected without a paid correction request. |
-| Verifier / Gate | Deterministic Python checks behavior and authorizes promotion or rollback. |
+| Instructions | Included in Nemotron's actual procedure-compilation context |
+| Worker composition | General or latency/capacity/routing specialists with enforced field ownership |
+| Tool permissions | Determine which configuration, contract, logs and memory the runtime can retrieve |
+| Workflow | Shared evidence, specialist pipelines or memory-first coordination expand into explicit ordered steps |
+| Verification policy | Schema, protected-field or contract review before commit; independent final checks are mandatory |
+| Evidence cache | Skips repeated retrievals and records actual cache hits |
+| Memory | Reference-based rules earned only from passing development executions, with source cases and lineage |
+| Procedure source | Compile a new procedure or reuse a genuinely verified three-family memory bank without another compiler request |
 
-Four logical roles share one hosted model and execute sequentially. Role membership and per-role duties form the Executor's team context; the controller retains its safety-critical orchestration stages. Tool permissions and sequence change the evidence actually received. Final deterministic verification is mandatory.
+Generated procedures are a tiny declarative language: copy, increment or decrement an allowlisted evidence reference into an owned configuration field. Only the initial control may make literal guesses. There is no eval, generated Python, shell, arbitrary file access or production remediation.
 
-Under the current six-request policy, Observer and Scientist perform their two logical stages in one real model request. Repairs are batched by strategy: baseline execution, each competing development evaluation, and selected-candidate held-out execution each take one request. Different strategies never share a repair request, preserving tool-evidence isolation. The six calls are Architect → baseline Executor → Observer/Scientist → candidate A Executor → candidate B Executor → selected held-out Executor. One explicit action runs one cycle, below the maximum of two. `preflight` requests model self-checking within that same inference; there are no paid repair retries. Final deterministic verification always runs.
+Architect, Executor, Observer and Scientist are logical stages using the real pinned model. Observer and Scientist share one request to conserve credits. Nemotron compiles procedures once; the local runtime then executes them against every benchmark instance. Local tool calls and deterministic verification are explicitly distinguished from remote model activity in the Arena. The fixed controller can review and commit but cannot acquire tools or write repairs.
 
-## Benchmark and gate
+## Evolution and independent evaluation
 
-Six fixed fixtures simulate gateway timeouts/retry storms, database connection saturation and health-check routing failures. Repairs apply to fresh in-memory configurations. Assertions enforce deadlines, retry budgets, connection capacity, unchanged unrelated workers, and route/listener agreement. Keys and types are allowlisted.
+1. Architect interprets the objective and assembles a log-only experimental control team.
+2. Executor compiles a bounded procedure; the runtime measures its development failures.
+3. Observer analyzes development evidence. Scientist proposes two complete team designs.
+4. Executor compiles both proposals in one request, unless verified memory permits compiler-free reuse.
+5. Both candidates run on development cases. Selection uses successes, then fewer measured work units, then proposal order.
+6. The selected candidate and its parent run on identical fresh validation cases and fixed regression cases.
+7. A deterministic gate promotes or rolls back. Earned development memory follows verified ancestry.
+8. Repeat for up to three rounds. A separate sealed shard compares the original and final team after mutation decisions are finished.
 
-**Three development and three held-out cases** use different values and routes. The Scientist sees development evidence only. Both candidates run on development; selection uses most successes, then fewest attempts, then lowest version. Only the winner faces held-out cases, alongside the same baseline. Held-out results never drive another mutation within that experiment.
+Each full three-round experiment contains **36 distinct incident instances**: six development, six fixed regression, three fresh six-case validation shards and six sealed cases. Repeated executions of the same instance across teams are separately recorded.
 
-Promotion requires strict success-count gains on **both** suites, full coverage, zero per-case regressions, and no inference/output errors. Ties roll back. A suite hash identifies the benchmark revision. Every attempt stores its actual patch, resulting configuration or rejection, named checks, reported tokens and measured inference latency.
+Mutators receive development fixtures, development traces and development-verified lessons only. Fresh validation and sealed instances are never serialized into mutation/compiler prompts. Every real inference record includes its input context, output, model identifier, usage and request metadata for inspection.
 
-The baseline's missing configuration/contract access is a deliberate experimental constraint. This is a six-case simulator, not execution against production services. Held-out source is open and reused across experiments: it is isolated from mutation prompts, not permanently secret. Results demonstrate workflow improvement on this fixture family, not general intelligence or proven real-world repair capability.
+Promotion requires strict success-count gains on **both development and fresh validation**, complete identical coverage, and no previously passing case lost in development, validation or regression. Once both teams are fully correct, a candidate can instead win by reducing actual work on both development and validation without regressions. Work units count tool invocations, rule evaluations and apply/review/commit dispatches; they are an interpreter-work proxy, not a claim about billed dollars or statistically significant wall-clock speed.
 
-## Verified live evidence
+Invalid designs, unauthorized writes, missing evidence and malformed programs are rejected. A valid sibling can still compete. If both proposals fail validation, the generation rolls back without paying for a compiler call. Three rounds do not imply three promotions.
 
-Current-policy experiment [`20261017-114030-02b57b`](experiments/20261017-114030-02b57b.json), October 17, 2026, captured in the live demo:
+The benchmark covers latency/retry contracts, database connection capacity and readiness route/listener alignment. Numeric limits and paths vary by instance. This is a narrow in-memory configuration-repair simulator, not a production operator or proof of general software engineering ability. The source is public; held-out isolation concerns prompts and evaluation order, not permanent secrecy. The intentionally restricted control makes its evidence-gathering weakness visible.
 
-| Measurement | Baseline | Selected mutation |
-| --- | --- | --- |
-| Development | 0/3 | 1/3 |
-| Held-out | 0/3 | 1/3 |
-| Combined | 0/6 | 2/6 |
-| Decision | — | **Promoted; zero regressions** |
+## Evolution Arena
 
-The full experiment used **6 real physical requests, 7,061 reported tokens, and 7.309 seconds of summed inference latency**, at an **estimated $0.0005665** using verified public prices. The selected Contract-First Alignment strategy passed 1/3 on each suite; its Evidence-First Triage competitor passed 0/3 development cases and was not selected. Earlier archives include genuine rollbacks and safe failures. These measurements are not promised future outcomes.
+The native dark blue/violet interface displays real candidate nodes and parent edges, current activity, per-node mutation diffs, exact teams/workflows, earned memory, tool traces, test assertions and promotion reasons. Generation Battles compare only identical cases actually executed by both selected teams. Invalid candidates display their rejection reason rather than fabricated scores.
 
-An earlier genuine promotion, [`20261017-111232-160e6d`](experiments/20261017-111232-160e6d.json), predates the six-request policy and remains labeled as historical in replay. Current runs use a dated snapshot from [Crusoe's official Serverless Inference table](https://www.crusoe.ai/cloud/pricing): $0.05 per million input tokens and $0.20 per million output tokens for Nemotron 3.5 Lightning, verified October 17, 2026. Cached discounts are conservatively ignored. Estimates are not account bills.
+All scores, timing, usage and costs derive from execution records. Historical playback is labeled. Failed and rolled-back experiments are retained alongside successful ones; future runs can produce different outcomes.
 
-At the submission checkpoint, preserved records contain **89 completed calls with usage and 52,343 reported tokens**. Their estimated usage cost is **$0.0043897**. The project ledger commits **$0.6563148 including conservative uncertainty/retry allowances**, leaving **$1.3436852 of the $2 cap**. Unknown earlier usage is reserved rather than presented as measured. [Consumption snapshot](docs/consumption.json)
+## Verify without inference
 
-Replay the evidence without inference:
+Latest verified V2 milestone: [20261017-123548-c377d6](experiments/20261017-123548-c377d6.json).
 
-```sh
-python3 scripts/verify_evidence.py experiments/20261017-114030-02b57b.json
-python3 -m unittest discover -s tests -v
-python3 -m core_genesis.local_test
-node --check web/app.js
-```
+| Round | Development, parent → candidate | Fresh validation, parent → candidate | Decision |
+| --- | --- | --- | --- |
+| G1 | 0/6 → 4/6 | 0/6 → 4/6 | Promote |
+| G2 | 4/6 → 5/6 | 4/6 → 5/6 | Promote |
+| G3 | 5/6 → 6/6 | 6/6 → 6/6 | Roll back: no strict independent gain |
 
-Replay verifies patches against the current suite and recomputes the gate. It does not re-run inference, prove provider provenance, or reproduce stochastic output. A different suite fingerprint intentionally blocks replay.
+Final sealed comparison: **0/6 → 4/6**, retaining G2. Seven genuine candidate/control nodes, 132 executions and all three decisions reproduce independently. Nine physical attempts (one retry), 19,924 reported tokens and **$0.0022272 estimated usage plus failed-attempt reserve**. Two development-verified memory lessons were earned. Capacity repair remains a measurable weakness; G3's stronger development result did not bypass the gate.
 
-## Bounds and safety
+The current network-disabled suite contains **46 passing tests**. Chrome checks cover graph/inspector interaction, real tool traces, captured reasoning, mobile layout and zero inference from read-only activity.
 
-- Existing Crusoe credits only; no purchases, top-ups or paid deployments.
-- Centralized, persisted **$2 project-wide estimated cap**. `budget/ledger.json` reserves a conservative input/output allowance **before** each request, settles only verified usage, and retains full reserves after errors, missing usage or crashes. Do not delete the ledger to reset spending.
-- At most **six physical requests per cycle**, including retries; at most two cycles per explicit user run. This implementation intentionally runs **one cycle per action**. One automatic retry for transient transport/HTTP errors; if that consumes the sixth slot, the incomplete experiment stops without promotion.
-- Cross-process file locks enforce **one concurrent request** and atomic budget reservations. Engine-managed client retries are disabled so no request escapes accounting. The existing Crusoe client itself is unchanged.
-- Hard output limits: Architect 250, Observer/Scientist 1,600, Executor batches 1,800 tokens. Input is capped at 24KB UTF-8 plus a conservative 1,024-token framing reservation. Usage and elapsed time come from real responses and clocks.
-- Missing, invalid or expired pricing, an unknown model, corrupt/missing required budget history, or insufficient remaining budget locks live inference. Pricing expires after 24 hours. Re-verify the official source before updating `pricing.json`; the app never refreshes it or makes a provider call automatically.
-- Legacy records are imported with measured token costs plus explicit conservative allowances for possible hidden retries and unknown usage, including the original smoke check. Allowances are distinguished from actual measured usage and are deducted from the same $2 cap.
-- Two candidates; one repair attempt per incident under the request policy; fixed tools; no generated commands, code execution or filesystem repair actions.
-- Credentials remain in gitignored `.env` or server environment; they never enter prompts or browser state. Only explicit assets and read-only evidence endpoints are served.
-- Loopback by default. Mutation requests require local Host, same Origin, and an explicit action header. Inference concurrency and the monetary ledger are protected across local processes sharing the checkout.
-- Records are auditable files, not cryptographically tamper-proof storage. Keep trusted source and records together.
+    python3 -m unittest discover -s tests -v
+    python3 -m core_genesis.local_test
+    node --check web/arena.js
+    python3 scripts/verify_evidence.py experiments/EXPERIMENT_ID.json
 
-## Repository
+V2 replay regenerates the seeded suite and reexecutes every recorded program, tool trace, work counter, development selection and promotion/rollback gate. Evaluator source hashes must match the producing revision; check out that experiment's commit for older histories. Replay does not repeat inference, authenticate provider provenance or reproduce historical wall-clock latency. Records are ordinary auditable JSON, not tamper-proof storage.
+
+The preserved V0 experiment [20261017-114030-02b57b](experiments/20261017-114030-02b57b.json) achieved 0/6 → 2/6 in six physical requests, 7,061 reported tokens and an estimated $0.0005665. Its fixed six-case protocol differs from V2 and must not be presented as V2's sealed evaluation. New V2 experiments, including unsuccessful runs, live in experiments/.
+
+## Hard budget and safety
+
+- Persistent **$2 project-wide estimated cap** using existing Crusoe credits only. No purchases, top-ups or paid deployments.
+- Maximum **six physical attempts per cycle, two cycles per explicit run, one concurrent request and one automatic transient retry**. Retries count and retain reservations after partial failures.
+- A typical three-round run plans eight model requests; real verified memory can reduce this. Exhaustion stops the run safely.
+- Pinned model: nvidia/Nemotron-3.5-Lightning-30B-A3B. Original core_genesis/crusoe.py is preserved.
+- Architect output maximum 350 tokens; other reasoning maximum 1,800. Input messages plus output schema must fit 24KB; conservative token framing is reserved before HTTP.
+- Provider-constrained JSON plus independent runtime validation. Empty or invalid output stops safely; no hidden paid correction loop.
+- Decimal accounting, cross-process locks and atomic persistent reservations. Reported usage settles estimated costs; missing usage, timeouts and failures retain full reserves.
+- Official [Crusoe pricing](https://www.crusoe.ai/cloud/pricing) verified October 17: $0.05/million input and $0.20/million output tokens; cached discounts ignored. Prices expire after 24 hours. Unknown, invalid or expired pricing fails closed.
+- Legacy uncertain usage and possible old hidden retries have explicit conservative allowances in the same ledger. Do not delete budget/ledger.json to reset spending.
+- One bounded retry waits for provider cooldown up to ten seconds; a longer or unrecognized cooldown stops the run. No automatic background restart.
+- Existing credentials remain in gitignored .env/environment and never enter prompts or browser state. The server exposes explicit assets and evidence only.
+- Loopback server; mutation endpoints require local Host, same Origin and explicit action headers.
+- In-memory deterministic repairs only. No untrusted generated commands, unrestricted self-modification or changes to the separate original CORE project.
+
+Crusoe and NVIDIA Nemotron are genuine operational integrations. You.com access has not been supplied; no retrieved evidence is invented. OpenShell/NemoClaw and Switchyard are not claimed or installed as decorative dependencies.
+
+## Code map
 
 | Path | Purpose |
 | --- | --- |
-| `core_genesis/crusoe.py` | Existing Crusoe client, preserved unchanged |
-| `core_genesis/benchmark.py` | Deterministic fixtures and verifier |
-| `core_genesis/engine.py` | Reasoning, mutations, selection, gate, persistence |
-| `core_genesis/budget.py`, `pricing.json`, `budget/ledger.json` | Verified prices, hard request limits, persistent spending accounting |
-| `core_genesis/local_test.py` | Network-disabled zero-API test mode |
-| `core_genesis/server.py` | Local HTTP API and Arena hosting |
-| `web/` | Responsive, dependency-free Evolution Arena |
-| `experiments/` | Actual execution records, including failures |
-| `tests/` | Verifier, gate, isolation, budget, lifecycle and persistence checks |
-| `scripts/verify_evidence.py` | Independent evidence replay |
+| core_genesis/crusoe.py | Preserved working Crusoe client |
+| core_genesis/evolution.py | V2 orchestration, lineage, candidate compilation and memory |
+| core_genesis/team.py | Bounded executable team interpreter and objective gate |
+| core_genesis/assembly.py, schemas.py | Typed team operators and provider JSON grammars |
+| core_genesis/suites.py, benchmark.py | Fresh reproducible shards and deterministic assertions |
+| core_genesis/replay.py | Independent V2 evidence replay |
+| core_genesis/engine.py | Preserved V0 protocol and shared persistence utilities |
+| core_genesis/budget.py, pricing.json, budget/ledger.json | Centralized budget, verified prices and persistent consumption |
+| core_genesis/server.py, web/arena.* | Local API and interactive Evolution Arena |
+| experiments/, tests/ | Genuine execution evidence and isolated automated checks |
 
-[One-minute demo guide](docs/DEMO.md) · [Local and optional Docker deployment](docs/DEPLOYMENT.md)
-
-[Sponsor integration and rules evidence](docs/SPONSORS_AND_COMPLIANCE.md)
-
-**25 network-disabled local tests pass.** The Arena was checked in installed Chrome at 1440px and 390px: evidence dialog, archive navigation, no horizontal mobile overflow, no page errors, cross-origin action rejection and secret-path rejection. Browser refresh/replay/local actions left the inference count unchanged. The video captures a new actual live run and its evidence; it is a silent 60-second screen recording, not synthesized metrics. Docker packaging is prepared but has not been built or run. No public deployment is claimed.
-
-MIT licensed. Built October 17, 2026 for the Recursive Agents Hackathon organized by Cerebral Valley × Crusoe, with NVIDIA and You.com.
+MIT licensed. Developed October 17, 2026 for the Recursive Agents Hackathon organized by Cerebral Valley × Crusoe, with NVIDIA and You.com. Public repository and local application exist; no public deployment is claimed.

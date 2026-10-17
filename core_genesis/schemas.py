@@ -29,11 +29,11 @@ def program_schema(nodes, allow_literals=True):
             obj({"target": enum(["health_path"]), "operation": enum(["literal"]), "value": {"type": "string", "maxLength": 100}}),
         ])
     rule = {"anyOf": variants_of_rule}
-    variants = []
+    programs_by_node = {}
     for node in nodes:
         programs = obj({agent["id"]: array(rule, maximum=12) for agent in node["team"]["agents"]})
-        variants.append(obj({"node_id": enum([node["id"]]), "program": programs}))
-    return strict("repair_programs", obj({"programs": array({"anyOf": variants}, len(nodes), len(nodes))}))
+        programs_by_node[node["id"]] = programs
+    return strict("repair_programs", obj({"programs": obj(programs_by_node)}))
 
 
 def mutation_schema():
@@ -50,10 +50,19 @@ def mutation_schema():
 def design_schema(allow_memory_reuse=False):
     text = {"type": "string", "maxLength": 500}
     worker = obj({"specialty": enum(OWNERSHIP), "tools": array(enum(sorted(TOOLS)), maximum=4), "instructions": text})
-    design = obj({"instructions": text, "workers": array(worker, 1, 4),
+    workers = array(worker, 1, 4)
+    design = obj({"instructions": text, "workers": workers,
                   "coordination": enum(["shared_evidence", "specialist_pipeline", "memory_first"]),
                   "review_policy": enum(["schema", "contract", "protected_fields"]),
                   "memory_policy": enum(["none", "inherit_verified"]), "cache_evidence": {"type": "boolean"},
                   "extra_review": {"type": "boolean"}, "procedure_source": enum(["compile", "reuse_memory"] if allow_memory_reuse else ["compile"])})
     mutation = obj({"name": text, "reason": text, "design": design})
     return strict("team_designs", obj({"observation": obj({"weakness": text, "lesson": text}), "mutations": array(mutation, 2, 2)}))
+
+
+def architect_schema():
+    return strict("objective_and_team", obj({
+        "approach": {"type": "string", "maxLength": 500},
+        "success_criteria": array({"type": "string", "maxLength": 120}, 1, 3),
+        "initial_specialties": array(enum(["general", "latency", "capacity", "routing"]), 1, 3),
+    }))

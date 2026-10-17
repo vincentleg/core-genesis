@@ -1,8 +1,10 @@
 """Independent replay of V2 programs, traces, development selection and every gate."""
 import hashlib
+import json
+import re
 from pathlib import Path
 
-from .suites import manifest
+from .suites import manifest, family
 from .team import validate_team, validate_program, execute, fingerprint, compare, aggregate
 from .assembly import assemble_design
 
@@ -19,6 +21,43 @@ def replay_v2(state):
     nodes = {node["id"]: node for node in state["nodes"]}
     if len(nodes) != len(state["nodes"]):
         raise ValueError("Duplicate lineage node")
+    sources = {state["id"]: state}
+    checked_lessons = set()
+
+    def verify_lesson(lesson):
+        identity = json.dumps(lesson, sort_keys=True)
+        if identity in checked_lessons:
+            return
+        source_id = lesson.get("source_experiment_id", "")
+        if not re.fullmatch(r"[0-9a-f-]+", source_id):
+            raise ValueError("Invalid memory provenance experiment")
+        if source_id not in sources:
+            sources[source_id] = json.loads((ROOT / "experiments" / (source_id + ".json")).read_text())
+        source = sources[source_id]
+        origin = next((n for n in source["nodes"] if n["id"] == lesson.get("source_node_id")), None)
+        if not origin or origin["status"] != "promoted":
+            raise ValueError("Memory source was never promoted")
+        source_suites, _ = manifest(int(source["suite_manifest"]["seed"]), source["requested_generations"])
+        cases = [case for case in source_suites["development"] if family(case) == lesson.get("family")]
+        if not cases or lesson.get("source_case_ids") != [case.id for case in cases]:
+            raise ValueError("Memory source cases do not match the development family")
+        rules = []
+        for case in cases:
+            record = execute(origin["team"], case, origin["memory_snapshot"])
+            evidence = [r for r in source["runs"] if r["node_id"] == origin["id"] and r["suite"] == "development" and r["case_id"] == case.id]
+            if not record["passed"] or not evidence or any(not r["passed"] or r["patch"] != record["patch"] for r in evidence):
+                raise ValueError("Memory source lacks reproducible passing development evidence")
+            for step in record["trace"]:
+                for operation in step.get("operations", []):
+                    rule = operation.get("rule")
+                    if operation["status"] == "applied" and rule and rule["operation"] != "literal" and rule not in rules:
+                        rules.append(rule)
+        if not rules or rules != lesson.get("rules") or lesson.get("status") != "development_verified":
+            raise ValueError("Memory rules differ from applied development evidence")
+        checked_lessons.add(identity)
+
+    for lesson in state.get("memory", []):
+        verify_lesson(lesson)
     for node in nodes.values():
         if node["status"] == "invalid":
             if any(record["node_id"] == node["id"] for record in state["runs"]):
@@ -47,6 +86,7 @@ def replay_v2(state):
         for lesson in node["memory_snapshot"]:
             if lesson.get("status") != "development_verified" or any(not case_id.startswith("development-") for case_id in lesson.get("source_case_ids", [])):
                 raise ValueError("Memory contains unverified or non-development evidence")
+            verify_lesson(lesson)
     seen = set()
     for record in state["runs"]:
         if record["id"] in seen:

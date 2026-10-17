@@ -31,6 +31,12 @@ def reference_team():
 
 
 class RuntimeTests(unittest.TestCase):
+    def test_keyed_worker_designs_have_unambiguous_derived_ids(self):
+        design = {"workers": {"latency": {"tools": ["inspect_contract"], "instructions": "Timing"}, "routing": {"tools": ["inspect_contract"], "instructions": "Readiness"}}, "coordination": "shared_evidence"}
+        team, _, _ = assemble_design(CONTROL, design, "Keyed")
+        self.assertEqual([a["id"] for a in team["agents"]], ["latency", "routing"])
+        self.assertEqual(sum(step["action"] == "inspect_contract" for step in team["workflow"]), 1)
+
     def test_compiler_free_reuse_cannot_invent_an_empty_or_partial_memory_bank(self):
         design = {"workers": [{"specialty": "general", "tools": ["inspect_contract"], "instructions": "Reuse rules"}], "coordination": "memory_first", "procedure_source": "reuse_memory"}
         for memory in ([], [{"family": "latency", "status": "development_verified", "rules": RULES[:2]}]):
@@ -274,6 +280,14 @@ class EvolutionTests(unittest.TestCase):
             self.assertLessEqual(max(sum(e["cycle"] == cycle for e in entries) for cycle in (0, 1)), 6)
             from core_genesis.replay import replay_v2
             self.assertEqual(replay_v2(state)["verified_decisions"], 3)
+            tampered_memory = copy.deepcopy(state)
+            tampered_memory["memory"][0]["rules"][0]["source"] = "config.workers"
+            with self.assertRaisesRegex(ValueError, "Memory rules differ"):
+                replay_v2(tampered_memory)
+            tampered_source = copy.deepcopy(state)
+            tampered_source["memory"][0]["source_node_id"] = "g0"
+            with self.assertRaisesRegex(ValueError, "never promoted"):
+                replay_v2(tampered_source)
             tampered = copy.deepcopy(state)
             tampered["runs"][0]["passed"] = not tampered["runs"][0]["passed"]
             with self.assertRaises(ValueError):
