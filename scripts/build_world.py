@@ -15,7 +15,7 @@ RECORDS = {"story": "20261017-123548-c377d6", "continuation": "20261017-123736-6
 def build():
     out = ROOT / "public"
     out.mkdir(exist_ok=True)
-    for name in ("world.html", "world.css", "world.js", "campus.js", "economy.js", "company-ui.js", "company.css", "testing-ui.js"):
+    for name in ("world.html", "world.css", "world.js", "campus.js", "economy.js", "company-ui.js", "company.css", "testing-ui.js", "genesis-run.js", "genesis.css"):
         shutil.copyfile(ROOT / "web" / name, out / ("index.html" if name == "world.html" else name))
     shutil.copytree(ROOT / "web/vendor", out / "vendor", dirs_exist_ok=True)
     evidence = out / "evidence"
@@ -51,6 +51,13 @@ def build():
     panels = sorted((ROOT / "company/audience").glob("*.json"))
     if panels:
         testing["audience"] = json.loads(panels[-1].read_text())
+    genesis_panel = ROOT / "company/audience-genesis.json"
+    if genesis_panel.exists():
+        testing["genesis_audience"] = json.loads(genesis_panel.read_text())
+    prior = ROOT / "mission-evidence/mission-20261017-142256-b15161.json"
+    if prior.exists():
+        record = json.loads(prior.read_text())["mission"]
+        (evidence / "prior-evolution.json").write_text(json.dumps({"mission_id": record["id"], "evolution": record["evolution"]}, separators=(",", ":")))
     (evidence / "product-testing.json").write_text(json.dumps(testing, separators=(",", ":")))
     (out / "capabilities.json").write_text(json.dumps({"live": False, "mode": "public_static_replay", "note": "Public experience has no inference endpoint. Run the Python server locally for budget-controlled live evolution."}))
     (out / "vercel.json").write_text(json.dumps({"version": 2, "cleanUrls": True, "headers": [{"source": "/(.*)", "headers": [{"key": "X-Content-Type-Options", "value": "nosniff"}, {"key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'"}]}]}))

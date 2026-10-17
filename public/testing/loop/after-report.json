@@ -1,0 +1,145 @@
+{
+ "target": "http://127.0.0.1:8090/",
+ "mode": "ACTUAL BROWSER EXECUTION (Playwright Chrome); deterministic scenarios, not human users",
+ "finished_at": "2026-10-17T22:30:48.955Z",
+ "passed": 4,
+ "total": 4,
+ "results": [
+  {
+   "id": "hero",
+   "role": "First-visit comprehension tester",
+   "viewport": {
+    "width": 1440,
+    "height": 900
+   },
+   "passed": true,
+   "steps": [
+    {
+     "task": "hero headline and CORE/GENESIS distinction visible",
+     "passed": true
+    },
+    {
+     "task": "WATCH GENESIS RUN primary action visible",
+     "passed": true
+    },
+    {
+     "task": "eight named AI employees rendered on campus",
+     "passed": true
+    }
+   ],
+   "console_errors": [],
+   "failed_requests": [],
+   "failure": null,
+   "latency_ms": 9197,
+   "screenshot": "genesis-hero.png"
+  },
+  {
+   "id": "replay",
+   "role": "One-click replay tester",
+   "viewport": {
+    "width": 1440,
+    "height": 900
+   },
+   "passed": true,
+   "steps": [
+    {
+     "task": "replay starts labeled VERIFIED MISSION REPLAY",
+     "passed": true
+    },
+    {
+     "task": "act 1 shows recorded mission contract",
+     "passed": true
+    },
+    {
+     "task": "skip to act 2",
+     "passed": true
+    },
+    {
+     "task": "skip to act 3",
+     "passed": true
+    },
+    {
+     "task": "skip to act 4",
+     "passed": true
+    },
+    {
+     "task": "skip to act 5",
+     "passed": true
+    },
+    {
+     "task": "skip to act 6",
+     "passed": true
+    },
+    {
+     "task": "skip to act 7",
+     "passed": true
+    },
+    {
+     "task": "final delivery shows pipeline awaiting CEO integration approval",
+     "passed": true
+    },
+    {
+     "task": "deliverable links resolve",
+     "passed": true
+    }
+   ],
+   "console_errors": [],
+   "failed_requests": [],
+   "failure": null,
+   "latency_ms": 8744,
+   "screenshot": "genesis-replay.png"
+  },
+  {
+   "id": "lab",
+   "role": "Evidence-seeking judge",
+   "viewport": {
+    "width": 1280,
+    "height": 860
+   },
+   "passed": true,
+   "steps": [
+    {
+     "task": "testing lab opens with real counts",
+     "passed": true
+    },
+    {
+     "task": "browser screenshots load",
+     "passed": true
+    },
+    {
+     "task": "pipeline modal opens",
+     "passed": true
+    }
+   ],
+   "console_errors": [],
+   "failed_requests": [],
+   "failure": null,
+   "latency_ms": 5228,
+   "screenshot": "genesis-lab.png"
+  },
+  {
+   "id": "mobile",
+   "role": "Small-screen visitor",
+   "viewport": {
+    "width": 390,
+    "height": 844
+   },
+   "passed": true,
+   "steps": [
+    {
+     "task": "hero readable on phone without horizontal scroll",
+     "passed": true
+    },
+    {
+     "task": "agent profile opens from name tag",
+     "passed": true
+    }
+   ],
+   "console_errors": [],
+   "failed_requests": [],
+   "failure": null,
+   "latency_ms": 4030,
+   "screenshot": "genesis-mobile.png"
+  }
+ ]
+}

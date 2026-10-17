@@ -106,6 +106,7 @@ function showEvolution(){
  if(companyControl?.state.mission.evolution)$('context-content').insertAdjacentHTML('beforeend','<button class="secondary" data-company="evolution">Real CORE mission · verified workflow improvement ↗</button>');
 }
 function showAgent(actor){
+ if(actor.crew&&window.GENESIS_RUN)return window.GENESIS_RUN.agent(actor.role);
  const latest=actor.lastAction;
  if(actor.company||latest?.company){
   const missionState=companyControl?.state.mission;
@@ -219,6 +220,7 @@ async function pollLive(){
 function ready(){$('loading').classList.add('hidden');}
 campus=createCampus($('world'),{onDepartment:showDepartment,onAgent:showAgent,onReady:ready,onError:()=>{$('loading').innerHTML='<h2>WebGL is unavailable.</h2><p>The company remains accessible through the department buttons.</p><button id="fallback-enter" class="primary">Explore company evidence</button>';setTimeout(()=>{$('fallback-enter').onclick=ready;},0);}});
 companyControl=mountCompany({campus:()=>campus,openContext:context,showEvidence:evidence,escape:esc,capabilities:()=>capabilities});
+window.GENESIS={campus:()=>campus,context,evidence,showDepartment,capabilities:()=>capabilities,showAgent:a=>showAgent(a)};window.dispatchEvent(new Event('genesis-ready'));
 const dock=$('department-dock');dock.innerHTML=DEPARTMENTS.map(d=>'<button data-dock="'+d.id+'" style="--color:'+d.color+'"><span class="dock-icon">'+d.icon+'</span>'+d.short+'</button>').join('');
 document.addEventListener('click',event=>{
  const dept=event.target.closest('[data-dock]');if(dept)showDepartment(dept.dataset.dock);
@@ -232,7 +234,7 @@ document.addEventListener('click',event=>{
 });
 document.addEventListener('input',event=>{if(event.target.id==='scenario-budget')recomputeProcurement();});
 document.addEventListener('change',event=>{if(event.target.id==='procurement-priority')recomputeProcurement();});
-$('play').onclick=play;$('next').onclick=()=>{pause();advance();};$('watch').onclick=()=>showDepartment('hq');
+$('play').onclick=play;$('next').onclick=()=>{pause();advance();};$('give-mission').onclick=()=>showDepartment('hq');
 $('evidence-button').onclick=()=>showEvidence();$('close-evidence').onclick=()=>$('evidence-modal').close();
 $('close-context').onclick=()=>{$('context').classList.add('hidden');};
 $('home').onclick=()=>{campus?.reset();$('context').classList.add('hidden');$('welcome').classList.remove('exploring');};

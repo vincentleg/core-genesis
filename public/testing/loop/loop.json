@@ -1,0 +1,42 @@
+{
+ "id": "loop-genesis-mobile-agent-tags",
+ "product": "CORE GENESIS frontend",
+ "detected_by": "scripts/browser_genesis.cjs (real Playwright Chrome, Small-screen visitor scenario)",
+ "before": {
+  "passed": 3,
+  "total": 4,
+  "finished_at": "2026-10-17T22:29:02.873Z",
+  "failing_step": [
+   {
+    "task": "agent profile opens from name tag",
+    "passed": false,
+    "error": "Error: agent"
+   }
+  ],
+  "screenshot": "loop/before-mobile.png"
+ },
+ "issue": "At 390px all eight AI-employee name tags render on top of each other at HQ; clicking Nova opened a different agent, so agent profiles were not reliably reachable.",
+ "engineering_task": "Make every agent tag independently clickable on small screens without changing recorded activity.",
+ "implemented_change": [
+  "web/campus.js: agents spread across eight evenly spaced slots per department (was five, so slots collided)",
+  "web/genesis-run.js: per-frame tag layout that stacks overlapping tags vertically"
+ ],
+ "retest": {
+  "passed": 4,
+  "total": 4,
+  "finished_at": "2026-10-17T22:30:48.955Z",
+  "mobile_steps": [
+   {
+    "task": "hero readable on phone without horizontal scroll",
+    "passed": true
+   },
+   {
+    "task": "agent profile opens from name tag",
+    "passed": true
+   }
+  ],
+  "screenshot": "loop/after-mobile.png"
+ },
+ "outcome": "Browser scenarios 3/4 \u2192 4/4; the failing mobile agent-profile step now passes.",
+ "honesty": "Issue detected by an automated browser scenario and fixed by the Claude Code engineering session in this repository (not by a GENESIS runtime agent). Code change and retest are real."
+}

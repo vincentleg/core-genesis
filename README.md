@@ -1,4 +1,28 @@
-# CORE GENESIS — THE LIVING COMPANY
+# CORE GENESIS — THE COMPANY THAT BUILDS CORE
+
+**CORE is the world we're building. GENESIS is the AI company building it — and learning to run itself better.**
+
+**▶ Watch GENESIS run (one click, verified mission replay): https://core-genesis-living.vercel.app** (append `?run` to autoplay)
+
+## Final hackathon sprint (Version N+1 track) — what is real
+
+| Claim | Evidence |
+|---|---|
+| **WATCH GENESIS RUN** — seven-act replay (mission → delegation → build → beta lab → evolution → governance → delivery), ~100 s or 60 s mode, play/pause, restart, skip act, camera follow. Every caption and number is read from recorded evidence; zero inference on the public site. | `web/genesis-run.js`, `public/evidence/*.json` |
+| Eight named AI employees (Atlas, Nova, Forge, Sentinel, Echo, Ledger, Pulse, Darwin) are interface names mapped to the recorded backend roles; they move between departments only on replay steps derived from recorded handoffs. Click one for its role, task and recorded events. | `CREW` in `web/genesis-run.js` |
+| Mission `mission-20261017-145411-2e83ef`: Research read CORE commit `c016d73` (8 excerpts), 3/3 citation sets verified, CORE Local Solutions prototype built, **7 tests / 0 failures**, 10 Nemotron requests, ~$0.0022. | `mission-evidence/` |
+| **Campaign A (CORE Local Solutions): 100/100 synthetic perspectives** (5 from the original mission panel + 95 run in this sprint), 100 distinct outputs, 20 bounded batches. | `public/evidence/product-testing.json` → `audience` |
+| **Campaign B (CORE GENESIS): 100/100 synthetic perspectives**, 100 distinct outputs, 20 bounded batches. Each reads a structured description of the site (it does not browse). | `product-testing.json` → `genesis_audience`, `scripts/run_campaigns.py` |
+| Real browser tests: CORE Local Solutions **3/3** (earlier run); CORE GENESIS website **4/4** (hero, full replay + deliverable links, testing lab + pipeline, mobile agent profile). | `public/testing/`, `scripts/browser_genesis.cjs` |
+| **Closed loop**: GENESIS mobile scenario failed (agent tags overlapped; wrong profile opened) → code fixed → retest **3/4 → 4/4**. Fixed by the Claude Code engineering session, not by a GENESIS runtime agent. | `public/testing/loop/loop.json` |
+| **Evolution**: earlier mission `b15161` promoted citation-preflight V1 (**4/6 → 6/6 held-out**). Mission `2e83ef` reused V1; its new candidates scored 6/6 vs 6/6 → **rolled back, no gain**. | `public/evidence/prior-evolution.json`, `company-mission.json` |
+| CORE pipeline ends at **PROTOTYPE BUILT — AWAITING CORE INTEGRATION APPROVAL**. The original CORE repo is unmodified. | Topbar → CORE pipeline |
+
+Synthetic perspectives are simulated by one model (NVIDIA Nemotron on Crusoe) in independent contexts — **not real users**. The campaigns cost ~$0.015 estimated, under the project's $2 hard cap.
+
+Reproduce: `python3 scripts/run_campaigns.py` (needs a local `CRUSOE_API_KEY`), `python3 scripts/build_world.py`, `python3 -m http.server 8090 --directory public`, `node scripts/browser_genesis.cjs`.
+
+---
 
 **The AI company that builds itself, runs itself, and gets better.**
 

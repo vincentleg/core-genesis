@@ -13,13 +13,14 @@ export const DEPARTMENTS=[
 ];
 
 export function createCampus(container,{onDepartment,onAgent,onReady,onError}={}){
+ let onFrame=null;
  let renderer;
  try{renderer=new T.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});}catch(error){onError?.(error);return null;}
  renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.setSize(innerWidth,innerHeight);
  renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;
  renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.03;
  container.appendChild(renderer.domElement);
- const scene=new T.Scene();scene.background=new T.Color('#d6ded6');scene.fog=new T.Fog('#d6ded6',65,135);
+ const scene=new T.Scene();scene.background=new T.Color('#d4d1ca');scene.fog=new T.Fog('#d4d1ca',65,135);
  const camera=new T.OrthographicCamera(-25,25,20,-20,.1,220);
  let azimuth=.76,elevation=.72,zoom=1,targetZoom=1;
  const focus=new T.Vector3(-1,0,0),desiredFocus=focus.clone();
@@ -282,11 +283,44 @@ export function createCampus(container,{onDepartment,onAgent,onReady,onError}={}
    label.element.style.display=projected.z>1?'none':'';
    label.element.style.opacity=lastSelection&&lastSelection!==label.element.dataset.department?'.7':'1';
   }
+  crewFrame(now,time);onFrame?.();
   renderer.render(scene,camera);if(++frameCount===2)onReady?.();
  }
  requestAnimationFrame(frame);
+ // Named AI employees: premium low-poly androids. Movement happens only when the replay dispatches a recorded event.
+ const crew=new Map(),crewMats={};
+ function crewAgent(name,department,color,slot=0){
+  if(crew.has(name))return crew.get(name);
+  const d=DEPARTMENTS.find(item=>item.id===department)||DEPARTMENTS[0],g=new T.Group(),accent=mat(color,{roughness:.35,metalness:.35});
+  const shell=crewMats.shell||(crewMats.shell=mat('#ece9e1',{roughness:.45,metalness:.2})),dark=crewMats.dark||(crewMats.dark=mat('#2f3b38',{roughness:.3,metalness:.5}));
+  mesh(new T.CylinderGeometry(.07,.11,.55,8),dark,-.1,.3,0,g);mesh(new T.CylinderGeometry(.07,.11,.55,8),dark,.1,.3,0,g);
+  mesh(new T.CylinderGeometry(.24,.17,.62,8),shell,0,.86,0,g);
+  mesh(new T.CylinderGeometry(.255,.255,.07,8),accent,0,1.08,0,g);
+  mesh(new T.IcosahedronGeometry(.17,1),shell,0,1.37,0,g);
+  box(.22,.06,.05,accent,0,1.39,.15,g);
+  const packet=mesh(new T.OctahedronGeometry(.13),mat(color,{emissive:color,emissiveIntensity:.6,roughness:.2}),0,1.85,0,g);packet.visible=false;
+  const halo=ring(.42,.025,accent,0,.04,0,g);
+  const angle=slot*Math.PI/4+.4;g.position.set(d.x+Math.cos(angle)*2.6,0,d.z+Math.sin(angle)*2.6);g.scale.setScalar(1.15);scene.add(g);
+  g.traverse(o=>{if(o.isMesh)o.castShadow=true;});
+  const hit=sphere(.7,new T.MeshBasicMaterial({visible:false}),0,.9,0,g);hit.userData.actor=name;actorHits.push(hit);
+  const entry={group:g,role:name,home:department,company:true,crew:true,packet,halo,origin:g.position.clone(),destination:g.position.clone(),moving:false,started:0,duration:2200,lastAction:null,state:'idle'};
+  actors.set(name,entry);crew.set(name,entry);return entry;
+ }
+ function moveCrew(name,department,{carry=false,duration=2200,slot=0}={}){
+  const a=crew.get(name),d=DEPARTMENTS.find(item=>item.id===department);if(!a||!d)return;
+  const angle=slot*Math.PI/4+.4;a.origin.copy(a.group.position);a.destination.set(d.x+Math.cos(angle)*2.6,0,d.z+Math.sin(angle)*2.6);
+  a.started=performance.now();a.duration=duration;a.moving=true;a.packet.visible=carry;a.state='moving';
+ }
+ function crewFrame(now,time){
+  for(const a of crew.values()){
+   if(a.moving){const t=Math.min(1,(now-a.started)/a.duration),s=t*t*(3-2*t);a.group.position.lerpVectors(a.origin,a.destination,s);a.group.position.y=Math.sin(t*Math.PI)*.35;a.group.rotation.y=Math.atan2(a.destination.x-a.origin.x,a.destination.z-a.origin.z);if(t>=1){a.moving=false;a.packet.visible=false;a.group.position.y=0;}}
+   a.packet.rotation.y=time*2;a.halo.material.emissive?.set(a.state==='working'||a.state==='reviewing'?'#c9a24f':'#000000');
+  }
+ }
+ const focusOn=(id,z=1.25)=>{const d=DEPARTMENTS.find(item=>item.id===id);if(d){desiredFocus.set(d.x*.75,0,d.z*.75);targetZoom=z;}};
+ const project=v=>{const p=v.clone();p.project(camera);return {x:(p.x+1)/2*innerWidth,y:(-p.y+1)/2*innerHeight,visible:p.z<1};};
  let policyHash='';
- return {configure,showEvent,selectDepartment,actors,renderer,applyPolicy:(policy,version,promoted=false)=>{
+ return {configure,showEvent,selectDepartment,actors,renderer,crewAgent,moveCrew,crew,focusOn,project,setFrameHook:fn=>{onFrame=fn;},applyPolicy:(policy,version,promoted=false)=>{
   const hash=JSON.stringify(policy);if(hash!==policyHash){clearGroup(policyGroup);policyHash=hash;
    ['known_sources','line_bounds','exact_quotes'].forEach((key,index)=>{
     const enabled=policy[key];cylinder(.16,enabled?.8:.18,enabled?gold:cream,-7+index*.6,enabled?.8:.49,11.1,policyGroup);
