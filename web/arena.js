@@ -96,7 +96,7 @@ function renderGraph() {
     const status=node.id===state.active_node_id?'ACTIVE / '+node.status.replaceAll('_',' '):node.status.replaceAll('_',' ');
     markup += '<g class="graph-node ' + esc(node.status) + (node.id===selection?' selected':'') + '" data-node="' + esc(node.id) + '" role="button" tabindex="0" aria-label="Inspect ' + esc(node.id+' '+node.team.name) + '" transform="translate(' + p.x + ',' + p.y + ')">';
     markup += '<rect class="main-node" x="0" y="0" width="208" height="86" rx="6"/>';
-    markup += '<text class="node-id" x="13" y="20">' + esc(node.id.toUpperCase()) + '<tspan x="195" text-anchor="end">' + node.team.agents.length + ' AGENTS</tspan></text>';
+    markup += '<text class="node-id" x="13" y="20">' + esc(node.id.toUpperCase()) + '<tspan x="195" text-anchor="end">' + node.team.agents.length + ' WORKERS</tspan></text>';
     markup += '<text class="node-name" x="13" y="41">' + esc(name) + '</text>';
     markup += '<text class="node-score" x="13" y="60">DEV ' + fraction(dev) + ' · VAL ' + fraction(validation) + '</text>';
     markup += '<text class="node-status" x="13" y="75">' + esc(status.toUpperCase()) + '</text></g>';
@@ -145,7 +145,9 @@ function renderInspector() {
     if(decision)content+='<p class="program-note">'+esc(decision.reason)+'</p>';
   } else if(inspectorTab==='team') {
     content=node.team.agents.map(agent=>'<div class="team-member"><span class="member-icon">'+({general:'◇',latency:'ϟ',capacity:'▦',routing:'⌘',verifier:'◎'}[agent.specialty]||'◇')+'</span><div><h4>'+esc(agent.id)+' / '+esc(agent.specialty)+'</h4><p>'+esc(agent.instructions)+'</p><div class="chip-row">'+agent.tools.map(tool=>'<span class="chip">'+esc(tool)+'</span>').join('')+'</div></div></div>').join('');
+    if(node.team.workflow.some(step=>step.agent==='controller'))content+='<div class="team-member"><span class="member-icon">◎</span><div><h4>controller / fixed verifier</h4><p>Reviews and commits transactions. Cannot retrieve evidence, own repair fields, or disable independent evaluation.</p><span class="chip">IMMUTABLE SAFETY BOUNDARY</span></div></div>';
     content+='<div class="workflow-label">ACTUAL EXECUTION ORDER</div><div class="workflow-list">'+node.team.workflow.map((step,i)=>'<span class="workflow-step"><b>'+String(i+1).padStart(2,'0')+'</b>'+esc(step.agent)+' → '+esc(step.action)+'</span>').join('')+'</div>';
+    if(node.configuration_normalizations?.length)content+='<p class="program-note" style="margin-top:15px">'+node.configuration_normalizations.map(esc).join('<br>')+'</p>';
     content+='<p class="program-note" style="margin-top:15px">Review: '+esc(node.team.review_policy)+' · Memory: '+esc(node.team.memory_policy)+' · Evidence cache: '+(node.team.cache_evidence?'enabled':'disabled')+'. Specialized agents can write only their owned fields.</p>';
   } else if(inspectorTab==='program') {
     content='<p class="program-note">A model-generated declarative procedure, executed locally. References read only retrieved evidence. No generated code, shell, imports or network operations.</p><pre class="code">'+json(node.team.program)+'</pre><p class="program-note">Compiler request: '+esc(node.compilation_request_id||'Inherited from a verified ancestor')+'</p>';

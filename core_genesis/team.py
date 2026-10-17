@@ -22,6 +22,8 @@ CONTROL = {"name": "Log-first control", "instructions": "Infer repairs from symp
            "agents": [{"id": "executor", "specialty": "general", "tools": ["read_logs"], "instructions": "Propose conservative symptom-based defaults."}],
            "workflow": [{"agent": "executor", "action": action} for action in ("read_logs", "apply_rules", "commit")],
            "review_policy": "schema", "memory_policy": "none", "cache_evidence": False, "program": {"executor": []}}
+COORDINATOR = {"id": "controller", "specialty": "verifier", "tools": [],
+               "instructions": "Fixed transaction coordinator; review and commit only, no repair writes or evidence capabilities."}
 
 
 def fingerprint(value):
@@ -49,7 +51,7 @@ def validate_team(raw, program_required=True):
         specialty = agent.get("specialty")
         tools = agent.get("tools", [])
         instructions = agent.get("instructions", "")
-        if not isinstance(agent_id, str) or not agent_id or len(agent_id) > 32 or not all(c.isalnum() or c == "_" for c in agent_id) or agent_id in ids:
+        if not isinstance(agent_id, str) or not agent_id or len(agent_id) > 32 or not all(c.isalnum() or c == "_" for c in agent_id) or agent_id in ids or agent_id == "controller":
             raise ValueError("Agent IDs must be unique short identifiers")
         if specialty not in OWNERSHIP or not isinstance(tools, list) or len(tools) > 4 or any(t not in TOOLS for t in tools):
             raise ValueError("Unknown specialization or tool")
@@ -62,9 +64,11 @@ def validate_team(raw, program_required=True):
         raise ValueError("Workflow requires 1–24 explicit steps")
     result["workflow"] = []
     for step in workflow:
-        if not isinstance(step, dict) or step.get("agent") not in ids or step.get("action") not in ACTIONS:
+        if not isinstance(step, dict) or step.get("agent") not in ids | {"controller"} or step.get("action") not in ACTIONS:
             raise ValueError("Unknown workflow agent/action")
-        owner = next(a for a in result["agents"] if a["id"] == step["agent"])
+        owner = COORDINATOR if step["agent"] == "controller" else next(a for a in result["agents"] if a["id"] == step["agent"])
+        if step["agent"] == "controller" and step["action"] not in {"review", "commit"}:
+            raise ValueError("Fixed controller may only review or commit")
         if step["action"] in TOOLS and step["action"] not in owner["tools"]:
             raise ValueError("Workflow tool exceeds agent capabilities")
         result["workflow"].append({"agent": step["agent"], "action": step["action"]})
@@ -80,6 +84,38 @@ def validate_team(raw, program_required=True):
         raise ValueError("cache_evidence must be boolean")
     result["program"] = validate_program(raw.get("program", {}), result) if program_required else {}
     return result
+
+
+def assemble_team(raw):
+    """Bind safe orchestration shorthand while preserving the capability boundary.
+
+    The immutable controller can transact but cannot write repairs or retrieve evidence.
+    A removed generic executor's apply_rules step dispatches the declared specialists;
+    it never grants a tool, writes a rule or invents a specialist.
+    """
+    team = copy.deepcopy(raw)
+    notes = []
+    agents = team.get("agents", [])
+    if not isinstance(agents, list) or any(not isinstance(agent, dict) for agent in agents):
+        return validate_team(team, program_required=False), notes
+    ids = {agent.get("id") for agent in agents}
+    steps = []
+    workflow = team.get("workflow", [])
+    if not isinstance(workflow, list):
+        return validate_team(team, program_required=False), notes
+    for step in workflow:
+        if isinstance(step, dict) and step.get("agent") == "executor" and "executor" not in ids:
+            if step.get("action") in {"review", "commit"}:
+                steps.append({"agent": "controller", "action": step["action"]})
+                notes.append("Bound removed generic executor's " + step["action"] + " to the fixed transaction controller")
+                continue
+            if step.get("action") == "apply_rules":
+                steps.extend({"agent": agent["id"], "action": "apply_rules"} for agent in agents if agent.get("specialty") != "verifier")
+                notes.append("Expanded generic apply_rules into declared specialist dispatch; field ownership remains enforced")
+                continue
+        steps.append(step)
+    team["workflow"] = steps
+    return validate_team(team, program_required=False), notes
 
 
 def validate_program(program, team):
@@ -170,6 +206,7 @@ def execute(team, case, memory=()):
     start = time.perf_counter()
     board, staged, committed, trace = {}, {}, {}, []
     agents = {a["id"]: a for a in team["agents"]}
+    agents["controller"] = COORDINATOR
     executed_tools = rule_steps = memory_hits = 0
     rejected = False
     for index, step in enumerate(team["workflow"]):
@@ -188,7 +225,7 @@ def execute(team, case, memory=()):
                 elif action == "inspect_contract":
                     board[board_key] = dict(case.contract)
                 else:
-                    board[board_key] = [copy.deepcopy(m) for m in memory if m.get("family") == family(case)] if team["memory_policy"] == "inherit_verified" else []
+                    board[board_key] = [copy.deepcopy(m) for m in memory if m.get("family") == family(case) and m.get("status") == "development_verified"] if team["memory_policy"] == "inherit_verified" else []
                     memory_hits += len(board[board_key])
                 entry["evidence"] = copy.deepcopy(board[board_key])
         elif action == "apply_rules":

@@ -8,7 +8,7 @@ from core_genesis.budget import RequestBudget
 from core_genesis.crusoe import DEFAULT_MODEL
 from core_genesis.evolution import EvolutionEngine
 from core_genesis.suites import generate, manifest, family
-from core_genesis.team import CONTROL, execute, validate_team, validate_program, compare, aggregate, normalize_program
+from core_genesis.team import CONTROL, execute, validate_team, validate_program, compare, aggregate, normalize_program, assemble_team
 
 
 RULES = [
@@ -29,6 +29,30 @@ def reference_team():
 
 
 class RuntimeTests(unittest.TestCase):
+    def test_fixed_controller_keeps_specialist_workflows_valid_without_new_authority(self):
+        raw = reference_team()
+        raw["agents"] = [{"id": "latency", "specialty": "latency", "tools": ["inspect_config", "inspect_contract"], "instructions": "Latency only"}]
+        raw["workflow"] = [{"agent": "latency", "action": "inspect_config"}, {"agent": "latency", "action": "inspect_contract"},
+                           {"agent": "executor", "action": "apply_rules"}, {"agent": "executor", "action": "commit"}]
+        team, notes = assemble_team(raw)
+        team["program"] = {"latency": RULES}
+        self.assertEqual(len(notes), 2)
+        self.assertEqual(team["workflow"][-1]["agent"], "controller")
+        self.assertTrue(execute(team, generate(1, "test")[0])["passed"])
+        self.assertFalse(execute(team, generate(1, "test")[1])["passed"])
+        raw["workflow"] = [{"agent": "controller", "action": "inspect_contract"}, {"agent": "latency", "action": "apply_rules"}, {"agent": "controller", "action": "commit"}]
+        with self.assertRaises(ValueError):
+            assemble_team(raw)
+
+    def test_unverified_memory_is_never_recalled(self):
+        team = reference_team()
+        team["program"] = {}
+        team["memory_policy"] = "inherit_verified"
+        team["workflow"].insert(0, {"agent": "executor", "action": "recall_memory"})
+        result = execute(team, generate(1, "test")[0], [{"family": "latency", "rules": RULES, "status": "proposed"}])
+        self.assertEqual(result["metrics"]["memory_hits"], 0)
+        self.assertFalse(result["passed"])
+
     def test_unambiguous_json_shapes_normalize_without_new_capabilities(self):
         program, notes = normalize_program({"agent_id": [{"target": "retries", "operation": "literal", "source": "3"}]}, CONTROL)
         self.assertEqual(program, {"executor": [{"target": "retries", "operation": "literal", "value": 3}]})
@@ -169,6 +193,7 @@ class EvolutionTests(unittest.TestCase):
             self.assertEqual([d["action"] for d in state["decisions"]], ["promote"] * 3)
             self.assertEqual([d["kind"] for d in state["decisions"]], ["success_gain", "success_gain", "efficiency_gain"])
             self.assertEqual(state["active_node_id"], "g3a")
+            self.assertEqual(engine.node("g0")["team"]["instructions"], "Unit-test objective plan")
             self.assertEqual(engine.node("g2a")["parent_id"], "g1a")
             self.assertEqual(engine.node("g3a")["parent_id"], "g2a")
             self.assertTrue(engine.node("g2a")["memory_snapshot"])
@@ -197,6 +222,47 @@ class EvolutionTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     engine.start(**parameters)
             self.assertFalse(client.prompts)
+
+    def test_invalid_sibling_does_not_abort_valid_competition(self):
+        class FaultTransport(GenerationTransport):
+            def chat(self, messages, **kwargs):
+                response = super().chat(messages, **kwargs)
+                if "Scientist" in messages[0]["content"]:
+                    content = json.loads(response["choices"][0]["message"]["content"])
+                    content["mutations"][1]["changes"]["workflow"].append({"agent": "nonexistent", "action": "commit"})
+                    response["choices"][0]["message"]["content"] = json.dumps(content)
+                return response
+        with tempfile.TemporaryDirectory() as directory:
+            engine = EvolutionEngine(directory, FaultTransport(), fresh=True, budget=RequestBudget(Path(directory) / ".budget", history=directory))
+            engine.start(generations=1, seed=123)
+            engine.run()
+            self.assertEqual(engine.state["status"], "complete")
+            self.assertEqual(engine.node("g1b")["status"], "invalid")
+            self.assertFalse(any(r["node_id"] == "g1b" for r in engine.state["runs"]))
+            self.assertEqual(engine.state["decisions"][0]["action"], "promote")
+            from core_genesis.replay import replay_v2
+            self.assertEqual(replay_v2(engine.snapshot())["verified_decisions"], 1)
+
+    def test_all_invalid_candidates_roll_back_without_paid_compilation(self):
+        class FaultTransport(GenerationTransport):
+            def chat(self, messages, **kwargs):
+                response = super().chat(messages, **kwargs)
+                if "Scientist" in messages[0]["content"]:
+                    content = json.loads(response["choices"][0]["message"]["content"])
+                    for mutation in content["mutations"]:
+                        mutation["changes"]["workflow"].append({"agent": "nonexistent", "action": "commit"})
+                    response["choices"][0]["message"]["content"] = json.dumps(content)
+                return response
+        with tempfile.TemporaryDirectory() as directory:
+            engine = EvolutionEngine(directory, FaultTransport(), fresh=True, budget=RequestBudget(Path(directory) / ".budget", history=directory))
+            engine.start(generations=1, seed=123)
+            engine.run()
+            self.assertEqual(engine.state["status"], "complete")
+            self.assertEqual(engine.state["active_node_id"], "g0")
+            self.assertEqual(engine.state["inference_calls"], 3)
+            self.assertEqual(engine.state["decisions"][0]["kind"], "invalid_mutations")
+            from core_genesis.replay import replay_v2
+            self.assertEqual(replay_v2(engine.snapshot())["verified_decisions"], 1)
 
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@ from .budget import BudgetError
 from .crusoe import CrusoeClient
 from .engine import Engine, ROOT, parse_json
 from .suites import manifest, VERSION
-from .team import CONTROL, OWNERSHIP, TOOLS, ACTIONS, OPERATIONS, REFERENCES, validate_team, normalize_program, aggregate, compare, mutation_diff, fingerprint, execute
+from .team import CONTROL, OWNERSHIP, TOOLS, ACTIONS, OPERATIONS, REFERENCES, validate_team, assemble_team, normalize_program, aggregate, compare, mutation_diff, fingerprint, execute
 from .schemas import program_schema, mutation_schema
 
 DEFAULT_OBJECTIVE = "Restore service availability while respecting latency, retry, connection-capacity and readiness contracts. Preserve unrelated worker settings."
@@ -19,6 +19,12 @@ CRITERIA = [
     {"id": "efficiency", "description": "After full correctness, prefer less actual tool/rule/review work", "metric": "work_units"},
 ]
 TEAM_FIELDS = {"name", "instructions", "agents", "workflow", "review_policy", "memory_policy", "cache_evidence"}
+CONTRACT_SEMANTICS = [
+    "Latency: upstream_p99_ms < timeout_ms <= deadline_ms; 0 <= retries <= max_retries. Deadline is an upper bound, not an offset.",
+    "Capacity: concurrent_queries <= pool_size <= connection_budget. Workers are unrelated and MUST remain unchanged; they are not part of the connection budget.",
+    "Routing: health_path must equal registered_health_path AND port must equal listening_port.",
+    "These are generic task definitions, not instance answers. Actual config/contract values remain accessible only through granted runtime tools."
+]
 
 
 def brief(records):
@@ -125,16 +131,18 @@ class EvolutionEngine(Engine):
     def synthesis_context(self, parent, development):
         # Explicit projection: never serialize full state or held-out records here.
         return {"objective": self.state["objective"], "criteria": self.state["criteria"], "parent_team": parent["team"],
+                "contract_semantics": CONTRACT_SEMANTICS,
                 "development_evidence": brief(development),
                 "development_fixtures": [case.context(TOOLS) for case in self.suites["development"]],
-                "development_memory": parent.get("memory_earned", parent["memory_snapshot"])}
+                "development_memory": parent.get("memory_earned", parent["memory_snapshot"]),
+                "prior_proposal_errors": [{"reason": node["invalid_reason"], "phase": node["invalid_phase"]} for node in self.state["nodes"] if node.get("status") == "invalid"][-4:]}
 
     def propose(self, parent, generation, development):
         response, metrics = self.reason("Observer + Scientist", json.dumps({
             "task": "FIRST identify an actual weakness from development evidence. THEN propose TWO competing structured team mutations. Every mutation must be GENERAL, never hardcode incident answers. At full correctness optimize executed workflow work. Keep names/reasons/instructions SHORT. Return {observation:{weakness,lesson},mutations:[{name,reason,changes:{...team_fields...}},{name,reason,changes:{...team_fields...}}]}. changes replaces selected top-level fields; unspecified fields inherit parent. Allowed changes: instructions, agents with specialization/tools, workflow, review_policy, memory_policy, cache_evidence. Do not include programs; Executor compiles next. If changing agent IDs also change workflow. Use explicit {agent,action} steps.",
             **self.synthesis_context(parent, development),
             "allowed": {"specialties": list(OWNERSHIP), "tools": sorted(TOOLS), "actions": sorted(ACTIONS), "review_policy": ["schema", "contract", "protected_fields"], "memory_policy": ["none", "inherit_verified"]},
-            "bounds": "1–4 agents with UNIQUE IDs, e.g. latency, capacity, routing; never give two specialists the same executor ID. 1–24 workflow steps; include apply_rules and commit. Every tool step must be granted to its agent. Retrieve evidence before rules reference it. Specialized agents own only their field family. General owns all fields. Review always runs at commit. recall_memory retrieves development-verified rules; inheritance requires that tool and inherit_verified policy."}), response_format=mutation_schema())
+            "bounds": "1–4 workers with UNIQUE IDs, e.g. latency, capacity, routing; never give two specialists the same executor ID. The fixed controller is NOT a worker and may review/commit only. Use agent controller for commit/review if generic executor is removed. Every specialist needs its own apply_rules step. 1–24 steps. Every tool step must be granted to its worker. Retrieve evidence before references. Specialized workers own only their field family. General owns all fields. Review always runs at commit. recall_memory retrieves development-verified rules; requires the tool and inherit_verified policy."}), response_format=mutation_schema())
         observation, mutations = response.get("observation"), response.get("mutations")
         if not isinstance(observation, dict) or not isinstance(observation.get("weakness"), str) or not isinstance(mutations, list) or len(mutations) != 2:
             raise ValueError("Observer/Scientist must provide an observation and two mutations")
@@ -146,14 +154,16 @@ class EvolutionEngine(Engine):
             raw = {**copy.deepcopy(parent["team"]), **mutation["changes"], "name": mutation.get("name", "Candidate")}
             invalid_reason = None
             try:
-                team = validate_team(raw, program_required=False)
+                team, configuration_notes = assemble_team(raw)
             except ValueError as exc:
                 team = raw
                 team["program"] = {}
                 invalid_reason = str(exc)
+                configuration_notes = []
             node = self.add_node("g%d%s" % (generation, "ab"[index]), generation, team, parent["id"], str(mutation.get("reason", observation["weakness"]))[:1200], parent.get("memory_earned", parent["memory_snapshot"]))
             node["observation"] = observation
             node["synthesis_request_id"] = metrics["request_id"]
+            node["configuration_normalizations"] = configuration_notes
             if invalid_reason:
                 node.update(status="invalid", invalid_reason=invalid_reason, invalid_phase="configuration")
                 self.event("Verifier", "Candidate configuration rejected: " + invalid_reason, node_id=node["id"], generation=generation)
@@ -171,6 +181,7 @@ class EvolutionEngine(Engine):
         answer, metrics = self.reason("Executor", json.dumps({
             "task": "Compile a small GENERAL repair procedure for EACH team. Fill the provided response_skeleton with rules. Use the ACTUAL node IDs and ACTUAL agent IDs, never the literal placeholder agent_id. Programs execute locally on unseen incidents: no per-incident answers. Agents may apply rules only for fields owned by their specialty. Use exact grammar. Reference config/contract only after workflow retrieves it. Initial log-only team may use symptom-based literal defaults; later teams should prefer general references. Missing evidence blocks rules. Do not change teams. Keep programs minimal; skip fields absent from incident schema. A literal uses value (integer/string), NOT source. A reference uses source.",
             "teams": teams, "development_fixtures": context, "development_feedback": brief(development) if not initial else [],
+            "contract_semantics": CONTRACT_SEMANTICS,
             "response_skeleton": {"programs": [{"node_id": node["id"], "program": {agent["id"]: [] for agent in node["team"]["agents"]}} for node in nodes]},
             "grammar": {"targets": sorted(OWNERSHIP["general"]), "operations": sorted(OPERATIONS), "sources": sorted(REFERENCES),
                         "examples": [{"target": "timeout_ms", "operation": "increment", "source": "contract.upstream_p99_ms"},
@@ -222,12 +233,22 @@ class EvolutionEngine(Engine):
     def run(self):
         try:
             self.client = self.client or CrusoeClient(max_retries=0, timeout=30)
-            architecture, _ = self.reason("Architect", json.dumps({"task": "Translate the scoped incident-remediation objective into a concise measurable plan. Return {approach,success_criteria:[short strings]}. Fixed safety and promotion criteria cannot be relaxed. Initial control sees only logs. Later mutations change team and workflow. Do not invent results.", "objective": self.state["objective"], "mandatory_criteria": CRITERIA}), max_tokens=350)
+            architecture, _ = self.reason("Architect", json.dumps({"task": "Translate the scoped incident-remediation objective into a concise measurable plan AND assemble the initial worker team. Return {approach,success_criteria:[short strings],initial_specialties:[general OR latency OR capacity OR routing]}. Choose 1–3 unique specialties. General can handle all field families; specialized workers own only their family. Initial workers see logs only, as the experimental control. Later mutations can grant config/contract access. Fixed safety and promotion criteria cannot be relaxed. Do not invent results.", "objective": self.state["objective"], "mandatory_criteria": CRITERIA}), max_tokens=350)
             self.event("Architect", "Objective and measurable criteria defined", analysis=architecture)
             with self.lock:
                 self.state["objective_analysis"] = architecture
                 self.save()
-            root = self.add_node("g0", 0, validate_team(copy.deepcopy(self.active_team)), memory=self.active_memory)
+            initial = copy.deepcopy(self.active_team)
+            if not self.ancestor or self.fresh:
+                if isinstance(architecture.get("approach"), str) and architecture["approach"]:
+                    initial["instructions"] = architecture["approach"][:1200]
+                specialties = architecture.get("initial_specialties", ["general"])
+                if not isinstance(specialties, list) or not 1 <= len(specialties) <= 3 or len(set(specialties)) != len(specialties) or any(s not in {"general", "latency", "capacity", "routing"} for s in specialties):
+                    raise ValueError("Architect must select 1–3 unique allowed specialties")
+                initial["agents"] = [{"id": "executor" if specialty == "general" else specialty, "specialty": specialty, "tools": ["read_logs"], "instructions": "Diagnose " + specialty + " symptoms from available log evidence"} for specialty in specialties]
+                initial["workflow"] = [{"agent": agent["id"], "action": action} for agent in initial["agents"] for action in ("read_logs", "apply_rules")] + [{"agent": "controller", "action": "commit"}]
+                initial["program"] = {}
+            root = self.add_node("g0", 0, validate_team(initial), memory=self.active_memory)
             if not self.ancestor or self.fresh:
                 if not self.compile([root], [], initial=True):
                     raise ValueError("Initial control program was invalid")
