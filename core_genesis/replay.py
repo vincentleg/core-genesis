@@ -25,7 +25,7 @@ def replay_v2(state):
                 raise ValueError("Invalid candidate was executed")
             try:
                 if node["invalid_phase"] == "design":
-                    assemble_design(nodes[node["parent_id"]]["team"], node["design"], node["team"]["name"])
+                    assemble_design(nodes[node["parent_id"]]["team"], node["design"], node["team"]["name"], node["memory_snapshot"])
                 elif node["invalid_phase"] == "configuration":
                     validate_team(node["team"], program_required=False)
                 else:
@@ -37,7 +37,7 @@ def replay_v2(state):
             raise ValueError("Recorded invalid candidate is actually valid")
         team = validate_team(node["team"])
         if node.get("design"):
-            assembled, _, _ = assemble_design(nodes[node["parent_id"]]["team"], node["design"], node["team"]["name"])
+            assembled, _, _ = assemble_design(nodes[node["parent_id"]]["team"], node["design"], node["team"]["name"], node["memory_snapshot"])
             if {k: v for k, v in assembled.items() if k != "program"} != {k: v for k, v in team.items() if k != "program"}:
                 raise ValueError("Typed team assembly differs from the recorded configuration")
         if fingerprint(team) != node["team_sha256"]:

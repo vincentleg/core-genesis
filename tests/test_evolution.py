@@ -31,6 +31,16 @@ def reference_team():
 
 
 class RuntimeTests(unittest.TestCase):
+    def test_compiler_free_reuse_cannot_invent_an_empty_or_partial_memory_bank(self):
+        design = {"workers": [{"specialty": "general", "tools": ["inspect_contract"], "instructions": "Reuse rules"}], "coordination": "memory_first", "procedure_source": "reuse_memory"}
+        for memory in ([], [{"family": "latency", "status": "development_verified", "rules": RULES[:2]}]):
+            with self.assertRaises(ValueError):
+                assemble_design(CONTROL, design, "No fictional memory", memory)
+        memory = [{"family": kind, "status": "development_verified", "rules": [rule for rule in RULES if rule["target"] in OWNERSHIP[kind]]} for kind in ("latency", "capacity", "routing")]
+        team, _, source = assemble_design(CONTROL, design, "Real memory", memory)
+        self.assertEqual(source, "reuse_memory")
+        self.assertTrue(all(execute(team, case, memory)["passed"] for case in generate(1, "unseen")))
+
     def test_typed_assembly_preserves_full_coverage_and_changes_executed_coordination(self):
         workers = [{"specialty": kind, "tools": ["inspect_config", "inspect_contract"], "instructions": "Own " + kind} for kind in ("latency", "capacity", "routing")]
         design = {"workers": workers, "coordination": "specialist_pipeline", "extra_review": True}
@@ -256,6 +266,9 @@ class EvolutionTests(unittest.TestCase):
                 self.assertNotIn("validation-g", encoded)
                 self.assertNotIn("sealed-", encoded)
                 self.assertNotIn("eval-timeout", encoded)
+                if "Scientist" in role:
+                    self.assertIn("inspect_contract", prompt["capability_catalog"]["tools"])
+                    self.assertIn("inspect_config", prompt["capability_catalog"]["tools"])
             self.assertTrue(all("development-" in case for lesson in state["memory"] for case in lesson["source_case_ids"]))
             entries = state["budget_audit"]["entries"]
             self.assertLessEqual(max(sum(e["cycle"] == cycle for e in entries) for cycle in (0, 1)), 6)

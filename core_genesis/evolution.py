@@ -31,6 +31,7 @@ CONTRACT_SEMANTICS = [
 def brief(records):
     return [{"case_id": r["case_id"], "family": r["family"], "passed": r["passed"], "patch": r["patch"],
              "checks": r["verification"]["checks"], "work_units": r["metrics"]["work_units"],
+             "review_failures": [step.get("detail", "") for step in r["trace"] if step["status"] == "rejected"],
              "blocked": [operation for step in r["trace"] for operation in step.get("operations", []) if operation["status"] != "applied"]} for r in records]
 
 
@@ -90,7 +91,7 @@ class EvolutionEngine(Engine):
             {"role": "user", "content": prompt}], max_tokens=max_tokens, client=self.client, response_format=response_format)
         self.used_tokens += metrics["usage"]["total_tokens"]
         content = response["choices"][0]["message"].get("content") or ""
-        self.event(role, "Inference completed", **metrics, model=response.get("model"), output=content, cycle=cycle, execution_kind="remote_model")
+        self.event(role, "Inference completed", **metrics, model=response.get("model"), output=content, input_context=parse_json(prompt), cycle=cycle, execution_kind="remote_model")
         with self.lock:
             self.state["cycles"] = max(self.state["cycles"], cycle + 1)
             self.state["inference_calls"] = self.budget.run_snapshot(self.state["id"])["physical_requests"]
@@ -142,14 +143,27 @@ class EvolutionEngine(Engine):
                 "prior_proposal_errors": [{"reason": node["invalid_reason"], "phase": node["invalid_phase"]} for node in self.state["nodes"] if node.get("status") == "invalid"][-4:]}
 
     def propose(self, parent, generation, development):
+        inherited_memory = parent.get("memory_earned", parent["memory_snapshot"])
+        reusable = {entry.get("family") for entry in inherited_memory if entry.get("status") == "development_verified" and entry.get("rules")} == {"latency", "capacity", "routing"}
         response, metrics = self.reason("Observer + Scientist", json.dumps({
             "task": "FIRST Observer diagnoses development failures and missing family coverage. THEN Scientist proposes TWO competing complete team designs. Preserve working capabilities and ADD coverage for unsolved families, rather than replacing one narrow specialist with another. Candidate A can specialize; candidate B should explore an alternative full-coverage composition or coordination. At full correctness remove genuinely unnecessary inspections/reviews/dispatches. Return {observation:{weakness,lesson},mutations:[{name,reason,design:{...}},{name,reason,design:{...}}]}. All design fields are required by the output grammar. Designs select typed assembly operators, not raw workflow IDs. Executor later compiles GENERAL reference rules; fixture-specific literals are prohibited for mutations.",
             **self.synthesis_context(parent, development),
+            "capability_catalog": {
+                "control_restriction": "The log-only restriction applies ONLY to Generation 0 control. Scientist mutations are explicitly allowed to grant the tools below. You MUST change tools to gather missing evidence; repeating read_logs does not retrieve configuration or contracts.",
+                "tools": {"read_logs": "Provides symptom logs ONLY; cannot resolve config.* or contract.* references",
+                          "inspect_config": "Provides current config.* values, including immutable workers",
+                          "inspect_contract": "Provides actual contract.* limits, capacity requirements, registered health path and listening port",
+                          "recall_memory": "Provides only previously development-verified generic repair rules"},
+                "review_policy": ["schema", "contract", "protected_fields"],
+                "memory_policy": ["none", "inherit_verified"],
+                "worker_specialties": ["general", "latency", "capacity", "routing", "verifier"],
+                "practical_preconditions": "A contract-based repair requires inspect_contract somewhere before apply_rules. A contract review also needs inspect_config. General covers all families; otherwise include every missing family specialist."},
             "operators": {"workers": "1–4 unique specialties; general owns all families, or combine latency/capacity/routing. Every worker specifies tools and instructions; IDs are derived automatically.",
                 "coordination": {"shared_evidence": "Retrieve each selected tool once, share evidence, then dispatch every repair worker", "specialist_pipeline": "Each worker retrieves its own tools then applies its rules", "memory_first": "Recall development-verified rules first, then gather unique tools and dispatch workers"},
                 "extra_review": "Optional separate controller review. Commit ALWAYS independently reviews, even when false.",
                 "procedure_source": {"compile": "Nemotron compiles new general reference rules", "reuse_memory": "No compiler request; use ONLY inherited development-verified rules, with automatic memory recall capability"}},
-            "bounds": "Never change worker counts in incidents. General can repair all families; latency/capacity/routing workers only their own. All contracts need reference-based rules, not hardcoded values. Only choose reuse_memory when the bank actually contains useful verified rules. Each design must explicitly supply instructions, workers, coordination, review_policy, memory_policy, cache_evidence, extra_review, procedure_source."}), response_format=design_schema())
+            "operator_preconditions": {"reuse_memory_available": reusable, "reason": "Compiler-free reuse is available only after all three families have actual development-verified reference rules. Otherwise compile is mandatory; there is no fictional or preloaded rule bank."},
+            "bounds": "Never change worker counts in incidents. General can repair all families; latency/capacity/routing workers only their own. All contracts need reference-based rules, not hardcoded values. Each design must explicitly supply instructions, workers, coordination, review_policy, memory_policy, cache_evidence, extra_review, procedure_source."}), response_format=design_schema(allow_memory_reuse=reusable))
         observation, mutations = response.get("observation"), response.get("mutations")
         if not isinstance(observation, dict) or not isinstance(observation.get("weakness"), str) or not isinstance(mutations, list) or len(mutations) != 2:
             raise ValueError("Observer/Scientist must provide an observation and two mutations")
@@ -169,7 +183,7 @@ class EvolutionEngine(Engine):
             procedure_source = "compile"
             try:
                 if design is not None:
-                    team, configuration_notes, procedure_source = assemble_design(parent["team"], design, raw["name"])
+                    team, configuration_notes, procedure_source = assemble_design(parent["team"], design, raw["name"], inherited_memory)
                 else:
                     team, configuration_notes = assemble_team(raw)
             except ValueError as exc:

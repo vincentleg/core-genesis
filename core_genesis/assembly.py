@@ -4,7 +4,7 @@ from .team import validate_team, OWNERSHIP, TOOLS
 STYLES = {"shared_evidence", "specialist_pipeline", "memory_first"}
 
 
-def assemble_design(parent, design, name):
+def assemble_design(parent, design, name, memory=()):
     if not isinstance(design, dict) or set(design) - {"instructions", "workers", "coordination", "review_policy", "memory_policy", "cache_evidence", "extra_review", "procedure_source"}:
         raise ValueError("Unknown team design field")
     workers = design.get("workers")
@@ -16,6 +16,10 @@ def assemble_design(parent, design, name):
     procedure_source = design.get("procedure_source", "compile")
     if procedure_source not in {"compile", "reuse_memory"}:
         raise ValueError("Unknown procedure source")
+    if procedure_source == "reuse_memory" and {entry.get("family") for entry in memory if entry.get("status") == "development_verified" and entry.get("rules")} != {"latency", "capacity", "routing"}:
+        raise ValueError("Compiler-free reuse requires verified rule coverage for all three incident families")
+    if type(design.get("extra_review", False)) is not bool:
+        raise ValueError("extra_review must be boolean")
     agents = []
     specialties = set()
     for worker in workers:

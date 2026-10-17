@@ -47,13 +47,13 @@ def mutation_schema():
     return strict("team_mutations", obj({"observation": obj({"weakness": text, "lesson": text}), "mutations": array(mutation, 2, 2)}))
 
 
-def design_schema():
+def design_schema(allow_memory_reuse=False):
     text = {"type": "string", "maxLength": 500}
     worker = obj({"specialty": enum(OWNERSHIP), "tools": array(enum(sorted(TOOLS)), maximum=4), "instructions": text})
     design = obj({"instructions": text, "workers": array(worker, 1, 4),
                   "coordination": enum(["shared_evidence", "specialist_pipeline", "memory_first"]),
                   "review_policy": enum(["schema", "contract", "protected_fields"]),
                   "memory_policy": enum(["none", "inherit_verified"]), "cache_evidence": {"type": "boolean"},
-                  "extra_review": {"type": "boolean"}, "procedure_source": enum(["compile", "reuse_memory"])})
+                  "extra_review": {"type": "boolean"}, "procedure_source": enum(["compile", "reuse_memory"] if allow_memory_reuse else ["compile"])})
     mutation = obj({"name": text, "reason": text, "design": design})
     return strict("team_designs", obj({"observation": obj({"weakness": text, "lesson": text}), "mutations": array(mutation, 2, 2)}))
