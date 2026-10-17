@@ -1,0 +1,9 @@
+CORE GENESIS — final demo voiceover (≈110 words). Times are positions in the final video.
+
+[00.3] What if building a company meant creating an organization that could improve itself?
+[06.0] Meet GENESIS. An AI-native company where specialized agents turn a founder's mission into coordinated work.
+[16.6] Research analyzes CORE. Engineering delivers working software. Operations verifies the result with real tests.
+[25.9] Product testing gathers two hundred AI-simulated perspectives, and checks real workflows in Chrome.
+[34.3] Then GENESIS improves itself. One verification policy rises from four to six passing cases. A later mutation shows no gain, so it's rejected.
+[44.4] The company does the work. The founder keeps control of consequential decisions.
+[49.2] CORE is the future we're building. GENESIS is the company learning how to build it.

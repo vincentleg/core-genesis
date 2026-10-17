@@ -233,3 +233,5 @@ company/
 # Runtime prototype records and isolated test stores are not source evidence.
 artifacts/**/data/
 artifacts/**/.test-work/
+video/capture/
+video/vo/*.aiff

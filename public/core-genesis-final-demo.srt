@@ -1,0 +1,67 @@
+1
+00:00:00,300 --> 00:00:01,880
+What if building a company meant
+
+2
+00:00:01,880 --> 00:00:04,390
+creating an organization that could improve itself?
+
+3
+00:00:06,000 --> 00:00:06,770
+Meet GENESIS.
+
+4
+00:00:06,770 --> 00:00:09,430
+An AI-native company where specialized agents
+
+5
+00:00:09,430 --> 00:00:12,200
+turn a founder's mission into coordinated work.
+
+6
+00:00:16,600 --> 00:00:18,080
+Research analyzes CORE.
+
+7
+00:00:18,080 --> 00:00:20,510
+Engineering delivers working software.
+
+8
+00:00:20,510 --> 00:00:23,530
+Operations verifies the result with real tests.
+
+9
+00:00:25,900 --> 00:00:29,500
+Product testing gathers two hundred AI-simulated perspectives,
+
+10
+00:00:29,500 --> 00:00:31,590
+and checks real workflows in Chrome.
+
+11
+00:00:34,300 --> 00:00:36,250
+Then GENESIS improves itself.
+
+12
+00:00:36,250 --> 00:00:40,370
+One verification policy rises from four to six passing cases.
+
+13
+00:00:40,370 --> 00:00:43,670
+A later mutation shows no gain, so it's rejected.
+
+14
+00:00:44,400 --> 00:00:45,910
+The company does the work.
+
+15
+00:00:45,910 --> 00:00:48,980
+The founder keeps control of consequential decisions.
+
+16
+00:00:49,200 --> 00:00:50,980
+CORE is the future we're building.
+
+17
+00:00:50,980 --> 00:00:53,500
+GENESIS is the company learning how to build it.

@@ -1,0 +1,133 @@
+{
+ "lines": [
+  {
+   "t": 0.3,
+   "text": "What if building a company meant creating an organization that could improve itself?",
+   "file": "video/vo/l0.aiff",
+   "dur": 4.089887
+  },
+  {
+   "t": 6.0,
+   "text": "Meet GENESIS. An AI-native company where specialized agents turn a founder's mission into coordinated work.",
+   "file": "video/vo/l1.aiff",
+   "dur": 6.204762
+  },
+  {
+   "t": 16.6,
+   "text": "Research analyzes CORE. Engineering delivers working software. Operations verifies the result with real tests.",
+   "file": "video/vo/l2.aiff",
+   "dur": 6.927574
+  },
+  {
+   "t": 25.9,
+   "text": "Product testing gathers two hundred AI-simulated perspectives, and checks real workflows in Chrome.",
+   "file": "video/vo/l3.aiff",
+   "dur": 5.688027
+  },
+  {
+   "t": 34.3,
+   "text": "Then GENESIS improves itself. One verification policy rises from four to six passing cases. A later mutation shows no gain, so it's rejected.",
+   "file": "video/vo/l4.aiff",
+   "dur": 9.368435
+  },
+  {
+   "t": 44.4,
+   "text": "The company does the work. The founder keeps control of consequential decisions.",
+   "file": "video/vo/l5.aiff",
+   "dur": 4.576009
+  },
+  {
+   "t": 49.2,
+   "text": "CORE is the future we're building. GENESIS is the company learning how to build it.",
+   "file": "video/vo/l6.aiff",
+   "dur": 4.296871
+  }
+ ],
+ "cues": [
+  {
+   "start": 0.3,
+   "end": 1.88,
+   "text": "What if building a company meant"
+  },
+  {
+   "start": 1.88,
+   "end": 4.39,
+   "text": "creating an organization that could improve itself?"
+  },
+  {
+   "start": 6.0,
+   "end": 6.77,
+   "text": "Meet GENESIS."
+  },
+  {
+   "start": 6.77,
+   "end": 9.43,
+   "text": "An AI-native company where specialized agents"
+  },
+  {
+   "start": 9.43,
+   "end": 12.2,
+   "text": "turn a founder's mission into coordinated work."
+  },
+  {
+   "start": 16.6,
+   "end": 18.08,
+   "text": "Research analyzes CORE."
+  },
+  {
+   "start": 18.08,
+   "end": 20.51,
+   "text": "Engineering delivers working software."
+  },
+  {
+   "start": 20.51,
+   "end": 23.53,
+   "text": "Operations verifies the result with real tests."
+  },
+  {
+   "start": 25.9,
+   "end": 29.5,
+   "text": "Product testing gathers two hundred AI-simulated perspectives,"
+  },
+  {
+   "start": 29.5,
+   "end": 31.59,
+   "text": "and checks real workflows in Chrome."
+  },
+  {
+   "start": 34.3,
+   "end": 36.25,
+   "text": "Then GENESIS improves itself."
+  },
+  {
+   "start": 36.25,
+   "end": 40.37,
+   "text": "One verification policy rises from four to six passing cases."
+  },
+  {
+   "start": 40.37,
+   "end": 43.67,
+   "text": "A later mutation shows no gain, so it's rejected."
+  },
+  {
+   "start": 44.4,
+   "end": 45.91,
+   "text": "The company does the work."
+  },
+  {
+   "start": 45.91,
+   "end": 48.98,
+   "text": "The founder keeps control of consequential decisions."
+  },
+  {
+   "start": 49.2,
+   "end": 50.98,
+   "text": "CORE is the future we're building."
+  },
+  {
+   "start": 50.98,
+   "end": 53.5,
+   "text": "GENESIS is the company learning how to build it."
+  }
+ ]
+}
