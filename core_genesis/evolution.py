@@ -341,16 +341,25 @@ class EvolutionEngine(Engine):
                     nodes = self.propose(parent, generation, parent_dev)
                     if nodes:
                         nodes = self.compile(nodes, parent_dev)
-                except json.JSONDecodeError:
+                except (json.JSONDecodeError, CrusoeError) as exc:
                     siblings = [node for node in self.state["nodes"] if node["generation"] == generation]
                     for node in siblings:
                         if node["status"] != "invalid":
                             node["status"] = "not_evaluated"
-                    last = next(event for event in reversed(self.state["events"]) if event.get("message") == "Inference completed")
+                    malformed = isinstance(exc, json.JSONDecodeError)
+                    if malformed:
+                        last = next(event for event in reversed(self.state["events"]) if event.get("message") == "Inference completed")
+                        failure_id = last["request_id"]
+                        reason = "Malformed or truncated model JSON; no candidate evaluated, verified parent retained; inference stopped"
+                    else:
+                        failure_id = self.budget.run_snapshot(self.state["id"])["entries"][-1]["id"]
+                        reason = "Crusoe HTTP %s after bounded request handling; verified parent retained; further inference stopped" % exc.status
                     decision = {"generation": generation, "candidate_id": None, "parent_id": parent["id"], "action": "rollback",
-                        "reason": "Malformed or truncated model JSON; no candidate evaluated, verified parent retained; inference stopped",
-                        "kind": "invalid_model_output", "evaluation_id": evaluation_id, "time": time.time(), "comparison": None,
-                        "failure_request_id": last["request_id"]}
+                        "reason": reason, "kind": "invalid_model_output" if malformed else "inference_unavailable",
+                        "evaluation_id": evaluation_id, "time": time.time(), "comparison": None,
+                        "failure_request_id": failure_id}
+                    if not malformed:
+                        decision["error_http_status"] = exc.status
                     with self.lock:
                         self.state["decisions"].append(decision)
                         self.state["rounds"].append({"generation": generation, "candidates": [node["id"] for node in siblings], "selected": None,

@@ -129,7 +129,11 @@ Subsequent genuine continuation [20261017-123736-61ea83](experiments/20261017-12
 
 The Arena connects the four accepted mutations across these actual histories, with direct links to their source experiments. Each experiment still shows all competing branches and rejected proposals. Scores from different sealed shards are never treated as identical-task comparisons.
 
-The current network-disabled suite contains **47 passing tests**. Chrome checks cover graph/inspector interaction, real tool traces, captured reasoning, mobile layout and zero inference from read-only activity.
+The current network-disabled suite contains **48 passing Python tests**, alongside **five passing deterministic procurement tests**. Chrome checks cover graph/inspector interaction, real tool traces, captured reasoning, 3D department interactions, mission creation, procurement recomputation, recorded organizational transformations, mobile layout and zero inference from read-only activity.
+
+The new Living Company HQ also triggered genuine live experiment [20261017-133419-f6762d](experiments/20261017-133419-f6762d.json): two promotions improved development and fresh validation **0/6 → 4/6 → 6/6**, with no regressions. Crusoe HTTP 429 stopped the third round after the bounded retry. The original record contains **no sealed outcome** and is retained as such. Ten physical attempts, 14,168 reported tokens and $0.00480235 estimated usage plus retained failed-attempt reserves. Independent replay reproduced its 84 executions and two decisions.
+
+Subsequent resilience handling is unit-tested: after a later provider HTTP failure, inference stops and the verified parent completes local sealed evaluation. No additional provider call was made merely to demonstrate this failure path.
 
     python3 -m unittest discover -s tests -v
     python3 -m core_genesis.local_test

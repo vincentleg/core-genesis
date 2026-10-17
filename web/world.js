@@ -7,6 +7,14 @@ let record=null,verified=null,continuation=null,frames=[],cursor=-1,playing=fals
 let campus=null,capabilities={live:false},selectedDepartment=null,live=false,livePoll=null,lastLiveEvent=0,seenLive=new Set();
 let procurement=planProcurement(),procurementHistory=[],mission=null;
 try{mission=JSON.parse(localStorage.getItem('genesis-mission')||'null');}catch{}
+try{
+ const saved=JSON.parse(localStorage.getItem('genesis-procurement')||'null');
+ if(saved){procurement=planProcurement(saved.inputs);procurement.priority=saved.inputs.priority;procurementHistory=Array.isArray(saved.history)?saved.history.slice(-50):[];}
+}catch{}
+function saveProcurement(){
+ procurementHistory=procurementHistory.slice(-50);
+ try{localStorage.setItem('genesis-procurement',JSON.stringify({inputs:{budget:procurement.budget_constraints.scenario_budget_usd,priority:procurement.priority||'cost'},history:procurementHistory}));}catch{}
+}
 const roles={Architect:'hq',Executor:'engineering',Observer:'research',Scientist:'evolution','Observer + Scientist':'evolution',Gate:'evolution',Verifier:'operations',System:'hq'};
 const responsibilities={
  hq:['Define measurable incident-response objectives','Assign a bounded mission to departments','Coordinate evaluation and report evidence','Escalate consequential actions to humans'],
@@ -55,6 +63,7 @@ function renderMission(){
 function createMission(){
  const objective=$('mission-objective').value.trim();if(objective.length<12){$('mission-objective').focus();return;}
  mission={id:'M-'+Date.now().toString(36).toUpperCase(),objective,created_at:new Date().toISOString(),mode:'deterministic_coordination_plan',status:'planned',human_authority:'Required for consequential actions',
+  success_criteria:[{metric:'sealed_pass_count',target:6},{metric:'regressions',target:0},{metric:'work_units',policy:'Reduce only after full correctness'}],
   assignments:[{department:'Genesis HQ',action:'Define measurable service-restoration criteria',status:'plan created'},
    {department:'Operations',action:'Attempt bounded incident diagnosis',status:'awaiting execution'},
    {department:'Research',action:'Analyze development-only failure evidence',status:'awaiting execution'},
@@ -76,7 +85,7 @@ function recomputeProcurement(){
  const budget=Number($('scenario-budget').value),priority=$('procurement-priority').value;
  procurement=planProcurement({budget,priority});procurement.priority=priority;
  procurementHistory.push({time:new Date().toISOString(),action:'recomputed',scenario_budget_usd:budget,priority,recommendation:procurement.recommended_action.alternative_id});
- $('scenario-budget-value').textContent=budget.toFixed(2);renderProcurement();
+ saveProcurement();$('scenario-budget-value').textContent=budget.toFixed(2);renderProcurement();
 }
 function showEvolution(){
  const m=metrics();
@@ -133,6 +142,7 @@ function buildFrames(source){
 }
 function organization(node,promoted=false){
  if(!node)return;currentNode=node;campus?.configure(node.team,node.id,promoted);
+ if(promoted){campus?.selectDepartment('evolution');$('generation-name').closest('.generation-bubble').classList.add('verified-generation');setTimeout(()=>$('generation-name').closest('.generation-bubble').classList.remove('verified-generation'),3000);}
  $('generation-name').textContent='Generation '+node.generation;
  $('generation-detail').textContent=node.team.agents.length+' configured worker'+(node.team.agents.length===1?'':'s')+' · '+[...new Set(node.team.agents.flatMap(a=>a.tools))].length+' evidence tools';
 }
@@ -141,7 +151,9 @@ function dispatch(event){
  if(event.role==='Gate'&&event.message.startsWith('PROMOTE'))organization(getNode(event.node_id),true);
  $('playback-title').textContent=event.message;
  $('playback-detail').textContent=event.role+' · '+(event.node_id||'company mission')+' · '+(live?'actual local execution':'recorded event; timing compressed');
- $('event-bubble').classList.remove('hidden');$('event-bubble').innerHTML='<span>'+esc(event.role.toUpperCase())+' · '+(live?'LIVE':'RECORDED')+'</span><p>'+esc(event.message.slice(0,220))+'</p>';
+ const gate=event.role==='Gate'?(record.decisions||[]).find(d=>d.candidate_id===event.node_id&&d.generation===event.generation):null;
+ const comparison=gate?.comparison?.held_out;
+ $('event-bubble').classList.remove('hidden');$('event-bubble').innerHTML='<span>'+esc(event.role.toUpperCase())+' · '+(live?'LIVE':'RECORDED')+'</span><p>'+esc(event.message.slice(0,220))+'</p>'+(comparison?'<small>Fresh validation '+comparison.parent.passed+'/'+comparison.parent.total+' → '+comparison.candidate.passed+'/'+comparison.candidate.total+' · '+esc(gate.kind.replaceAll('_',' '))+'</small>':'');
  $('progress').style.width=((cursor+1)/Math.max(1,frames.length)*100)+'%';$('step-count').textContent=(cursor+1)+' / '+frames.length;
  if(event.role==='Observer'||event.role==='Gate')$('welcome').classList.add('exploring');
 }
@@ -176,6 +188,14 @@ async function pollLive(){
    if(event.role==='Architect'||event.role==='Observer'||event.role==='Gate'||event.role==='Scientist'||event.role==='Executor'&&event.message!=='Inference completed')dispatch(event);
   }
   lastLiveEvent=next.events.length;
+  if(mission){
+   if(next.objective_analysis)mission.assignments[0].status='criteria defined by Architect';
+   if(next.runs?.some(r=>r.node_id==='g0'))mission.assignments[1].status='baseline incident attempts recorded';
+   if(next.events.some(e=>e.role==='Observer'))mission.assignments[2].status='development analysis recorded';
+   if(next.decisions.length)mission.assignments[3].status=next.decisions.filter(d=>d.action==='promote').length+' promotions; '+next.decisions.filter(d=>d.action==='rollback').length+' rollbacks recorded';
+   if(next.sealed_comparison)mission.assignments[4].status=next.sealed_comparison.active.passed+'/'+next.sealed_comparison.active.total+' sealed contracts passed';
+   else if(next.status!=='running')mission.assignments[4].status='no sealed outcome; inference stopped';
+  }
   if(!currentNode&&getNode('g0'))organization(getNode('g0'));
   if(next.active_node_id&&getNode(next.active_node_id))organization(getNode(next.active_node_id));
   $('step-count').textContent=next.inference_calls+' API';
@@ -198,7 +218,7 @@ document.addEventListener('click',event=>{
  if(action==='story')startStory();if(action==='create-mission')createMission();if(action==='live')startLive();
  if(action==='event-evidence')eventEvidence();if(action==='latest')showEvidence(verified);
  if(action==='procurement-evidence')evidence('Computed procurement decision','<p>Deterministic scenario. No external research, API call or purchase was made.</p><pre>'+pretty({...procurement,decision_history:[...procurement.decision_history,...procurementHistory]})+'</pre>');
- if(action==='review-procurement'){procurementHistory.push({time:new Date().toISOString(),action:'human_review_requested',detail:'Recorded locally only; no message sent and no transaction authorized.'});procurement.status='human_review_requested';renderProcurement();}
+ if(action==='review-procurement'){procurementHistory.push({time:new Date().toISOString(),action:'human_review_requested',detail:'Recorded locally only; no message sent and no transaction authorized.'});procurement.status='human_review_requested';saveProcurement();renderProcurement();}
 });
 document.addEventListener('input',event=>{if(event.target.id==='scenario-budget')recomputeProcurement();});
 document.addEventListener('change',event=>{if(event.target.id==='procurement-priority')recomputeProcurement();});

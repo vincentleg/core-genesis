@@ -189,11 +189,11 @@ export function createCampus(container,{onDepartment,onAgent,onReady,onError}={}
  }
  Object.entries(roleHomes).forEach(([role,department])=>actor(role,department));
  let workerActors=[],lastTeam='',generationPulse=0,lastSelection=null;
- function clearGroup(group){while(group.children.length){const object=group.children[0];group.remove(object);object.traverse(child=>{child.geometry?.dispose();});}}
+ function clearGroup(group){while(group.children.length){const object=group.children[0];group.remove(object);object.traverse(child=>{child.geometry?.dispose();if(child.isLine)child.material?.dispose();});}}
  function configure(team,nodeId,promoted=false){
   const hash=JSON.stringify(team);if(hash===lastTeam)return;lastTeam=hash;
   clearGroup(organization);clearGroup(workflowGroup);
-  for(const item of workerActors){scene.remove(item.group);actors.delete(item.role);const index=actorHits.findIndex(hit=>hit.userData.actor===item.role);if(index>=0)actorHits.splice(index,1);}
+  for(const item of workerActors){scene.remove(item.group);item.group.traverse(child=>child.geometry?.dispose());actors.delete(item.role);const index=actorHits.findIndex(hit=>hit.userData.actor===item.role);if(index>=0)actorHits.splice(index,1);}
   workerActors=[];
   (team.agents||[]).forEach((agent,index)=>{
    const entry=actor(agent.id,'engineering',index,true);entry.specialty=agent.specialty;entry.tools=agent.tools;entry.instructions=agent.instructions;entry.lastAction='Configured worker in '+nodeId;workerActors.push(entry);
@@ -221,7 +221,8 @@ export function createCampus(container,{onDepartment,onAgent,onReady,onError}={}
  }
  let messenger=null,activeDepartment=null;
  const messageOrb=sphere(.13,mat('#e9b56d',{emissive:'#e9b56d',emissiveIntensity:.5}),0,-10,0);
- const promoRing=ring(3.3,.075,gold,0,-10,0);promoRing.visible=false;
+ const promoMaterial=gold.clone();promoMaterial.transparent=true;
+ const promoRing=ring(3.3,.075,promoMaterial,0,-10,0);promoRing.visible=false;
  function showEvent(event,department){
   activeDepartment=department;
   const now=performance.now(),target=DEPARTMENTS.find(d=>d.id===department)||DEPARTMENTS[0];
@@ -267,7 +268,7 @@ export function createCampus(container,{onDepartment,onAgent,onReady,onError}={}
   }
   const crystal=buildings.get('economy').group.children.find(o=>o.userData.decorativeSpin);if(crystal)crystal.rotation.y=time*.2;
   if(messenger){const t=(now-messenger.started)/2400;if(t<1){messageOrb.position.lerpVectors(messenger.from,messenger.to,t);messageOrb.position.y=1+Math.sin(t*Math.PI)*2;}else{messageOrb.position.y=-10;messenger=null;}}
-  if(generationPulse){const age=(now-generationPulse)/2000;buildings.get('evolution').group.scale.setScalar(1+Math.max(0,1-age)*.04);if(promoRing.visible){promoRing.scale.setScalar(1+age*2);promoRing.material=mat('#dbc288',{transparent:true,opacity:Math.max(0,1-age),metalness:.3});if(age>1)promoRing.visible=false;}}
+  if(generationPulse){const age=(now-generationPulse)/2000;buildings.get('evolution').group.scale.setScalar(1+Math.max(0,1-age)*.04);if(promoRing.visible){promoRing.scale.setScalar(1+age*2);promoMaterial.opacity=Math.max(0,1-age);if(age>1)promoRing.visible=false;}}
   for(const label of labels){
    const projected=label.position.clone();projected.y=label.height;projected.project(camera);
    label.element.style.left=((projected.x+1)/2*innerWidth)+'px';label.element.style.top=((-projected.y+1)/2*innerHeight)+'px';

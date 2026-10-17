@@ -5,7 +5,8 @@ import tempfile
 import unittest
 
 from core_genesis.budget import RequestBudget
-from core_genesis.crusoe import DEFAULT_MODEL
+from core_genesis.crusoe import DEFAULT_MODEL, CrusoeError
+from unittest.mock import patch
 from core_genesis.evolution import EvolutionEngine
 from core_genesis.suites import generate, manifest, family
 from core_genesis.team import CONTROL, execute, validate_team, validate_program, compare, aggregate, normalize_program, assemble_team
@@ -208,6 +209,32 @@ class GenerationTransport:
 
 
 class EvolutionTests(unittest.TestCase):
+    def test_late_provider_throttle_finishes_sealed_without_another_inference(self):
+        class ThrottledTransport(GenerationTransport):
+            def chat(self, messages, **kwargs):
+                response = super().chat(messages, **kwargs)
+                if "Scientist" in messages[0]["content"] and self.generation >= 3:
+                    self.last_status = 429
+                    raise CrusoeError(429, "Unit-test throttle")
+                return response
+        with tempfile.TemporaryDirectory() as directory:
+            engine = EvolutionEngine(directory, ThrottledTransport(), fresh=True, budget=RequestBudget(Path(directory) / ".budget", history=directory))
+            engine.start(seed=123)
+            with patch("core_genesis.budget.time.sleep"):
+                engine.run()
+            state = engine.snapshot()
+            self.assertEqual(state["status"], "complete", state.get("error_detail"))
+            self.assertEqual(state["inference_calls"], 8)
+            self.assertEqual(state["active_node_id"], "g2a")
+            self.assertEqual(state["decisions"][-1]["kind"], "inference_unavailable")
+            self.assertEqual(state["sealed_comparison"]["active"]["passed"], 6)
+            from core_genesis.replay import replay_v2
+            self.assertEqual(replay_v2(state)["verified_decisions"], 3)
+            tampered = copy.deepcopy(state)
+            tampered["decisions"][-1]["error_http_status"] = 200
+            with self.assertRaisesRegex(ValueError, "HTTP failure evidence"):
+                replay_v2(tampered)
+
     def test_truncated_later_proposal_keeps_verified_gains_and_finishes_sealed(self):
         class TruncatedTransport(GenerationTransport):
             def chat(self, messages, **kwargs):

@@ -110,6 +110,13 @@ def replay_v2(state):
             active_id = decision["candidate_id"]
         if round_info["active_after"] != active_id:
             raise ValueError("Recorded active lineage differs from the gate decision")
+        if decision["kind"] == "inference_unavailable":
+            attempt = next((entry for entry in state.get("budget_audit", {}).get("entries", []) if entry["id"] == decision.get("failure_request_id")), None)
+            if not attempt or attempt["status"] != "unknown_usage" or attempt.get("http_status") != decision.get("error_http_status") or not 400 <= attempt["http_status"] < 600:
+                raise ValueError("Provider-stop rollback lacks budgeted HTTP failure evidence")
+            if decision["action"] != "rollback" or round_info["selected"] is not None or any(r["node_id"] in round_info["candidates"] and r["evaluation_id"] == evaluation_id for r in state["runs"]):
+                raise ValueError("Provider-stop candidate was promoted or executed")
+            continue
         if decision["kind"] == "invalid_model_output":
             failure = next((event for event in state["events"] if event.get("request_id") == decision.get("failure_request_id") and event.get("message") == "Inference completed"), None)
             if not failure or decision["action"] != "rollback" or round_info["selected"] is not None:
