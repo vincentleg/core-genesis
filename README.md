@@ -1,6 +1,36 @@
-# CORE GENESIS — EVOLUTION ZERO
+# CORE GENESIS — THE LIVING COMPANY
 
-**The AI Team That Rewrites How It Thinks.**
+**The AI company that builds itself, runs itself, and gets better.**
+
+The autonomous organization behind **CORE — Creation Of Reborn Earth**.
+
+**Explore the public 3D world: https://core-genesis-living.vercel.app**
+
+An optimistic miniature company campus replaces the dashboard as the main experience. Click departments, inspect agents, create a scoped mission, explore a computed procurement proposal, or watch a genuine evolution experiment transform the organization. The public site is a static, zero-inference replay hosted on the verified Vercel **Hobby** plan. Live reasoning stays local behind the existing budget manager.
+
+This is a bounded operational prototype. The long-term CORE civilization, immersive Earth, collective intelligence, enterprise ecosystem and governance systems are a vision; they are not claimed as implemented here. The independent CORE project and website are untouched.
+
+| Department | Implemented scope |
+| --- | --- |
+| Genesis HQ | Local mission object, measurable criteria, transparent deterministic department assignments; explicit local live-run action |
+| Engineering | Existing bounded procedure compiler, field ownership and deterministic repair tests |
+| Research | Internal development-evidence analysis; model rationale labeled as hypothesis; no external retrieval claimed |
+| Operations | Three-family in-memory incident diagnosis and contract verification |
+| Economy | Computed budget/priority simulation, alternatives, sourced price snapshot plus clearly synthetic scenarios, risk and local human-review history; no transaction capability |
+| Evolution Lab | Real Nemotron team mutations, fresh validation, regression gates, memory, ancestry, promotion and rollback |
+| CORE World | Clearly labeled future gateway explaining the broader CORE mission |
+
+The 3D scene uses locally vendored MIT-licensed Three.js and procedural assets. Agent travel follows actual workflow events; idle bobbing, gardens and architectural motion are decorative ambience. Organization changes follow real promotion records: actual worker composition, tool grants and workflow connections. Replay timing is compressed and explicitly labeled.
+
+Run the world and live engine locally using the instructions below. The prior technical Arena remains available at **http://127.0.0.1:8080/arena**.
+
+Build the strictly static public experience without making any API requests:
+
+    python3 scripts/build_world.py
+    python3 -m http.server 8090 --bind 127.0.0.1 --directory public
+    node --test tests/economy.test.mjs
+
+Static output contains only explicit client assets and genuine evidence. It includes no Python execution endpoint, API credential, payment integration or deployment of the original CORE website.
 
 A bounded research platform for the Recursive Agents Hackathon's **Version N+1** track. NVIDIA Nemotron, hosted by Crusoe Managed Inference, designs competing agent teams and compiles their repair procedures. A separate deterministic evaluator decides which team survives.
 
@@ -16,7 +46,7 @@ Python 3.9+. Zero third-party runtime dependencies.
     # Set CRUSOE_API_KEY in .env using existing credits.
     python3 -m core_genesis.server --fresh
 
-Open **http://127.0.0.1:8080**. Recorded evidence is the default. Enter an incident-remediation objective, choose one to three rounds, and explicitly start LIVE EVOLUTION to authorize inference.
+Open **http://127.0.0.1:8080** for the living company. Recorded evidence is the default. Open Genesis HQ to create a scoped mission and explicitly start a bounded live run. The technical Arena at **/arena** retains the three-mode controls and one-to-three-round selection.
 
 | Mode | Behavior | New external API calls |
 | --- | --- | --- |

@@ -38,6 +38,13 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
 
         def do_GET(self):
             path = urlparse(self.path).path
+            if path == "/capabilities.json":
+                return self.send(200, {"live": True, "mode": "local_budgeted_live", "note": "Inference requires an explicit user action; existing budget limits apply."})
+            if path in {"/evidence/story.json", "/evidence/continuation.json", "/evidence/verified.json", "/evidence/manifest.json"}:
+                file = ROOT / "public" / path.lstrip("/")
+                if file.is_file():
+                    return self.send(200, json.loads(file.read_text()))
+                return self.send(404, {"error": "Build the static evidence with python3 scripts/build_world.py"})
             if path == "/api/state":
                 return self.send(200, engine.snapshot())
             if path == "/api/recorded":
@@ -64,7 +71,11 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
                 if file.is_file():
                     return self.send(200, json.loads(file.read_text()))
                 return self.send(404, {"error": "Unknown experiment"})
-            assets = {"/": ("arena.html", "text/html; charset=utf-8"), "/arena.js": ("arena.js", "text/javascript; charset=utf-8"), "/arena.css": ("arena.css", "text/css; charset=utf-8"),
+            assets = {"/": ("world.html", "text/html; charset=utf-8"), "/arena": ("arena.html", "text/html; charset=utf-8"),
+                      "/world.js": ("world.js", "text/javascript; charset=utf-8"), "/world.css": ("world.css", "text/css; charset=utf-8"),
+                      "/campus.js": ("campus.js", "text/javascript; charset=utf-8"), "/economy.js": ("economy.js", "text/javascript; charset=utf-8"),
+                      "/vendor/three.module.js": ("vendor/three.module.js", "text/javascript; charset=utf-8"), "/vendor/three.core.min.js": ("vendor/three.core.min.js", "text/javascript; charset=utf-8"),
+                      "/arena.js": ("arena.js", "text/javascript; charset=utf-8"), "/arena.css": ("arena.css", "text/css; charset=utf-8"),
                       "/app.js": ("app.js", "text/javascript; charset=utf-8"), "/style.css": ("style.css", "text/css; charset=utf-8")}
             if path in assets:
                 name, mime = assets[path]
@@ -123,7 +134,7 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
             pass
 
     server = ThreadingHTTPServer((host, port), Handler)
-    print("Evolution Arena → http://%s:%s" % (host, port), flush=True)
+    print("CORE GENESIS · Living Company → http://%s:%s · Technical Arena /arena" % (host, port), flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

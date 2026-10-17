@@ -222,3 +222,7 @@ __marimo__/
 # Budget locks are ephemeral; the secret-free ledger is retained for audit.
 budget/*.lock
 budget/*.tmp
+
+# Local hosting metadata and dependencies never enter the public source.
+.vercel/
+node_modules/
