@@ -149,7 +149,7 @@ function agent(name){
 document.addEventListener('click',async event=>{
  const run=event.target.closest('[data-run]')?.dataset.run,act=event.target.closest('[data-act]')?.dataset.act,crew=event.target.closest('[data-crew]')?.dataset.crew;
  if(run==='toggle')toggle();if(run==='restart')start();if(run==='next')nextAct();if(run==='close')close();
- if(run==='speed'){speed=speed>1.5?1.25:2.15;apply(steps[index],index);}if(run==='follow'){follow=!follow;apply(steps[index],index);}
+ if(run==='speed'){speed=speed>1.5?1.25:2.4;apply(steps[index],index);}if(run==='follow'){follow=!follow;apply(steps[index],index);}
  if(run==='explore'){close();window.GENESIS?.showDepartment('hq');}
  if(run==='lab'||event.target.id==='open-lab'){await load();window.GENESIS?.evidence('Autonomous Product Testing Lab',lab());}
  if(event.target.id==='open-pipeline'){await load();window.GENESIS?.evidence('CORE Development Pipeline','<p>GENESIS researches, engineers, tests, operates, governs and improves. CORE receives verified capabilities only after CEO approval.</p>'+pipeline());}
