@@ -5,13 +5,14 @@ import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse
 
-from .engine import Engine, ROOT
+from .engine import ROOT
+from .evolution import EvolutionEngine, DEFAULT_OBJECTIVE
 from .budget import BudgetError
 from .local_test import run_checks
 
 
 def serve(host="127.0.0.1", port=8080, fresh=False):
-    engine = Engine(fresh=fresh)
+    engine = EvolutionEngine(fresh=fresh)
     local_report = {"mode": "local", "status": "idle", "external_api_calls": 0}
     local_lock = threading.Lock()
     histories = sorted(engine.directory.glob("*.json"))
@@ -102,10 +103,18 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
             if self.headers.get("X-Genesis-Action") != "evolve":
                 return self.send(403, {"error": "Live evolution action required"})
             try:
-                if not engine.start():
+                length = int(self.headers.get("Content-Length", "0"))
+                if not 0 <= length <= 4096:
+                    return self.send(413, {"error": "Objective request too large"})
+                options = json.loads(self.rfile.read(length)) if length else {}
+                if not isinstance(options, dict) or set(options) - {"objective", "generations", "seed"}:
+                    return self.send(400, {"error": "Only objective, generations and seed may be provided"})
+                if not engine.start(objective=options.get("objective", DEFAULT_OBJECTIVE), generations=options.get("generations", 3), seed=options.get("seed")):
                     return self.send(409, {"error": "Experiment already running"})
             except BudgetError as exc:
                 return self.send(503, {"error": str(exc)})
+            except (ValueError, TypeError) as exc:
+                return self.send(400, {"error": str(exc)})
             threading.Thread(target=engine.run, daemon=True).start()
             self.send(202, {"id": engine.snapshot()["id"]})
 

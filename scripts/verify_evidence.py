@@ -15,6 +15,10 @@ if __name__ == "__main__":
     parser.add_argument("record", type=Path)
     args = parser.parse_args()
     state = json.loads(args.record.read_text())
+    if state.get("engine_version") == 2:
+        from core_genesis.replay import replay_v2
+        print(json.dumps(replay_v2(state), indent=2))
+        sys.exit(0)
     fingerprint = hashlib.sha256((ROOT / "core_genesis/benchmark.py").read_bytes()).hexdigest()
     if state.get("suite_sha256") != fingerprint:
         sys.exit("Suite fingerprint differs; use the benchmark revision that produced this record.")
