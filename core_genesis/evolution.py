@@ -45,7 +45,12 @@ class EvolutionEngine(Engine):
             for file in sorted(self.directory.glob("*.json"), reverse=True):
                 try:
                     prior = json.loads(file.read_text())
-                    if prior.get("engine_version") == 2 and prior.get("status") == "complete":
+                    recoverable = prior.get("status") == "error" and any(node["id"] == prior.get("active_node_id") and node["status"] == "promoted" for node in prior.get("nodes", []))
+                    if prior.get("engine_version") == 2 and (prior.get("status") == "complete" or recoverable):
+                        # Reproduce every gate before restoring a stopped run's
+                        # earned promotions. Malformed output never becomes a team.
+                        from .replay import replay_v2
+                        replay_v2(prior)
                         self.active_team = validate_team(prior["active_strategy"])
                         self.active_memory = prior.get("memory", [])
                         self.ancestor = {"experiment_id": prior["id"], "node_id": prior["active_node_id"]}
@@ -91,7 +96,7 @@ class EvolutionEngine(Engine):
             {"role": "user", "content": prompt}], max_tokens=max_tokens, client=self.client, response_format=response_format)
         self.used_tokens += metrics["usage"]["total_tokens"]
         content = response["choices"][0]["message"].get("content") or ""
-        self.event(role, "Inference completed", **metrics, model=response.get("model"), output=content, input_context=parse_json(prompt), cycle=cycle, execution_kind="remote_model")
+        self.event(role, "Inference completed", **metrics, model=response.get("model"), output=content, finish_reason=response["choices"][0].get("finish_reason"), input_context=parse_json(prompt), cycle=cycle, execution_kind="remote_model")
         with self.lock:
             self.state["cycles"] = max(self.state["cycles"], cycle + 1)
             self.state["inference_calls"] = self.budget.run_snapshot(self.state["id"])["physical_requests"]
@@ -132,11 +137,27 @@ class EvolutionEngine(Engine):
 
     def synthesis_context(self, parent, development):
         # Explicit projection: never serialize full state or held-out records here.
+        competitors = []
+        for node in self.state["nodes"]:
+            if not node["parent_id"]:
+                continue
+            records = [record for record in self.state["runs"] if record["node_id"] == node["id"] and record["suite"] == "development"]
+            if not records:
+                continue
+            latest = {record["case_id"]: record for record in records}
+            competitors.append({"node_id": node["id"], "parent_id": node["parent_id"], "name": node["team"]["name"],
+                "workers": [{"specialty": agent["specialty"], "tools": agent["tools"]} for agent in node["team"]["agents"]],
+                "coordination": (node.get("design") or {}).get("coordination"),
+                "procedure_source": node.get("procedure_source"), "review_policy": node["team"]["review_policy"],
+                "development_metrics": aggregate(list(latest.values())),
+                "development_failures": brief([record for record in latest.values() if not record["passed"]])[:2]})
         return {"objective": self.state["objective"], "criteria": self.state["criteria"], "parent_team": parent["team"],
                 "contract_semantics": CONTRACT_SEMANTICS,
                 "development_evidence": brief(development),
                 "development_fixtures": [case.context(TOOLS) for case in self.suites["development"]],
                 "development_memory": parent.get("memory_earned", parent["memory_snapshot"]),
+                "development_competitors": competitors[-4:],
+                "development_search_lesson": "Compare actual development work and failures of previous competitors. Do not repeat a development-dominated design without a specific correction. Candidate status, held-out scores and promotion decisions are deliberately excluded from this feedback.",
                 "family_coverage": {kind: {"passed": sum(r["passed"] for r in development if r["family"] == kind),
                     "total": sum(r["family"] == kind for r in development),
                     "capable_workers": [a["id"] for a in parent["team"]["agents"] if a["specialty"] in {"general", kind}]} for kind in ("latency", "capacity", "routing")},
@@ -163,7 +184,7 @@ class EvolutionEngine(Engine):
                 "extra_review": "Optional separate controller review. Commit ALWAYS independently reviews, even when false.",
                 "procedure_source": {"compile": "Nemotron compiles new general reference rules", "reuse_memory": "No compiler request; use ONLY inherited development-verified rules, with automatic memory recall capability"}},
             "operator_preconditions": {"reuse_memory_available": reusable, "reason": "Compiler-free reuse is available only after all three families have actual development-verified reference rules. Otherwise compile is mandatory; there is no fictional or preloaded rule bank."},
-            "bounds": "Never change worker counts in incidents. General can repair all families; latency/capacity/routing workers only their own. All contracts need reference-based rules, not hardcoded values. Each design must explicitly supply instructions, workers, coordination, review_policy, memory_policy, cache_evidence, extra_review, procedure_source."}), response_format=design_schema(allow_memory_reuse=reusable))
+            "bounds": "Use compact JSON. Name <=80 characters; every explanation/team instruction <=180 characters; each worker instruction <=120 characters. Two designs must fit the 1800-token output budget. Never change worker counts in incidents. All contracts need reference-based rules, not hardcoded values. Each design must explicitly supply instructions, workers, coordination, review_policy, memory_policy, cache_evidence, extra_review, procedure_source."}), response_format=design_schema(allow_memory_reuse=reusable))
         observation, mutations = response.get("observation"), response.get("mutations")
         if not isinstance(observation, dict) or not isinstance(observation.get("weakness"), str) or not isinstance(mutations, list) or len(mutations) != 2:
             raise ValueError("Observer/Scientist must provide an observation and two mutations")
@@ -303,7 +324,9 @@ class EvolutionEngine(Engine):
                 initial["agents"] = [{"id": "executor" if specialty == "general" else specialty, "specialty": specialty, "tools": ["read_logs"], "instructions": "Diagnose " + specialty + " symptoms from available log evidence"} for specialty in specialties]
                 initial["workflow"] = [{"agent": agent["id"], "action": action} for agent in initial["agents"] for action in ("read_logs", "apply_rules")] + [{"agent": "controller", "action": "commit"}]
                 initial["program"] = {}
-            root = self.add_node("g0", 0, validate_team(initial), memory=self.active_memory)
+            root_reason = ("Restored verified team from %s / %s; previous procedures and development memory retained" %
+                           (self.ancestor["experiment_id"], self.ancestor["node_id"])) if self.ancestor and not self.fresh else "Initial log-only experimental control team"
+            root = self.add_node("g0", 0, validate_team(initial), reason=root_reason, memory=self.active_memory)
             if not self.ancestor or self.fresh:
                 if not self.compile([root], [], initial=True):
                     raise ValueError("Initial control program was invalid")
@@ -314,9 +337,29 @@ class EvolutionEngine(Engine):
                 evaluation_id = "round-%d" % generation
                 self.event("System", "Generation %d begins" % generation, generation=generation, parent_id=parent["id"])
                 parent_dev = self.evaluate_node(parent, "development", evaluation_id)
-                nodes = self.propose(parent, generation, parent_dev)
-                if nodes:
-                    nodes = self.compile(nodes, parent_dev)
+                try:
+                    nodes = self.propose(parent, generation, parent_dev)
+                    if nodes:
+                        nodes = self.compile(nodes, parent_dev)
+                except json.JSONDecodeError:
+                    siblings = [node for node in self.state["nodes"] if node["generation"] == generation]
+                    for node in siblings:
+                        if node["status"] != "invalid":
+                            node["status"] = "not_evaluated"
+                    last = next(event for event in reversed(self.state["events"]) if event.get("message") == "Inference completed")
+                    decision = {"generation": generation, "candidate_id": None, "parent_id": parent["id"], "action": "rollback",
+                        "reason": "Malformed or truncated model JSON; no candidate evaluated, verified parent retained; inference stopped",
+                        "kind": "invalid_model_output", "evaluation_id": evaluation_id, "time": time.time(), "comparison": None,
+                        "failure_request_id": last["request_id"]}
+                    with self.lock:
+                        self.state["decisions"].append(decision)
+                        self.state["rounds"].append({"generation": generation, "candidates": [node["id"] for node in siblings], "selected": None,
+                            "active_after": parent["id"], "evaluation_id": evaluation_id})
+                        self.state["inference_stop_reason"] = decision["reason"]
+                        self.state["active_strategy"] = copy.deepcopy(parent["team"])
+                        self.save()
+                    self.event("Gate", "ROLLBACK: " + decision["reason"], generation=generation)
+                    break
                 siblings = [node["id"] for node in self.state["nodes"] if node["generation"] == generation]
                 if not nodes:
                     decision = {"generation": generation, "candidate_id": None, "parent_id": parent["id"], "action": "rollback", "reason": "All candidate configurations/programs rejected before execution; baseline retained", "kind": "invalid_mutations", "evaluation_id": evaluation_id, "time": time.time(), "comparison": None}

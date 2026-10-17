@@ -50,6 +50,8 @@ The optional seed reproduces benchmark instances, not stochastic provider output
 
 Generated procedures are a tiny declarative language: copy, increment or decrement an allowlisted evidence reference into an owned configuration field. Only the initial control may make literal guesses. There is no eval, generated Python, shell, arbitrary file access or production remediation.
 
+Remembered executable rules are development-verified; the accompanying natural-language rationale remains a model hypothesis and is labeled accordingly. The Observer also receives development-only scores, work counts and failures from prior competing designs, so it can avoid repeating inefficient approaches without seeing their held-out results or gate decisions.
+
 Architect, Executor, Observer and Scientist are logical stages using the real pinned model. Observer and Scientist share one request to conserve credits. Nemotron compiles procedures once; the local runtime then executes them against every benchmark instance. Local tool calls and deterministic verification are explicitly distinguished from remote model activity in the Arena. The fixed controller can review and commit but cannot acquire tools or write repairs.
 
 ## Evolution and independent evaluation
@@ -91,7 +93,13 @@ Latest verified V2 milestone: [20261017-123548-c377d6](experiments/20261017-1235
 
 Final sealed comparison: **0/6 → 4/6**, retaining G2. Seven genuine candidate/control nodes, 132 executions and all three decisions reproduce independently. Nine physical attempts (one retry), 19,924 reported tokens and **$0.0022272 estimated usage plus failed-attempt reserve**. Two development-verified memory lessons were earned. Capacity repair remains a measurable weakness; G3's stronger development result did not bypass the gate.
 
-The current network-disabled suite contains **46 passing tests**. Chrome checks cover graph/inspector interaction, real tool traces, captured reasoning, mobile layout and zero inference from read-only activity.
+Subsequent genuine continuation [20261017-123736-61ea83](experiments/20261017-123736-61ea83.json) repaired capacity and earned two additional promotions: **5/6 → 6/6** on development and fresh validation, then **38 → 36 interpreter work units** at unchanged 6/6. Its third proposal was truncated; that original stopped record is preserved without retroactively adding sealed results.
+
+[20261017-124001-ae2c9e](experiments/20261017-124001-ae2c9e.json) independently replayed and restored that verified team, completed three more competitive rounds, and passed **6/6 on a new sealed shard**. The starting team also passed 6/6: this is continued correctness, not a fabricated additional gain. Memory-reuse competitors executed genuine recalled rules and avoided compiler requests, but failed to improve measured work and were rejected. This run used six physical requests, 16,816 reported tokens and an estimated **$0.0012155**. Its 132 executions and three decisions replay independently.
+
+The Arena connects the four accepted mutations across these actual histories, with direct links to their source experiments. Each experiment still shows all competing branches and rejected proposals. Scores from different sealed shards are never treated as identical-task comparisons.
+
+The current network-disabled suite contains **47 passing tests**. Chrome checks cover graph/inspector interaction, real tool traces, captured reasoning, mobile layout and zero inference from read-only activity.
 
     python3 -m unittest discover -s tests -v
     python3 -m core_genesis.local_test
@@ -110,6 +118,7 @@ The preserved V0 experiment [20261017-114030-02b57b](experiments/20261017-114030
 - Pinned model: nvidia/Nemotron-3.5-Lightning-30B-A3B. Original core_genesis/crusoe.py is preserved.
 - Architect output maximum 350 tokens; other reasoning maximum 1,800. Input messages plus output schema must fit 24KB; conservative token framing is reserved before HTTP.
 - Provider-constrained JSON plus independent runtime validation. Empty or invalid output stops safely; no hidden paid correction loop.
+- Malformed later-generation JSON records a rollback, stops further inference and finishes local sealed evaluation of the verified parent. Previously earned promotions in an interrupted run can be restored only after independent gate replay succeeds.
 - Decimal accounting, cross-process locks and atomic persistent reservations. Reported usage settles estimated costs; missing usage, timeouts and failures retain full reserves.
 - Official [Crusoe pricing](https://www.crusoe.ai/cloud/pricing) verified October 17: $0.05/million input and $0.20/million output tokens; cached discounts ignored. Prices expire after 24 hours. Unknown, invalid or expired pricing fails closed.
 - Legacy uncertain usage and possible old hidden retries have explicit conservative allowances in the same ledger. Do not delete budget/ledger.json to reset spending.

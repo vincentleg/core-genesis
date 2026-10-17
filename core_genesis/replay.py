@@ -101,8 +101,26 @@ def replay_v2(state):
         for key in ("tool_calls", "rule_steps", "workflow_steps", "work_units", "memory_hits"):
             if actual["metrics"][key] != record["metrics"][key]:
                 raise ValueError("Work accounting mismatch")
+    active_id = "g0"
     for round_info, decision in zip(state["rounds"], state["decisions"]):
         generation, evaluation_id = round_info["generation"], round_info["evaluation_id"]
+        if decision["parent_id"] != active_id:
+            raise ValueError("Decision does not descend from the verified active team")
+        if decision["action"] == "promote":
+            active_id = decision["candidate_id"]
+        if round_info["active_after"] != active_id:
+            raise ValueError("Recorded active lineage differs from the gate decision")
+        if decision["kind"] == "invalid_model_output":
+            failure = next((event for event in state["events"] if event.get("request_id") == decision.get("failure_request_id") and event.get("message") == "Inference completed"), None)
+            if not failure or decision["action"] != "rollback" or round_info["selected"] is not None:
+                raise ValueError("Malformed-output rollback lacks actual inference evidence")
+            try:
+                json.loads(failure["output"])
+            except json.JSONDecodeError:
+                if any(r["node_id"] in round_info["candidates"] and r["evaluation_id"] == evaluation_id for r in state["runs"]):
+                    raise ValueError("Uncompiled candidate was executed")
+                continue
+            raise ValueError("Recorded malformed model JSON is actually valid")
         def records(node_id, suite):
             return [r for r in state["runs"] if r["node_id"] == node_id and r["suite"] == suite and r["evaluation_id"] == evaluation_id]
         def score(node_id):
@@ -124,5 +142,10 @@ def replay_v2(state):
             raise ValueError("Promotion/rollback replay mismatch")
     if len(state["rounds"]) != len(state["decisions"]):
         raise ValueError("Incomplete decision history")
+    if state["active_node_id"] != active_id or state.get("active_strategy") != nodes[active_id]["team"]:
+        raise ValueError("Restored active configuration differs from verified lineage")
+    active_memory = nodes[active_id].get("memory_earned", nodes[active_id]["memory_snapshot"])
+    if state.get("memory") != active_memory:
+        raise ValueError("Restored active memory differs from verified lineage")
     return {"verified_executions": len(state["runs"]), "verified_decisions": len(state["decisions"]), "verified_nodes": len(nodes),
             "external_api_calls": 0, "note": "Programs, tool traces, work counts, development selection and independent gates reproduced. Wall-clock latency is a historical measurement, not replayed."}

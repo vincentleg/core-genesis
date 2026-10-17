@@ -7,6 +7,7 @@ const money = value => Number(value || 0).toFixed(5);
 let state = {}, budget = null, mode = 'recorded', archived = false, selection = null;
 let inspectorTab = 'changes', feedFilter = 'all', requestEpoch = 0, battleAuto = true, previousRun = null, localReport = null;
 let recordIndex = new Map();
+const ancestryCache = new Map();
 
 function html(id, markup) {
   if ($(id).innerHTML !== markup) $(id).innerHTML = markup;
@@ -55,17 +56,17 @@ function render(s) {
   $('stat-generation').textContent = s.engine_version === 2 ? String(s.current_generation ?? 0).padStart(2,'0') : '—';
   $('stat-team').textContent = s.active_strategy?.name || nodes()[0]?.team.name || 'No verified V2 team';
   $('stat-score').textContent = pct(sealed?.active);
-  $('stat-score-detail').textContent = sealed ? fraction(sealed.active) + ' · initial control ' + fraction(sealed.baseline) : 'Sealed cases open after final mutation';
+  $('stat-score-detail').textContent = sealed ? fraction(sealed.active) + ' · '+(s.ancestor?'starting team ':'initial control ')+fraction(sealed.baseline) : 'Sealed cases open after final mutation';
   $('stat-candidates').textContent = nodes().length ? String(nodes().length - 1).padStart(2,'0') : '—';
-  $('stat-candidate-detail').textContent = nodes().length ? (s.rounds || []).length + '/' + s.requested_generations + ' rounds evaluated · 2 siblings per round' : 'No candidate lineage in this artifact';
+  $('stat-candidate-detail').textContent = nodes().length ? (s.rounds || []).length + '/' + s.requested_generations + ' rounds assessed · up to 2 siblings per round' : 'No candidate lineage in this artifact';
   const inferredCalls = (s.events || []).filter(e => e.usage).length;
   $('stat-requests').textContent = s.inference_calls ?? (inferredCalls || '—');
   const tokenCount = s.total_tokens ?? (s.events || []).reduce((n,e) => n + (e.usage?.total_tokens || 0),0);
   $('stat-cost').textContent = tokenCount.toLocaleString() + ' reported tokens' + (s.cost_usd != null ? ' · ~$' + money(s.cost_usd) + ' est.' : ' · unpriced historical run');
-  const outcome = s.status === 'error' ? ['SAFE STOP',s.error_detail || s.error] : running ? ['RESEARCH IN PROGRESS','Testing the next procedure'] : sealed ? ['SEALED OBJECTIVE',s.objective_achieved ? 'All challenge incidents restored' : 'Weaknesses remain measurable'] : ['HISTORICAL EVIDENCE','V0 execution record'];
+  const outcome = s.status === 'error' ? ['SAFE STOP',s.error_detail || s.error] : running ? ['RESEARCH IN PROGRESS','Testing the next procedure'] : s.inference_stop_reason ? ['INFERENCE STOPPED SAFELY','Verified team retained; sealed evaluation completed'] : sealed ? ['SEALED OBJECTIVE',s.objective_achieved ? 'All challenge incidents restored' : 'Weaknesses remain measurable'] : ['HISTORICAL EVIDENCE','V0 execution record'];
   html('experiment-outcome','<span>' + esc(outcome[0]) + '</span><b>' + esc(outcome[1]) + '</b>');
   if (!selection || !nodes().some(n => n.id === selection)) selection = s.active_node_id || nodes()[0]?.id || null;
-  renderGraph(); renderActivity(); renderInspector(); renderBattle(); renderMemory(); renderCriteria();
+  renderGraph(); renderActivity(); renderInspector(); renderBattle(); renderMemory(); renderCriteria(); renderAncestry(s);
   $('download').href = s.id ? '/api/experiments/' + encodeURIComponent(s.id) : '/api/state';
   updateControls();
 }
@@ -81,7 +82,7 @@ function renderGraph() {
   const positions = new Map(list.map(n => [n.id,{x:32+n.generation*260,y:n.generation===0?116:n.id.endsWith('a')?52:180}]));
   svg.setAttribute('viewBox','0 0 1040 306');
   let markup = '<defs><filter id="node-glow"><feGaussianBlur stdDeviation="5"/></filter></defs>';
-  for (let g=0;g<=3;g++) markup += '<text class="graph-generation" x="' + (136+g*260) + '" y="22" text-anchor="middle">GENERATION ' + g + '</text>';
+  for (let g=0;g<=3;g++) markup += '<text class="graph-generation" x="' + (136+g*260) + '" y="22" text-anchor="middle">'+(g?'MUTATION ROUND '+g:'STARTING TEAM')+'</text>';
   for (const node of list) {
     if (!node.parent_id) continue;
     const from = positions.get(node.parent_id), to = positions.get(node.id);
@@ -102,8 +103,49 @@ function renderGraph() {
     markup += '<text class="node-status" x="13" y="75">' + esc(status.toUpperCase()) + '</text></g>';
   }
   if (svg.innerHTML !== markup) svg.innerHTML=markup;
-  $('graph-caption').textContent = list.length + ' actual configurations · parent edges reflect accepted lineage · click to inspect';
-  html('round-timeline',(state.decisions || []).map(d => '<button class="round-item ' + (d.action==='rollback'?'rollback':'') + '" data-node="' + esc(d.candidate_id) + '"><span>ROUND ' + d.generation + '</span><b>' + esc(d.action.toUpperCase()) + ' ' + esc(d.candidate_id) + '</b><span>' + esc(d.kind.replaceAll('_',' ')) + '</span></button>').join('') || '<div class="round-item">The first independent gate has not completed.</div>');
+  html('graph-caption',esc(list.length+' actual configurations · parent edges reflect accepted lineage')+(state.ancestor?' · <button class="reasoning-link ancestor-link" data-experiment="'+esc(state.ancestor.experiment_id)+'">Restored '+esc(state.ancestor.node_id)+' from '+esc(state.ancestor.experiment_id)+' ↗</button>':' · click to inspect'));
+  html('round-timeline',(state.decisions || []).map(d => '<button class="round-item ' + (d.action==='rollback'?'rollback':'') + '" data-node="' + esc(d.candidate_id||d.parent_id) + '"><span>ROUND ' + d.generation + '</span><b>' + esc(d.action.toUpperCase()) + ' ' + esc(d.candidate_id||'NO VALID CANDIDATE') + '</b><span>' + esc(d.kind.replaceAll('_',' ')) + '</span></button>').join('') || '<div class="round-item">The first independent gate has not completed.</div>');
+}
+
+async function ancestorRecord(id) {
+  if(!/^[0-9a-f-]+$/.test(id))throw Error('Invalid ancestry identifier');
+  if(!ancestryCache.has(id))ancestryCache.set(id,fetch('/api/experiments/'+id).then(async response=>{
+    if(!response.ok)throw Error('Ancestry record unavailable');
+    return response.json();
+  }).catch(error=>{ancestryCache.delete(id);throw error;}));
+  return ancestryCache.get(id);
+}
+
+async function acceptedAncestry(record,nodeId,seen=new Set()) {
+  const key=record.id+':'+nodeId;
+  if(seen.has(key)||seen.size>=32)throw Error('Ancestry cycle or limit');
+  seen.add(key);
+  const node=(record.nodes||[]).find(n=>n.id===nodeId);
+  if(!node)throw Error('Missing ancestry node');
+  let previous=[];
+  if(node.parent_id)previous=await acceptedAncestry(record,node.parent_id,seen);
+  else if(record.ancestor){
+    previous=await acceptedAncestry(await ancestorRecord(record.ancestor.experiment_id),record.ancestor.node_id,seen);
+    return previous; // A restored root is the same team, not another mutation.
+  }
+  if(node.parent_id&&node.status!=='promoted')throw Error('Unpromoted node in accepted ancestry');
+  return previous.concat({experiment:record.id,node,decision:node.decision});
+}
+
+async function renderAncestry(record) {
+  const id=record.id,epoch=requestEpoch;
+  if(record.engine_version!==2||!record.active_node_id){html('verified-ancestry','');return;}
+  try{
+    const chain=await acceptedAncestry(record,record.active_node_id);
+    if(state.id!==id||requestEpoch!==epoch)return;
+    $('stat-generation').textContent=String(chain.length-1).padStart(2,'0');
+    html('verified-ancestry','<span class="ancestry-label">ACCEPTED ANCESTRY<br><small>Across genuine experiment records</small></span><div class="ancestry-chain">'+chain.map((entry,index)=>{
+      const score=entry.decision?.comparison?.held_out?.candidate;
+      return '<button class="ancestry-node" data-experiment="'+esc(entry.experiment)+'" data-ancestry-node="'+esc(entry.node.id)+'"><span>G'+index+' · '+esc(entry.node.id.toUpperCase())+'</span><b>'+esc(index?entry.decision?.kind.replaceAll('_',' '):'log-only control')+'</b><small>'+(score?'Validation '+fraction(score):'Measured before mutation')+' ↗</small></button>';
+    }).join('')+'</div>');
+  }catch(error){
+    if(state.id===id&&requestEpoch===epoch){$('stat-generation').textContent='—';html('verified-ancestry','<span class="ancestry-label">Ancestry evidence unavailable; no cumulative generation inferred.</span>');}
+  }
 }
 
 function renderActivity() {
@@ -138,10 +180,10 @@ function renderInspector() {
     return;
   }
   const decision=node.decision;
-  html('inspector-summary','<h3>'+esc(node.team.name)+'</h3><p>'+esc(node.reason)+'</p>'+(node.invalid_reason?'<p class="fail">Rejected before execution: '+esc(node.invalid_reason)+'</p>':'')+'<div class="node-meta">PARENT '+esc(node.parent_id||'NONE / CONTROL')+' · '+esc(node.status.replaceAll('_',' ').toUpperCase())+(decision?' · '+esc(decision.kind.replaceAll('_',' ').toUpperCase()):'')+'</div>');
+  html('inspector-summary','<h3>'+esc(node.team.name)+'</h3><p>'+esc(node.reason)+'</p>'+(node.invalid_reason?'<p class="fail">Rejected before execution: '+esc(node.invalid_reason)+'</p>':'')+'<div class="node-meta">PARENT '+esc(node.parent_id||(state.ancestor?state.ancestor.node_id+' / '+state.ancestor.experiment_id:'NONE / CONTROL'))+' · '+esc(node.status.replaceAll('_',' ').toUpperCase())+(decision?' · '+esc(decision.kind.replaceAll('_',' ').toUpperCase()):'')+'</div>');
   let content='';
   if(inspectorTab==='changes') {
-    if(!node.changes.length) content=empty('Initial control configuration.','The control is measured before any competing team is promoted.');
+    if(!node.changes.length) content=empty(state.ancestor?'Restored verified configuration.':'Initial control configuration.',state.ancestor?'This starting team retains the procedure and development memory of its recorded ancestor.':'The control is measured before any competing team is promoted.');
     else content=node.changes.map(change=>'<details class="change" data-field="'+esc(change.field)+'"><summary>'+esc(change.label)+'<small>'+esc(change.field)+'</small></summary><div class="diff-grid"><div><label>PARENT</label><pre>'+json(change.before)+'</pre></div><div><label>CANDIDATE</label><pre>'+json(change.after)+'</pre></div></div></details>').join('');
     if(decision)content+='<p class="program-note">'+esc(decision.reason)+'</p>';
   } else if(inspectorTab==='team') {
@@ -202,7 +244,7 @@ function renderBattle() {
 function renderMemory() {
   const lessons=state.memory||[];
   $('memory-count').textContent=lessons.length+' VERIFIED LESSONS';
-  html('memory-content',lessons.map(m=>'<article class="lesson"><h4>'+esc(m.family)+'<span>DEVELOPMENT VERIFIED</span></h4><p>'+esc(m.principle)+'</p><small>'+m.rules.length+' reusable reference rules · source '+esc(m.source_node_id)+'<br>'+esc(m.source_case_ids.join(', '))+'</small></article>').join('')||empty('No verified reusable lessons yet.','Only rules actually applied in passing development cases can enter memory. Held-out evidence is excluded.'));
+  html('memory-content',lessons.map(m=>'<article class="lesson"><h4>'+esc(m.family)+'<span>RULES DEVELOPMENT VERIFIED</span></h4><p><small>MODEL RATIONALE · HYPOTHESIS</small><br>'+esc(m.principle)+'</p><small>'+m.rules.length+' reusable reference rules · source '+esc(m.source_node_id)+'<br>'+esc(m.source_case_ids.join(', '))+'</small></article>').join('')||empty('No verified reusable lessons yet.','Only rules actually applied in passing development cases can enter memory. Held-out evidence is excluded.'));
 }
 function renderCriteria() {
   html('criteria-content',(state.criteria||[]).map((c,i)=>'<div class="criterion"><span>'+String(i+1).padStart(2,'0')+'</span><div><h4>'+esc(c.description)+'</h4><p>'+esc(c.metric)+(c.target!==undefined?' · target '+esc(c.target):'')+'</p></div></div>').join('')+(state.suite_manifest?'<div class="criteria-seed">REPRODUCTION SEED '+esc(state.suite_manifest.seed)+'<br>SUITE SHA256 '+esc(state.suite_manifest.sha256)+'<br>Fresh validation per round. Sealed challenge never informs another mutation.</div>':empty('Independent verification stays mandatory.','The Architect may interpret the objective but cannot relax the promotion or safety gate.')));
@@ -243,7 +285,7 @@ function renderLocal(report) {
   $('stat-candidates').textContent='—';$('stat-candidate-detail').textContent='No fabricated candidate activity';
   $('stat-requests').textContent='0';$('stat-cost').textContent='$0 · zero external API calls';
   html('experiment-outcome','<span>LOCAL VERIFICATION</span><b>'+esc(report.passed?'All checks passed':report.status)+'</b>');
-  renderGraph();renderInspector();renderBattle();renderMemory();renderCriteria();
+  renderGraph();renderInspector();renderBattle();renderMemory();renderCriteria();html('verified-ancestry','');
   html('activity-feed',report.output?'<pre class="local-output">'+esc(report.output)+'</pre>':empty('Ready for deterministic local checks.','Network access is disabled in the test process.'));
   $('event-count').textContent=report.test_count?report.test_count+' TESTS':'0 INFERENCE EVENTS';
   updateControls();
@@ -295,6 +337,8 @@ async function action() {
 }
 
 document.addEventListener('click',event=>{
+  const ancestor=event.target.closest('[data-experiment]');
+  if(ancestor)openExperiment(ancestor.dataset.experiment,ancestor.dataset.ancestryNode);
   const node=event.target.closest('[data-node]');
   if(node){selection=node.dataset.node;renderGraph();renderInspector();}
   const evidence=event.target.closest('[data-evidence]');
@@ -313,13 +357,19 @@ $('run-action').addEventListener('click',action);
 $('close-evidence').addEventListener('click',()=>$('evidence-dialog').close());
 $('graph-fit').addEventListener('click',()=>{$('graph-scroll').scrollTo({left:0,behavior:'smooth'});});
 for(const id of ['battle-left','battle-right'])$(id).addEventListener('change',()=>{battleAuto=false;renderBattle();});
-$('archive').addEventListener('change',async()=>{
-  const id=$('archive').value;requestEpoch++;
-  if(!id){archived=false;await poll();return;}
+async function openExperiment(id,nodeId){
+  requestEpoch++;const epoch=requestEpoch;
   try{
     const response=await fetch('/api/experiments/'+encodeURIComponent(id));if(!response.ok)throw Error('Unknown experiment');
-    const record=await response.json();mode='recorded';$('mode').value=mode;archived=true;render(record);
+    const record=await response.json();if(epoch!==requestEpoch)return;
+    mode='recorded';$('mode').value=mode;$('archive').value=id;archived=true;render(record);
+    if(nodeId){selection=nodeId;renderGraph();renderInspector();}
   }catch(error){$('action-error').textContent=error.message;}
+}
+$('archive').addEventListener('change',async()=>{
+  const id=$('archive').value;
+  if(!id){requestEpoch++;archived=false;await poll();return;}
+  await openExperiment(id);
 });
 poll();refreshBudget();refreshHistory();
 setInterval(poll,1500);setInterval(refreshBudget,10000);setInterval(refreshHistory,15000);

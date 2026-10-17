@@ -39,14 +39,15 @@
   <div class="run-header"><div class="eyebrow"><span id="status-light"></span><span id="run-status">RECORDED EVIDENCE</span><span class="header-slash">/</span><span id="run-id">NO RUN SELECTED</span></div><span id="mode-badge" class="mode-badge">REPLAY · ZERO API</span></div>
   <section class="hero"><div><h1>Evolution is a process.<br><em>Improvement is a result.</em></h1><p id="objective-display">Watch an agent team change its own procedure, test the alternatives, and earn the next generation.</p></div><div id="experiment-outcome" class="outcome-chip"><span>RESEARCH STATUS</span><b>Awaiting evidence</b></div></section>
   <section class="stat-grid" aria-label="Real execution metrics">
-    <div class="stat"><span>ACTIVE GENERATION</span><strong id="stat-generation">—</strong><small id="stat-team">No verified team yet</small></div>
+    <div class="stat"><span>VERIFIED LINEAGE DEPTH</span><strong id="stat-generation">—</strong><small id="stat-team">No verified team yet</small></div>
     <div class="stat"><span>SEALED CHALLENGE</span><strong id="stat-score">—</strong><small id="stat-score-detail">Never used for mutation</small></div>
     <div class="stat"><span>ACTUAL CANDIDATES</span><strong id="stat-candidates">—</strong><small id="stat-candidate-detail">Branching team configurations</small></div>
     <div class="stat"><span>MODEL REQUESTS</span><strong id="stat-requests">—</strong><small id="stat-cost">No inference on page load</small></div>
   </section>
   <section class="panel lineage-panel" id="lineage">
-    <div class="panel-title"><h2><span class="section-index">01</span> Evolution graph <span class="label-new">LIVE LINEAGE</span></h2><div class="graph-legend"><span><i class="dot promoted"></i>Promoted</span><span><i class="dot rejected"></i>Rolled back</span><span><i class="dot neutral"></i>Not selected</span></div></div>
+    <div class="panel-title"><h2><span class="section-index">01</span> Evolution graph <span class="label-new">EXPERIMENT LINEAGE</span></h2><div class="graph-legend"><span><i class="dot promoted"></i>Promoted</span><span><i class="dot rejected"></i>Rolled back</span><span><i class="dot neutral"></i>Not selected</span></div></div>
     <div class="graph-toolbar"><span id="graph-caption">Every branch is a real candidate. Click to inspect its mutation.</span><button id="graph-fit" class="quiet">FIT GRAPH ↔</button></div>
+    <div id="verified-ancestry" class="verified-ancestry" aria-label="Accepted ancestry across experiments"></div>
     <div class="graph-scroll" id="graph-scroll"><svg id="evolution-graph" role="img" aria-label="Candidate evolution tree"></svg><div id="graph-empty" class="empty-state"><span>⌬</span><h3>No evolutionary tree captured yet.</h3><p>Select Live evolution to begin an actual experiment.<br>Older V0 evidence remains available in the archive.</p></div></div>
     <div id="round-timeline" class="round-timeline"></div>
   </section>

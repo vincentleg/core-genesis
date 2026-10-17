@@ -208,6 +208,40 @@ class GenerationTransport:
 
 
 class EvolutionTests(unittest.TestCase):
+    def test_truncated_later_proposal_keeps_verified_gains_and_finishes_sealed(self):
+        class TruncatedTransport(GenerationTransport):
+            def chat(self, messages, **kwargs):
+                result = super().chat(messages, **kwargs)
+                if "Scientist" in messages[0]["content"] and self.generation == 3:
+                    result["choices"][0]["message"]["content"] = '{"observation":'
+                    result["choices"][0]["finish_reason"] = "length"
+                return result
+        with tempfile.TemporaryDirectory() as directory:
+            engine = EvolutionEngine(directory, TruncatedTransport(), fresh=True, budget=RequestBudget(Path(directory) / ".budget", history=directory))
+            engine.start(seed=123)
+            engine.run()
+            state = engine.snapshot()
+            self.assertEqual(state["status"], "complete", state.get("error_detail"))
+            self.assertEqual(state["inference_calls"], 7)
+            self.assertEqual(state["active_node_id"], "g2a")
+            self.assertEqual(state["decisions"][-1]["kind"], "invalid_model_output")
+            self.assertEqual(state["rounds"][-1]["candidates"], [])
+            self.assertEqual(state["sealed_comparison"]["active"]["passed"], 6)
+            from core_genesis.replay import replay_v2
+            self.assertEqual(replay_v2(state)["verified_decisions"], 3)
+            restored = EvolutionEngine(directory, fresh=False, budget=engine.budget)
+            self.assertEqual(restored.ancestor["node_id"], "g2a")
+            # Even an interrupted run's already verified promotions can be restored.
+            state["status"] = "error"
+            engine.path.write_text(json.dumps(state))
+            restored = EvolutionEngine(directory, fresh=False, budget=engine.budget)
+            self.assertEqual(restored.ancestor["experiment_id"], state["id"])
+            tampered = copy.deepcopy(state)
+            tampered["decisions"][0]["action"] = "rollback"
+            engine.path.write_text(json.dumps(tampered))
+            restored = EvolutionEngine(directory, fresh=False, budget=engine.budget)
+            self.assertIsNone(restored.ancestor)
+
     def test_operator_search_and_memory_reuse_avoid_a_compiler_request(self):
         class OperatorTransport(GenerationTransport):
             def chat(self, messages, **kwargs):
@@ -275,6 +309,10 @@ class EvolutionTests(unittest.TestCase):
                 if "Scientist" in role:
                     self.assertIn("inspect_contract", prompt["capability_catalog"]["tools"])
                     self.assertIn("inspect_config", prompt["capability_catalog"]["tools"])
+                    for competitor in prompt["development_competitors"]:
+                        self.assertNotIn("status", competitor)
+                        self.assertNotIn("decision", competitor)
+                        self.assertEqual(competitor["development_metrics"]["total"], 6)
             self.assertTrue(all("development-" in case for lesson in state["memory"] for case in lesson["source_case_ids"]))
             entries = state["budget_audit"]["entries"]
             self.assertLessEqual(max(sum(e["cycle"] == cycle for e in entries) for cycle in (0, 1)), 6)
@@ -288,6 +326,10 @@ class EvolutionTests(unittest.TestCase):
             tampered_source["memory"][0]["source_node_id"] = "g0"
             with self.assertRaisesRegex(ValueError, "never promoted"):
                 replay_v2(tampered_source)
+            tampered_active = copy.deepcopy(state)
+            tampered_active["active_strategy"] = tampered_active["nodes"][0]["team"]
+            with self.assertRaisesRegex(ValueError, "active configuration"):
+                replay_v2(tampered_active)
             tampered = copy.deepcopy(state)
             tampered["runs"][0]["passed"] = not tampered["runs"][0]["passed"]
             with self.assertRaises(ValueError):
