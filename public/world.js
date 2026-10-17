@@ -107,7 +107,7 @@ function showEvolution(){
 }
 function showAgent(actor){
  const latest=actor.lastAction;
- if(actor.company){
+ if(actor.company||latest?.company){
   const missionState=companyControl?.state.mission;
   return context('<span class="context-icon">◈</span><span class="capability">'+(missionState.status==='running'?'LIVE COMPANY ACTIVITY':'RECORDED COMPANY ACTIVITY')+'</span><h2>'+esc(actor.role)+'</h2><p>'+esc(actor.role.startsWith('Synthetic')?'Synthetic persona, not a real user. Its feedback is a model hypothesis.':'A named department actor driven by actual mission events.')+'</p><h3>Mission</h3><p>'+esc(missionState.objective||'No mission')+'</p><h3>Current state</h3><p>'+esc(missionState.departments?.[actor.home]?.state||'idle')+' · Configuration V'+esc(missionState.configuration?.version||0)+'</p><h3>Last recorded activity</h3><p>'+esc(latest?.message||'No event dispatched')+'</p><button class="secondary" data-company="audit">Inspect actual handoffs and audit ↗</button>');
  }

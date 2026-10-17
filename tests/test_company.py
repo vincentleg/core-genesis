@@ -142,6 +142,26 @@ class CompanyTests(unittest.TestCase):
         self.assertIn("output_sha256", public["mission"]["events"][0])
         self.assertEqual(private["artifacts"]["growth"]["posts"][0]["text"], "Private draft text")
 
+    def test_promoted_configuration_requires_replayable_provenance_before_reuse(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            client = MissionTransport()
+            company = Company(root / 'company', RequestBudget(root / 'budget', history=root / 'history'), client, snapshot)
+            company.start('Analyze CORE and preserve a verified policy.')
+            company.run()
+            original = company.snapshot()
+            following = company.start('Analyze CORE using the independently verified policy.')
+            self.assertEqual(following['configuration']['version'], 1)
+            self.assertEqual(following['configuration']['source_mission'], original['id'])
+            self.assertEqual(following['configuration']['policy'], STRICT_POLICY)
+            self.assertEqual(len(client.prompts), 9)  # Starting never calls inference.
+            company.state['status'] = 'interrupted'
+            changed = json.loads(company.policy_path.read_text())
+            changed['policy']['exact_quotes'] = False
+            company.write(company.policy_path, changed)
+            with self.assertRaisesRegex(ValueError, 'differs'):
+                company.start('Analyze CORE with a tampered active policy.')
+
     def test_ceo_pause_blocks_missions_and_centralized_inference_without_a_call(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

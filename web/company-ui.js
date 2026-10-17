@@ -114,7 +114,7 @@ export function mountCompany({campus,openContext,showEvidence,escape:esc,capabil
  }
  function animate(event){
   campus()?.ensureAgent(event.agent,event.department);
-  campus()?.showEvent({role:event.agent,message:event.message,time:event.time},event.department);
+  campus()?.showEvent({role:event.agent,message:event.message,time:event.time,company:true},event.department);
   if(event.execution_kind==='independent_gate'&&state.mission.evolution){
    const evolution=state.mission.evolution;
    campus()?.applyPolicy(evolution.active_policy,evolution.resulting_version,evolution.action==='promote');

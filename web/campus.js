@@ -233,7 +233,7 @@ export function createCampus(container,{onDepartment,onAgent,onReady,onError}={}
  function showEvent(event,department){
   activeDepartment=department;
   const now=performance.now(),target=DEPARTMENTS.find(d=>d.id===department)||DEPARTMENTS[0];
-  const roles=[...actors.keys()].filter(role=>!actors.get(role).worker&&event.role?.includes(role));
+  const roles=[...actors.keys()].filter(role=>!actors.get(role).worker&&(event.company?event.role===role:event.role?.includes(role)));
   for(const role of roles){
    const a=actors.get(role);a.origin.copy(a.group.position);a.destination.set(target.x+2.4,.33,target.z+1.4);a.started=now;a.moving=true;a.lastAction=event;
   }
