@@ -71,3 +71,39 @@ a.deliverable:hover{border-color:var(--teal)}
 @media (max-width:900px){.hero{max-width:none;right:16px}.hero-pair{grid-template-columns:1fr}.run-card{top:auto;bottom:190px;max-height:34vh}.pipeline{grid-template-columns:repeat(3,1fr)}.deliverables,.final-foot,.gov{grid-template-columns:1fr}.run{left:12px;right:12px;bottom:12px;grid-template-columns:1fr}.run-controls{grid-column:1;grid-row:auto;justify-content:flex-start}.crew-tag span{display:none}}
 .welcome:not(.exploring)~.world-corner{display:none}
 .shots.two{grid-template-columns:1fr 1fr}.shots.two img{height:150px}
+/* Demo refinement: plain-English headline banner, compact controls, quieter tags. */
+.run-hl{position:fixed;left:50%;top:84px;transform:translateX(-50%);z-index:6;width:min(720px,calc(100vw - 32px));text-align:center;background:#fbfaf7f5;border:1px solid #fff;border-radius:14px;box-shadow:0 16px 44px #22302c2e;padding:14px 22px 12px;animation:hl-in .45s ease}
+.run-hl .run-badge{font-size:10px;letter-spacing:1.6px}
+.run-hl em{display:block;font-style:normal;font-size:34px;font-weight:700;color:var(--teal);letter-spacing:-1px;margin-top:4px}
+.run-hl strong{display:block;font-size:clamp(19px,2.2vw,27px);line-height:1.15;letter-spacing:-.5px;text-transform:uppercase;color:#1b2724;margin:6px 0 6px}
+.run-hl p{margin:0 auto;max-width:600px;font-size:14px;line-height:1.45;color:#38433e}
+.run-hl button{margin-top:8px;border:0;background:none;color:var(--teal);font-size:12px;font-weight:600;text-decoration:underline}
+@keyframes hl-in{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}
+@media (prefers-reduced-motion:reduce){.run-hl{animation:none}}
+.run{left:50%;right:auto;transform:translateX(-50%);width:min(980px,calc(100vw - 32px));bottom:16px;padding:10px 14px;grid-template-columns:1fr auto;gap:6px 14px;align-items:center}
+.run-head{grid-column:1;font-size:11px;letter-spacing:.4px;color:#46514c}
+.run-acts{grid-column:1;margin-top:0}
+.run-acts button{height:8px}
+.run-controls{grid-column:2;grid-row:1/3}
+.run-controls button{font-size:12px;color:#22302c}
+.run-card{top:auto;bottom:96px;right:16px;max-height:calc(100vh - 380px);width:min(400px,calc(100vw - 32px));font-size:13px;color:#2f3a35}
+.fine{color:#535c57}
+.crew-tag{font-size:11px;padding:3px 8px;opacity:.82}
+.crew-tag span{display:none}
+.crew-tag[data-active="1"]{opacity:1;z-index:2;box-shadow:0 0 0 2px var(--c),0 6px 16px #22302c33;font-size:12px}
+.crew-tag[data-active="1"] span{display:inline}
+.autoplay-chip{margin-top:14px;display:inline-flex;gap:10px;align-items:center;font-size:12px;color:#22302c;background:#fbfaf7;border:1px solid #22302c26;border-radius:20px;padding:6px 8px 6px 14px}
+.autoplay-chip button{border:1px solid #22302c40;background:white;border-radius:14px;padding:4px 10px;font-size:11px}
+.gen-note{display:block;margin-top:6px;font-size:10px;line-height:1.4;color:#5d6560;max-width:190px}
+.outcomes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 14px}
+.outcome{display:block;background:#e6efe9;border:1px solid #cfdfd6;border-radius:12px;padding:16px}
+.outcome span{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--teal);color:white;font-weight:700}
+.outcome b{display:block;font-size:17px;line-height:1.2;margin:10px 0 6px;color:#1b2724}
+.outcome small{display:block;font-size:13px;line-height:1.45;color:#3c4842}
+.outcome:hover{border-color:var(--teal)}
+.ceo-review{display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:#f4e8cd;border:2px solid var(--gold);border-radius:10px;padding:12px 16px;margin-bottom:12px}
+.ceo-review b{letter-spacing:1.4px;color:#6d5524}.ceo-review span{font-size:13px;color:#4b4434}
+.final-more summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--teal);margin:4px 0 8px}
+.final-more .deliverables{margin-top:10px}.pending{font-size:12px;margin-top:10px}
+.run-final{top:52%;max-height:calc(100vh - 200px)}
+@media (max-width:900px){.run-hl{top:76px;padding:10px 14px}.run-hl strong{font-size:18px}.run-hl p{font-size:12px}.run-hl em{font-size:24px}.outcomes{grid-template-columns:1fr}.run{grid-template-columns:1fr}.run-controls{grid-column:1;grid-row:auto}.run-card{bottom:150px;max-height:30vh}.run-final{top:50%;max-height:calc(100vh - 190px)}}

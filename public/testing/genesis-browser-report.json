@@ -1,9 +1,11 @@
 {
  "target": "https://core-genesis-living.vercel.app/",
  "mode": "ACTUAL BROWSER EXECUTION (Playwright Chrome); deterministic scenarios, not human users",
- "finished_at": "2026-10-17T22:43:59.153Z",
- "passed": 4,
- "total": 4,
+ "finished_at": "2026-10-17T23:01:17.253Z",
+ "passed": 5,
+ "total": 5,
+ "autoplay_duration_s": 55.0005,
+ "public_inference_requests": 0,
  "results": [
   {
    "id": "hero",
@@ -12,6 +14,7 @@
     "width": 1440,
     "height": 900
    },
+   "inference_requests": [],
    "passed": true,
    "steps": [
     {
@@ -30,7 +33,7 @@
    "console_errors": [],
    "failed_requests": [],
    "failure": null,
-   "latency_ms": 9514,
+   "latency_ms": 9247,
    "screenshot": "genesis-hero.png"
   },
   {
@@ -40,14 +43,19 @@
     "width": 1440,
     "height": 900
    },
+   "inference_requests": [],
    "passed": true,
    "steps": [
     {
-     "task": "replay starts labeled VERIFIED MISSION REPLAY",
+     "task": "manual start shows VERIFIED MISSION REPLAY headline",
      "passed": true
     },
     {
-     "task": "act 1 shows recorded mission contract",
+     "task": "evidence details open with recorded mission contract",
+     "passed": true
+    },
+    {
+     "task": "pause and resume control",
      "passed": true
     },
     {
@@ -71,11 +79,11 @@
      "passed": true
     },
     {
-     "task": "skip to act 7",
+     "task": "final screen shows three outcomes and READY FOR CEO REVIEW",
      "passed": true
     },
     {
-     "task": "final delivery shows pipeline awaiting CEO integration approval",
+     "task": "restart control returns to act 1",
      "passed": true
     },
     {
@@ -86,7 +94,7 @@
    "console_errors": [],
    "failed_requests": [],
    "failure": null,
-   "latency_ms": 11497,
+   "latency_ms": 17815,
    "screenshot": "genesis-replay.png"
   },
   {
@@ -96,6 +104,7 @@
     "width": 1280,
     "height": 860
    },
+   "inference_requests": [],
    "passed": true,
    "steps": [
     {
@@ -114,7 +123,7 @@
    "console_errors": [],
    "failed_requests": [],
    "failure": null,
-   "latency_ms": 13296,
+   "latency_ms": 10722,
    "screenshot": "genesis-lab.png"
   },
   {
@@ -124,6 +133,7 @@
     "width": 390,
     "height": 844
    },
+   "inference_requests": [],
    "passed": true,
    "steps": [
     {
@@ -138,8 +148,37 @@
    "console_errors": [],
    "failed_requests": [],
    "failure": null,
-   "latency_ms": 6170,
+   "latency_ms": 6050,
    "screenshot": "genesis-mobile.png"
+  },
+  {
+   "id": "autoplay",
+   "role": "Fresh visitor (no click)",
+   "viewport": {
+    "width": 1440,
+    "height": 900
+   },
+   "inference_requests": [],
+   "passed": true,
+   "steps": [
+    {
+     "task": "replay starts automatically without a click",
+     "passed": true
+    },
+    {
+     "task": "complete sequence finishes in 45-60 seconds",
+     "passed": true
+    },
+    {
+     "task": "no automatic restart after finishing",
+     "passed": true
+    }
+   ],
+   "console_errors": [],
+   "failed_requests": [],
+   "failure": null,
+   "latency_ms": 66921,
+   "screenshot": "genesis-autoplay.png"
   }
  ]
 }
