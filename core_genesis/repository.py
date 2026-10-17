@@ -55,7 +55,7 @@ def fetch_snapshot(guard=lambda: None, read=read_public, previous=None):
     sha = branch["commit"]["sha"]
     if not re.fullmatch(r"[0-9a-f]{40}", sha):
         raise ValueError("Invalid immutable commit")
-    if previous and previous.get("commit") == sha and previous.get("repository") == REPO and len(previous.get("sources", [])) >= 2:
+    if previous and previous.get("snapshot_format") == 2 and previous.get("commit") == sha and previous.get("repository") == REPO and len(previous.get("sources", [])) >= 2:
         cached = json.loads(json.dumps(previous))
         cached["source_requests"] = previous.get("source_requests", previous["requests"])
         cached.update(requests=requests, head_rechecked_at=dt.datetime.now(dt.timezone.utc).isoformat(), cache_reused=True)
@@ -101,7 +101,7 @@ def fetch_snapshot(guard=lambda: None, read=read_public, previous=None):
         sources.append(source)
     if len(sources) < 2:
         raise ValueError("Insufficient safe public evidence")
-    return {"repository": REPO, "read_only": True, "commit": sha, "default_branch": metadata["default_branch"],
+    return {"snapshot_format": 2, "repository": REPO, "read_only": True, "commit": sha, "default_branch": metadata["default_branch"],
             "retrieved_at": dt.datetime.now(dt.timezone.utc).isoformat(), "metadata_url": API,
             "file_count": len(paths), "structure": sorted([p for p in paths if safe_path(p)], key=lambda p: (
                 0 if "/" not in p else 1 if p.startswith(("src/", "scripts/", "test/", "tests/", ".github/")) else 2 if p.startswith("docs/") else 3, p))[:240],

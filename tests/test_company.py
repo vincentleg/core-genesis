@@ -197,7 +197,7 @@ class CompanyTests(unittest.TestCase):
     def test_cached_immutable_sources_require_rechecking_compact_branch_metadata(self):
         calls = []
         old = snapshot()
-        old.update(repository="vincentleg/core", requests=[])
+        old.update(repository="vincentleg/core", requests=[], snapshot_format=2)
         def read(url, limit, guard):
             calls.append(url)
             if url == API:
