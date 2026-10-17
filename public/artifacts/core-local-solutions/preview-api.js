@@ -1,7 +1,7 @@
 // Explicit browser-only preview. This adapter is not the tested Python backend.
 (()=>{const key='core-first-brick-preview-v1';let spec;
 window.CORE_PREVIEW=async(path,data,review)=>{
- spec=spec||await(await fetch('./spec.json')).json();
+ spec=spec||await(await fetch('/artifacts/core-local-solutions/spec.json')).json();
  const state=JSON.parse(localStorage.getItem(key)||'{"problems":[],"solutions":[]}');
  if(path==='state')return {...state,spec,notice:'BROWSER-ONLY PREVIEW: local browser storage, no Python backend or AI calls. Proposals and local human review never authorize real-world implementation. Download source.zip for the tested Python application.'};
  const text=(v,min,max)=>{if(typeof v!=='string'||v.trim().length<min||v.trim().length>max)throw Error('Please complete required fields within the displayed limits.');return v.trim();};

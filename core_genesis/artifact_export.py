@@ -33,10 +33,13 @@ def export_artifact(mission, output):
     for name in ('index.html', 'app.js', 'style.css', 'spec.json'):
         shutil.copyfile(directory / name, output / name)
     html = (output / 'index.html').read_text().replace('LOCAL WORKING PROTOTYPE', 'BROWSER-ONLY ARTIFACT PREVIEW').replace('<script src="./app.js">', '<script src="./preview-api.js"></script><script src="./app.js">')
+    # Vercel cleanUrls redirects /index.html to the directory without a slash.
+    # Absolute preview assets keep that canonical URL usable; archived Python sources stay intact.
+    html = html.replace('href="./style.css"', 'href="/artifacts/core-local-solutions/style.css"').replace('src="./', 'src="/artifacts/core-local-solutions/')
     (output / 'index.html').write_text(html)
     client = (output / 'app.js').read_text().replace('async function api(path,data,review=false){', 'async function api(path,data,review=false){if(window.CORE_PREVIEW)return window.CORE_PREVIEW(path,data,review);')
     (output / 'app.js').write_text(client)
-    (output / 'preview-api.js').write_text(PREVIEW)
+    (output / 'preview-api.js').write_text(PREVIEW.replace("fetch('./spec.json')", "fetch('/artifacts/core-local-solutions/spec.json')"))
     (output / 'preview-mode.json').write_text(json.dumps({'mode': 'browser_only_preview', 'mission_id': mission['id'], 'python_backend': False, 'fresh_inference': False, 'note': 'Interactive derivative preview uses local browser storage. Actual Python acceptance and original source are in source.zip and build-report evidence.'}))
 
 
