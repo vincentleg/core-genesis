@@ -1,0 +1,12 @@
+.git
+.env
+.env.*
+__pycache__
+*.pyc
+.venv
+node_modules
+experiments
+docs
+.agents
+.codex
+.aws

@@ -1,0 +1,45 @@
+{
+  "captured_at": "2026-10-17T18:42:33.449192+00:00",
+  "note": "Checkpoint snapshot; current authoritative local ledger is budget/ledger.json. Estimated costs are not provider bills.",
+  "recorded_completed_requests_with_usage": 89,
+  "reported_tokens": 52343,
+  "estimated_reported_usage_cost_usd": "0.0043897000",
+  "budget": {
+    "cap_usd": "2.00",
+    "committed_estimate_and_reserves_usd": "0.6563148000",
+    "remaining_usd": "1.3436852000",
+    "legacy": {
+      "records": [
+        "20261017-110634-f75b85",
+        "20261017-110638-712fc2",
+        "20261017-110923-74852a",
+        "20261017-110936-321bc4",
+        "20261017-111056-c8df9d",
+        "20261017-111232-160e6d",
+        "20261017-112830-8df4a3"
+      ],
+      "reported_calls": 77,
+      "reported_tokens": 37162,
+      "estimated_reported_cost_usd": "0.0031739000",
+      "possible_retry_reserve_usd": "0.0198995000",
+      "unknown_attempts_reserved": 12,
+      "unknown_usage_reserve_usd": "0.6320256000",
+      "total_allowance_usd": "0.6550990000",
+      "note": "Conservative allowances, not actual bills. Unknown attempts reserve full 1M model context. Includes existing smoke test and interrupted/failed legacy requests."
+    },
+    "physical_requests": 12,
+    "reported_tokens": 15181,
+    "pricing": {
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "input_usd_per_million": "0.05",
+      "output_usd_per_million": "0.20",
+      "cached_input_usd_per_million": "0.03",
+      "source": "https://www.crusoe.ai/cloud/pricing",
+      "model_source": "https://docs.crusoecloud.com/serverless-inference/index.html",
+      "verified_at": "2026-10-17T18:30:00+00:00",
+      "expires_at": "2026-10-18T18:30:00+00:00",
+      "note": "Serverless Inference table, Nemotron 3.5 Lightning. Cached discounts are deliberately ignored for conservative estimates. Exact existing Crusoe model alias is pinned."
+    },
+    "status": "ready"
+  }
+}

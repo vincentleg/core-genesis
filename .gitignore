@@ -218,3 +218,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Budget locks are ephemeral; the secret-free ledger is retained for audit.
+budget/*.lock
+budget/*.tmp

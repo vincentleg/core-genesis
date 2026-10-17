@@ -1,0 +1,1362 @@
+{
+  "id": "20261017-114030-02b57b",
+  "status": "complete",
+  "started_at": 1792262430.8007638,
+  "suite": "incidents-v1",
+  "suite_sha256": "601cc568038949fca6c2a261ad61db20c177855d1eb1a031ab09c884d5f1fde2",
+  "events": [
+    {
+      "time": 1792262431.4112399,
+      "role": "Architect",
+      "message": "Inference completed",
+      "request_id": "a44d0a1472b24e9aa2f6103af96bba28",
+      "latency_s": 0.605,
+      "usage": {
+        "prompt_tokens": 221,
+        "total_tokens": 332,
+        "completion_tokens": 111,
+        "prompt_tokens_details": null
+      },
+      "cost_estimate_usd": "0.0000332500",
+      "http_status": 200,
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"approach\": \"Read the available log file to identify the primary failure mode. Based on the observed symptoms, apply the minimal configuration repair required to restore system function. Do not speculate on unobserved issues or attempt repairs beyond the scope of the log evidence.\",\n  \"hypothesis\": \"The system failure is likely caused by a misconfiguration or error explicitly documented in the available log file. The primary weakness is the risk of misinterpreting log noise as a critical fault, leading to an unnecessary or incorrect repair attempt.\"\n}"
+    },
+    {
+      "time": 1792262431.412352,
+      "role": "Architect",
+      "message": "Baseline registered",
+      "analysis": {
+        "approach": "Read the available log file to identify the primary failure mode. Based on the observed symptoms, apply the minimal configuration repair required to restore system function. Do not speculate on unobserved issues or attempt repairs beyond the scope of the log evidence.",
+        "hypothesis": "The system failure is likely caused by a misconfiguration or error explicitly documented in the available log file. The primary weakness is the risk of misinterpreting log noise as a critical fault, leading to an unnecessary or incorrect repair attempt."
+      }
+    },
+    {
+      "time": 1792262431.4128551,
+      "role": "Executor",
+      "message": "Diagnosing Gateway drops valid requests",
+      "case_id": "dev-timeout",
+      "version": 0,
+      "split": "development"
+    },
+    {
+      "time": 1792262431.413331,
+      "role": "Executor",
+      "message": "Diagnosing Database queue saturation",
+      "case_id": "dev-pool",
+      "version": 0,
+      "split": "development"
+    },
+    {
+      "time": 1792262431.4138129,
+      "role": "Executor",
+      "message": "Diagnosing Health checks fail after migration",
+      "case_id": "dev-route",
+      "version": 0,
+      "split": "development"
+    },
+    {
+      "time": 1792262431.4143949,
+      "role": "Executor",
+      "message": "Diagnosing Report service intermittent 504s",
+      "case_id": "eval-timeout",
+      "version": 0,
+      "split": "held_out"
+    },
+    {
+      "time": 1792262431.414861,
+      "role": "Executor",
+      "message": "Diagnosing Worker service cannot acquire connections",
+      "case_id": "eval-pool",
+      "version": 0,
+      "split": "held_out"
+    },
+    {
+      "time": 1792262431.4152699,
+      "role": "Executor",
+      "message": "Diagnosing New deployment never becomes ready",
+      "case_id": "eval-route",
+      "version": 0,
+      "split": "held_out"
+    },
+    {
+      "time": 1792262433.032982,
+      "role": "Executor",
+      "message": "Inference completed",
+      "request_id": "4a2dfd86fccc4b47b6b9353f859d24b0",
+      "latency_s": 1.614,
+      "usage": {
+        "prompt_tokens": 1419,
+        "total_tokens": 1798,
+        "completion_tokens": 379,
+        "prompt_tokens_details": null
+      },
+      "cost_estimate_usd": "0.0001467500",
+      "http_status": 200,
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"repairs\": [\n    {\n      \"version\": 0,\n      \"case_id\": \"dev-timeout\",\n      \"diagnosis\": \"Timeout too low causing retry storms on normally completing upstreams\",\n      \"patch\": {\n        \"timeout_ms\": 5000,\n        \"retries\": 2\n      }\n    },\n    {\n      \"version\": 0,\n      \"case_id\": \"dev-pool\",\n      \"diagnosis\": \"Pool size insufficient for steady traffic load\",\n      \"patch\": {\n        \"pool_size\": 20,\n        \"workers\": 4\n      }\n    },\n    {\n      \"version\": 0,\n      \"case_id\": \"dev-route\",\n      \"diagnosis\": \"Health check path mismatch after migration\",\n      \"patch\": {\n        \"health_path\": \"/health\",\n        \"port\": 8080\n      }\n    },\n    {\n      \"version\": 0,\n      \"case_id\": \"eval-timeout\",\n      \"diagnosis\": \"Timeout too low causing gateway to abandon successful upstreams\",\n      \"patch\": {\n        \"timeout_ms\": 5000,\n        \"retries\": 2\n      }\n    },\n    {\n      \"version\": 0,\n      \"case_id\": \"eval-pool\",\n      \"diagnosis\": \"Connection acquisition deadline exceeded during peak load\",\n      \"patch\": {\n        \"pool_size\": 20,\n        \"workers\": 4\n      }\n    },\n    {\n      \"version\": 0,\n      \"case_id\": \"eval-route\",\n      \"diagnosis\": \"Readiness endpoint path mismatch after deployment\",\n      \"patch\": {\n        \"health_path\": \"/health\",\n        \"port\": 8080\n      }\n    }\n  ]\n}"
+    },
+    {
+      "time": 1792262433.0342772,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "dev-timeout",
+      "version": 0,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "request_completes": false,
+          "retry_budget": false
+        },
+        "resulting_config": {
+          "timeout_ms": 5000,
+          "retries": 2
+        }
+      }
+    },
+    {
+      "time": 1792262433.0353642,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "dev-pool",
+      "version": 0,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "load_served": false,
+          "workers_preserved": false
+        },
+        "resulting_config": {
+          "pool_size": 20,
+          "workers": 4
+        }
+      }
+    },
+    {
+      "time": 1792262433.036486,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "dev-route",
+      "version": 0,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "probe_reaches_route": false,
+          "probe_reaches_listener": true
+        },
+        "resulting_config": {
+          "health_path": "/health",
+          "port": 8080
+        }
+      }
+    },
+    {
+      "time": 1792262433.037651,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "eval-timeout",
+      "version": 0,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "request_completes": false,
+          "retry_budget": false
+        },
+        "resulting_config": {
+          "timeout_ms": 5000,
+          "retries": 2
+        }
+      }
+    },
+    {
+      "time": 1792262433.03914,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "eval-pool",
+      "version": 0,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "load_served": false,
+          "workers_preserved": false
+        },
+        "resulting_config": {
+          "pool_size": 20,
+          "workers": 4
+        }
+      }
+    },
+    {
+      "time": 1792262433.040716,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "eval-route",
+      "version": 0,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "probe_reaches_route": false,
+          "probe_reaches_listener": false
+        },
+        "resulting_config": {
+          "health_path": "/health",
+          "port": 8080
+        }
+      }
+    },
+    {
+      "time": 1792262434.7433522,
+      "role": "Observer + Scientist",
+      "message": "Inference completed",
+      "request_id": "1a0da0c449464dbb97aba3cdead39ba9",
+      "latency_s": 1.697,
+      "usage": {
+        "prompt_tokens": 1616,
+        "total_tokens": 1942,
+        "completion_tokens": 326,
+        "prompt_tokens_details": null
+      },
+      "cost_estimate_usd": "0.0001460000",
+      "http_status": 200,
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"observation\": {\n    \"weakness\": \"Configuration values violate service contract limits, causing cascading failures across timeout, pool, and route cases.\",\n    \"evidence\": \"Config values exceed or fall short of contract bounds: timeout_ms 80 vs 400ms deadline; pool_size 2 vs 8 concurrent limit; health_path /health vs registered /readyz.\",\n    \"recommendation\": \"Gather full contract and config evidence before any repair to avoid misaligned patches.\"\n  },\n  \"candidates\": [\n    {\n      \"name\": \"Contract-First Alignment\",\n      \"instructions\": \"Inspect contract then config to find mismatches before repair.\",\n      \"roles\": [\"Architect\", \"Executor\", \"Observer\", \"Scientist\"],\n      \"tools\": [\"inspect_contract\", \"inspect_config\"],\n      \"sequence\": [\"inspect_contract\", \"inspect_config\", \"repair\"],\n      \"verification\": \"final_check\",\n      \"max_attempts\": 1\n    },\n    {\n      \"name\": \"Evidence-First Triage\",\n      \"instructions\": \"Read logs then inspect config to confirm failure root before patching.\",\n      \"roles\": [\"Architect\", \"Executor\", \"Observer\", \"Scientist\"],\n      \"tools\": [\"read_logs\", \"inspect_config\"],\n      \"sequence\": [\"read_logs\", \"inspect_config\", \"repair\"],\n      \"verification\": \"final_check\",\n      \"max_attempts\": 1\n    }\n  ]\n}"
+    },
+    {
+      "time": 1792262434.744189,
+      "role": "Observer",
+      "message": "Weakness analysis complete",
+      "analysis": {
+        "weakness": "Configuration values violate service contract limits, causing cascading failures across timeout, pool, and route cases.",
+        "evidence": "Config values exceed or fall short of contract bounds: timeout_ms 80 vs 400ms deadline; pool_size 2 vs 8 concurrent limit; health_path /health vs registered /readyz.",
+        "recommendation": "Gather full contract and config evidence before any repair to avoid misaligned patches."
+      },
+      "request_id": "1a0da0c449464dbb97aba3cdead39ba9"
+    },
+    {
+      "time": 1792262434.7450519,
+      "role": "Scientist",
+      "message": "Two structured mutations proposed",
+      "request_id": "1a0da0c449464dbb97aba3cdead39ba9"
+    },
+    {
+      "time": 1792262434.747023,
+      "role": "Executor",
+      "message": "Diagnosing Gateway drops valid requests",
+      "case_id": "dev-timeout",
+      "version": 1,
+      "split": "development"
+    },
+    {
+      "time": 1792262434.7478452,
+      "role": "Executor",
+      "message": "Diagnosing Database queue saturation",
+      "case_id": "dev-pool",
+      "version": 1,
+      "split": "development"
+    },
+    {
+      "time": 1792262434.7486331,
+      "role": "Executor",
+      "message": "Diagnosing Health checks fail after migration",
+      "case_id": "dev-route",
+      "version": 1,
+      "split": "development"
+    },
+    {
+      "time": 1792262436.235105,
+      "role": "Executor",
+      "message": "Inference completed",
+      "request_id": "20c729d66e414e57a7113702aeedc2f5",
+      "latency_s": 1.48,
+      "usage": {
+        "prompt_tokens": 800,
+        "total_tokens": 991,
+        "completion_tokens": 191,
+        "prompt_tokens_details": null
+      },
+      "cost_estimate_usd": "0.0000782000",
+      "http_status": 200,
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"repairs\": [\n    {\n      \"version\": 1,\n      \"case_id\": \"dev-timeout\",\n      \"diagnosis\": \"timeout_ms and retries exceed contract limits\",\n      \"patch\": {\n        \"timeout_ms\": 240,\n        \"retries\": 1\n      }\n    },\n    {\n      \"version\": 1,\n      \"case_id\": \"dev-pool\",\n      \"diagnosis\": \"pool_size and workers exceed contract capacity\",\n      \"patch\": {\n        \"pool_size\": 8,\n        \"workers\": 10\n      }\n    },\n    {\n      \"version\": 1,\n      \"case_id\": \"dev-route\",\n      \"diagnosis\": \"health_path and port mismatch contract\",\n      \"patch\": {\n        \"health_path\": \"/readyz\",\n        \"port\": 8080\n      }\n    }\n  ]\n}"
+    },
+    {
+      "time": 1792262436.237081,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "dev-timeout",
+      "version": 1,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "request_completes": false,
+          "retry_budget": true
+        },
+        "resulting_config": {
+          "timeout_ms": 240,
+          "retries": 1
+        }
+      }
+    },
+    {
+      "time": 1792262436.2388139,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "dev-pool",
+      "version": 1,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "load_served": true,
+          "workers_preserved": false
+        },
+        "resulting_config": {
+          "pool_size": 8,
+          "workers": 10
+        }
+      }
+    },
+    {
+      "time": 1792262436.240597,
+      "role": "Verifier",
+      "message": "PASS",
+      "case_id": "dev-route",
+      "version": 1,
+      "checks": {
+        "passed": true,
+        "checks": {
+          "probe_reaches_route": true,
+          "probe_reaches_listener": true
+        },
+        "resulting_config": {
+          "health_path": "/readyz",
+          "port": 8080
+        }
+      }
+    },
+    {
+      "time": 1792262436.2415721,
+      "role": "Executor",
+      "message": "Diagnosing Gateway drops valid requests",
+      "case_id": "dev-timeout",
+      "version": 2,
+      "split": "development"
+    },
+    {
+      "time": 1792262436.242581,
+      "role": "Executor",
+      "message": "Diagnosing Database queue saturation",
+      "case_id": "dev-pool",
+      "version": 2,
+      "split": "development"
+    },
+    {
+      "time": 1792262436.243551,
+      "role": "Executor",
+      "message": "Diagnosing Health checks fail after migration",
+      "case_id": "dev-route",
+      "version": 2,
+      "split": "development"
+    },
+    {
+      "time": 1792262437.241133,
+      "role": "Executor",
+      "message": "Inference completed",
+      "request_id": "45b0478695604fd49badfae4b4ebae5b",
+      "latency_s": 0.993,
+      "usage": {
+        "prompt_tokens": 775,
+        "total_tokens": 985,
+        "completion_tokens": 210,
+        "prompt_tokens_details": null
+      },
+      "cost_estimate_usd": "0.0000807500",
+      "http_status": 200,
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"repairs\": [\n    {\n      \"version\": 2,\n      \"case_id\": \"dev-timeout\",\n      \"diagnosis\": \"timeout_ms too low; retries insufficient for observed retry storms\",\n      \"patch\": {\n        \"timeout_ms\": 120,\n        \"retries\": 5\n      }\n    },\n    {\n      \"version\": 2,\n      \"case_id\": \"dev-pool\",\n      \"diagnosis\": \"pool_size too small for worker count; acquisition timeouts under steady traffic\",\n      \"patch\": {\n        \"pool_size\": 20,\n        \"workers\": 12\n      }\n    },\n    {\n      \"version\": 2,\n      \"case_id\": \"dev-route\",\n      \"diagnosis\": \"health_path mismatch after migration; port config consistent but route invalid\",\n      \"patch\": {\n        \"health_path\": \"/api/health\",\n        \"port\": 8080\n      }\n    }\n  ]\n}"
+    },
+    {
+      "time": 1792262437.243756,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "dev-timeout",
+      "version": 2,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "request_completes": false,
+          "retry_budget": false
+        },
+        "resulting_config": {
+          "timeout_ms": 120,
+          "retries": 5
+        }
+      }
+    },
+    {
+      "time": 1792262437.246044,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "dev-pool",
+      "version": 2,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "load_served": false,
+          "workers_preserved": true
+        },
+        "resulting_config": {
+          "pool_size": 20,
+          "workers": 12
+        }
+      }
+    },
+    {
+      "time": 1792262437.2483358,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "dev-route",
+      "version": 2,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "probe_reaches_route": false,
+          "probe_reaches_listener": true
+        },
+        "resulting_config": {
+          "health_path": "/api/health",
+          "port": 8080
+        }
+      }
+    },
+    {
+      "time": 1792262437.2507079,
+      "role": "Scientist",
+      "message": "Development winner selected; opening held-out gate once",
+      "version": 1
+    },
+    {
+      "time": 1792262437.2523148,
+      "role": "Executor",
+      "message": "Diagnosing Report service intermittent 504s",
+      "case_id": "eval-timeout",
+      "version": 1,
+      "split": "held_out"
+    },
+    {
+      "time": 1792262437.253618,
+      "role": "Executor",
+      "message": "Diagnosing Worker service cannot acquire connections",
+      "case_id": "eval-pool",
+      "version": 1,
+      "split": "held_out"
+    },
+    {
+      "time": 1792262437.254737,
+      "role": "Executor",
+      "message": "Diagnosing New deployment never becomes ready",
+      "case_id": "eval-route",
+      "version": 1,
+      "split": "held_out"
+    },
+    {
+      "time": 1792262438.178921,
+      "role": "Executor",
+      "message": "Inference completed",
+      "request_id": "85153a8ba6ff472d8bd4c3c5a776b67e",
+      "latency_s": 0.92,
+      "usage": {
+        "prompt_tokens": 807,
+        "total_tokens": 1013,
+        "completion_tokens": 206,
+        "prompt_tokens_details": null
+      },
+      "cost_estimate_usd": "0.0000815500",
+      "http_status": 200,
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"repairs\": [\n    {\n      \"version\": 1,\n      \"case_id\": \"eval-timeout\",\n      \"diagnosis\": \"timeout_ms exceeds upstream_p99_ms contract limit\",\n      \"patch\": {\n        \"timeout_ms\": 500,\n        \"retries\": 0\n      }\n    },\n    {\n      \"version\": 1,\n      \"case_id\": \"eval-pool\",\n      \"diagnosis\": \"workers exceed connection_budget and pool_size limits concurrent_queries\",\n      \"patch\": {\n        \"pool_size\": 15,\n        \"workers\": 15\n      }\n    },\n    {\n      \"version\": 1,\n      \"case_id\": \"eval-route\",\n      \"diagnosis\": \"health_path and port mismatch with registered_health_path and listening_port\",\n      \"patch\": {\n        \"health_path\": \"/live\",\n        \"port\": 9090\n      }\n    }\n  ]\n}"
+    },
+    {
+      "time": 1792262438.181802,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "eval-timeout",
+      "version": 1,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "request_completes": false,
+          "retry_budget": true
+        },
+        "resulting_config": {
+          "timeout_ms": 500,
+          "retries": 0
+        }
+      }
+    },
+    {
+      "time": 1792262438.1843042,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "eval-pool",
+      "version": 1,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "load_served": true,
+          "workers_preserved": false
+        },
+        "resulting_config": {
+          "pool_size": 15,
+          "workers": 15
+        }
+      }
+    },
+    {
+      "time": 1792262438.186924,
+      "role": "Verifier",
+      "message": "PASS",
+      "case_id": "eval-route",
+      "version": 1,
+      "checks": {
+        "passed": true,
+        "checks": {
+          "probe_reaches_route": true,
+          "probe_reaches_listener": true
+        },
+        "resulting_config": {
+          "health_path": "/live",
+          "port": 9090
+        }
+      }
+    },
+    {
+      "time": 1792262438.190454,
+      "role": "Gate",
+      "message": "PROMOTE: Strict improvement on both splits; zero per-case regressions",
+      "version": 1
+    }
+  ],
+  "runs": [
+    {
+      "case_id": "dev-timeout",
+      "title": "Gateway drops valid requests",
+      "split": "development",
+      "version": 0,
+      "passed": false,
+      "tools_used": [
+        "read_logs"
+      ],
+      "request_id": "4a2dfd86fccc4b47b6b9353f859d24b0",
+      "attempts": [
+        {
+          "diagnosis": "Timeout too low causing retry storms on normally completing upstreams",
+          "patch": {
+            "timeout_ms": 5000,
+            "retries": 2
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "request_completes": false,
+              "retry_budget": false
+            },
+            "resulting_config": {
+              "timeout_ms": 5000,
+              "retries": 2
+            }
+          },
+          "request_id": "4a2dfd86fccc4b47b6b9353f859d24b0",
+          "metrics_scope": "shared request; see inference event for usage, latency and estimated cost"
+        }
+      ]
+    },
+    {
+      "case_id": "dev-pool",
+      "title": "Database queue saturation",
+      "split": "development",
+      "version": 0,
+      "passed": false,
+      "tools_used": [
+        "read_logs"
+      ],
+      "request_id": "4a2dfd86fccc4b47b6b9353f859d24b0",
+      "attempts": [
+        {
+          "diagnosis": "Pool size insufficient for steady traffic load",
+          "patch": {
+            "pool_size": 20,
+            "workers": 4
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "load_served": false,
+              "workers_preserved": false
+            },
+            "resulting_config": {
+              "pool_size": 20,
+              "workers": 4
+            }
+          },
+          "request_id": "4a2dfd86fccc4b47b6b9353f859d24b0",
+          "metrics_scope": "shared request; see inference event for usage, latency and estimated cost"
+        }
+      ]
+    },
+    {
+      "case_id": "dev-route",
+      "title": "Health checks fail after migration",
+      "split": "development",
+      "version": 0,
+      "passed": false,
+      "tools_used": [
+        "read_logs"
+      ],
+      "request_id": "4a2dfd86fccc4b47b6b9353f859d24b0",
+      "attempts": [
+        {
+          "diagnosis": "Health check path mismatch after migration",
+          "patch": {
+            "health_path": "/health",
+            "port": 8080
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "probe_reaches_route": false,
+              "probe_reaches_listener": true
+            },
+            "resulting_config": {
+              "health_path": "/health",
+              "port": 8080
+            }
+          },
+          "request_id": "4a2dfd86fccc4b47b6b9353f859d24b0",
+          "metrics_scope": "shared request; see inference event for usage, latency and estimated cost"
+        }
+      ]
+    },
+    {
+      "case_id": "eval-timeout",
+      "title": "Report service intermittent 504s",
+      "split": "held_out",
+      "version": 0,
+      "passed": false,
+      "tools_used": [
+        "read_logs"
+      ],
+      "request_id": "4a2dfd86fccc4b47b6b9353f859d24b0",
+      "attempts": [
+        {
+          "diagnosis": "Timeout too low causing gateway to abandon successful upstreams",
+          "patch": {
+            "timeout_ms": 5000,
+            "retries": 2
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "request_completes": false,
+              "retry_budget": false
+            },
+            "resulting_config": {
+              "timeout_ms": 5000,
+              "retries": 2
+            }
+          },
+          "request_id": "4a2dfd86fccc4b47b6b9353f859d24b0",
+          "metrics_scope": "shared request; see inference event for usage, latency and estimated cost"
+        }
+      ]
+    },
+    {
+      "case_id": "eval-pool",
+      "title": "Worker service cannot acquire connections",
+      "split": "held_out",
+      "version": 0,
+      "passed": false,
+      "tools_used": [
+        "read_logs"
+      ],
+      "request_id": "4a2dfd86fccc4b47b6b9353f859d24b0",
+      "attempts": [
+        {
+          "diagnosis": "Connection acquisition deadline exceeded during peak load",
+          "patch": {
+            "pool_size": 20,
+            "workers": 4
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "load_served": false,
+              "workers_preserved": false
+            },
+            "resulting_config": {
+              "pool_size": 20,
+              "workers": 4
+            }
+          },
+          "request_id": "4a2dfd86fccc4b47b6b9353f859d24b0",
+          "metrics_scope": "shared request; see inference event for usage, latency and estimated cost"
+        }
+      ]
+    },
+    {
+      "case_id": "eval-route",
+      "title": "New deployment never becomes ready",
+      "split": "held_out",
+      "version": 0,
+      "passed": false,
+      "tools_used": [
+        "read_logs"
+      ],
+      "request_id": "4a2dfd86fccc4b47b6b9353f859d24b0",
+      "attempts": [
+        {
+          "diagnosis": "Readiness endpoint path mismatch after deployment",
+          "patch": {
+            "health_path": "/health",
+            "port": 8080
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "probe_reaches_route": false,
+              "probe_reaches_listener": false
+            },
+            "resulting_config": {
+              "health_path": "/health",
+              "port": 8080
+            }
+          },
+          "request_id": "4a2dfd86fccc4b47b6b9353f859d24b0",
+          "metrics_scope": "shared request; see inference event for usage, latency and estimated cost"
+        }
+      ]
+    },
+    {
+      "case_id": "dev-timeout",
+      "title": "Gateway drops valid requests",
+      "split": "development",
+      "version": 1,
+      "passed": false,
+      "tools_used": [
+        "inspect_contract",
+        "inspect_config"
+      ],
+      "request_id": "20c729d66e414e57a7113702aeedc2f5",
+      "attempts": [
+        {
+          "diagnosis": "timeout_ms and retries exceed contract limits",
+          "patch": {
+            "timeout_ms": 240,
+            "retries": 1
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "request_completes": false,
+              "retry_budget": true
+            },
+            "resulting_config": {
+              "timeout_ms": 240,
+              "retries": 1
+            }
+          },
+          "request_id": "20c729d66e414e57a7113702aeedc2f5",
+          "metrics_scope": "shared request; see inference event for usage, latency and estimated cost"
+        }
+      ]
+    },
+    {
+      "case_id": "dev-pool",
+      "title": "Database queue saturation",
+      "split": "development",
+      "version": 1,
+      "passed": false,
+      "tools_used": [
+        "inspect_contract",
+        "inspect_config"
+      ],
+      "request_id": "20c729d66e414e57a7113702aeedc2f5",
+      "attempts": [
+        {
+          "diagnosis": "pool_size and workers exceed contract capacity",
+          "patch": {
+            "pool_size": 8,
+            "workers": 10
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "load_served": true,
+              "workers_preserved": false
+            },
+            "resulting_config": {
+              "pool_size": 8,
+              "workers": 10
+            }
+          },
+          "request_id": "20c729d66e414e57a7113702aeedc2f5",
+          "metrics_scope": "shared request; see inference event for usage, latency and estimated cost"
+        }
+      ]
+    },
+    {
+      "case_id": "dev-route",
+      "title": "Health checks fail after migration",
+      "split": "development",
+      "version": 1,
+      "passed": true,
+      "tools_used": [
+        "inspect_contract",
+        "inspect_config"
+      ],
+      "request_id": "20c729d66e414e57a7113702aeedc2f5",
+      "attempts": [
+        {
+          "diagnosis": "health_path and port mismatch contract",
+          "patch": {
+            "health_path": "/readyz",
+            "port": 8080
+          },
+          "verification": {
+            "passed": true,
+            "checks": {
+              "probe_reaches_route": true,
+              "probe_reaches_listener": true
+            },
+            "resulting_config": {
+              "health_path": "/readyz",
+              "port": 8080
+            }
+          },
+          "request_id": "20c729d66e414e57a7113702aeedc2f5",
+          "metrics_scope": "shared request; see inference event for usage, latency and estimated cost"
+        }
+      ]
+    },
+    {
+      "case_id": "dev-timeout",
+      "title": "Gateway drops valid requests",
+      "split": "development",
+      "version": 2,
+      "passed": false,
+      "tools_used": [
+        "read_logs",
+        "inspect_config"
+      ],
+      "request_id": "45b0478695604fd49badfae4b4ebae5b",
+      "attempts": [
+        {
+          "diagnosis": "timeout_ms too low; retries insufficient for observed retry storms",
+          "patch": {
+            "timeout_ms": 120,
+            "retries": 5
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "request_completes": false,
+              "retry_budget": false
+            },
+            "resulting_config": {
+              "timeout_ms": 120,
+              "retries": 5
+            }
+          },
+          "request_id": "45b0478695604fd49badfae4b4ebae5b",
+          "metrics_scope": "shared request; see inference event for usage, latency and estimated cost"
+        }
+      ]
+    },
+    {
+      "case_id": "dev-pool",
+      "title": "Database queue saturation",
+      "split": "development",
+      "version": 2,
+      "passed": false,
+      "tools_used": [
+        "read_logs",
+        "inspect_config"
+      ],
+      "request_id": "45b0478695604fd49badfae4b4ebae5b",
+      "attempts": [
+        {
+          "diagnosis": "pool_size too small for worker count; acquisition timeouts under steady traffic",
+          "patch": {
+            "pool_size": 20,
+            "workers": 12
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "load_served": false,
+              "workers_preserved": true
+            },
+            "resulting_config": {
+              "pool_size": 20,
+              "workers": 12
+            }
+          },
+          "request_id": "45b0478695604fd49badfae4b4ebae5b",
+          "metrics_scope": "shared request; see inference event for usage, latency and estimated cost"
+        }
+      ]
+    },
+    {
+      "case_id": "dev-route",
+      "title": "Health checks fail after migration",
+      "split": "development",
+      "version": 2,
+      "passed": false,
+      "tools_used": [
+        "read_logs",
+        "inspect_config"
+      ],
+      "request_id": "45b0478695604fd49badfae4b4ebae5b",
+      "attempts": [
+        {
+          "diagnosis": "health_path mismatch after migration; port config consistent but route invalid",
+          "patch": {
+            "health_path": "/api/health",
+            "port": 8080
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "probe_reaches_route": false,
+              "probe_reaches_listener": true
+            },
+            "resulting_config": {
+              "health_path": "/api/health",
+              "port": 8080
+            }
+          },
+          "request_id": "45b0478695604fd49badfae4b4ebae5b",
+          "metrics_scope": "shared request; see inference event for usage, latency and estimated cost"
+        }
+      ]
+    },
+    {
+      "case_id": "eval-timeout",
+      "title": "Report service intermittent 504s",
+      "split": "held_out",
+      "version": 1,
+      "passed": false,
+      "tools_used": [
+        "inspect_contract",
+        "inspect_config"
+      ],
+      "request_id": "85153a8ba6ff472d8bd4c3c5a776b67e",
+      "attempts": [
+        {
+          "diagnosis": "timeout_ms exceeds upstream_p99_ms contract limit",
+          "patch": {
+            "timeout_ms": 500,
+            "retries": 0
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "request_completes": false,
+              "retry_budget": true
+            },
+            "resulting_config": {
+              "timeout_ms": 500,
+              "retries": 0
+            }
+          },
+          "request_id": "85153a8ba6ff472d8bd4c3c5a776b67e",
+          "metrics_scope": "shared request; see inference event for usage, latency and estimated cost"
+        }
+      ]
+    },
+    {
+      "case_id": "eval-pool",
+      "title": "Worker service cannot acquire connections",
+      "split": "held_out",
+      "version": 1,
+      "passed": false,
+      "tools_used": [
+        "inspect_contract",
+        "inspect_config"
+      ],
+      "request_id": "85153a8ba6ff472d8bd4c3c5a776b67e",
+      "attempts": [
+        {
+          "diagnosis": "workers exceed connection_budget and pool_size limits concurrent_queries",
+          "patch": {
+            "pool_size": 15,
+            "workers": 15
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "load_served": true,
+              "workers_preserved": false
+            },
+            "resulting_config": {
+              "pool_size": 15,
+              "workers": 15
+            }
+          },
+          "request_id": "85153a8ba6ff472d8bd4c3c5a776b67e",
+          "metrics_scope": "shared request; see inference event for usage, latency and estimated cost"
+        }
+      ]
+    },
+    {
+      "case_id": "eval-route",
+      "title": "New deployment never becomes ready",
+      "split": "held_out",
+      "version": 1,
+      "passed": true,
+      "tools_used": [
+        "inspect_contract",
+        "inspect_config"
+      ],
+      "request_id": "85153a8ba6ff472d8bd4c3c5a776b67e",
+      "attempts": [
+        {
+          "diagnosis": "health_path and port mismatch with registered_health_path and listening_port",
+          "patch": {
+            "health_path": "/live",
+            "port": 9090
+          },
+          "verification": {
+            "passed": true,
+            "checks": {
+              "probe_reaches_route": true,
+              "probe_reaches_listener": true
+            },
+            "resulting_config": {
+              "health_path": "/live",
+              "port": 9090
+            }
+          },
+          "request_id": "85153a8ba6ff472d8bd4c3c5a776b67e",
+          "metrics_scope": "shared request; see inference event for usage, latency and estimated cost"
+        }
+      ]
+    }
+  ],
+  "strategies": [
+    {
+      "version": 0,
+      "name": "Log-first triage",
+      "instructions": "Read the available log file to identify the primary failure mode. Based on the observed symptoms, apply the minimal configuration repair required to restore system function. Do not speculate on unobserved issues or attempt repairs beyond the scope of the log evidence.",
+      "roles": [
+        "Architect",
+        "Executor",
+        "Observer",
+        "Scientist"
+      ],
+      "role_instructions": {
+        "Architect": "Design a bounded approach",
+        "Executor": "Diagnose and repair",
+        "Observer": "Identify failures in evidence gathering",
+        "Scientist": "Propose general strategy improvements"
+      },
+      "sequence": [
+        "read_logs",
+        "repair"
+      ],
+      "tools": [
+        "read_logs"
+      ],
+      "verification": [
+        "final_check"
+      ],
+      "max_attempts": 1
+    },
+    {
+      "version": 1,
+      "name": "Contract-First Alignment",
+      "instructions": "Inspect contract then config to find mismatches before repair.",
+      "roles": [
+        "Architect",
+        "Executor",
+        "Observer",
+        "Scientist"
+      ],
+      "role_instructions": {
+        "Architect": "Design a bounded approach",
+        "Executor": "Diagnose and repair",
+        "Observer": "Identify failures in evidence gathering",
+        "Scientist": "Propose general strategy improvements"
+      },
+      "sequence": [
+        "inspect_contract",
+        "inspect_config",
+        "repair"
+      ],
+      "tools": [
+        "inspect_contract",
+        "inspect_config"
+      ],
+      "verification": [
+        "final_check"
+      ],
+      "max_attempts": 1
+    },
+    {
+      "version": 2,
+      "name": "Evidence-First Triage",
+      "instructions": "Read logs then inspect config to confirm failure root before patching.",
+      "roles": [
+        "Architect",
+        "Executor",
+        "Observer",
+        "Scientist"
+      ],
+      "role_instructions": {
+        "Architect": "Design a bounded approach",
+        "Executor": "Diagnose and repair",
+        "Observer": "Identify failures in evidence gathering",
+        "Scientist": "Propose general strategy improvements"
+      },
+      "sequence": [
+        "read_logs",
+        "inspect_config",
+        "repair"
+      ],
+      "tools": [
+        "read_logs",
+        "inspect_config"
+      ],
+      "verification": [
+        "final_check"
+      ],
+      "max_attempts": 1
+    }
+  ],
+  "decisions": [
+    {
+      "version": 1,
+      "action": "promote",
+      "reason": "Strict improvement on both splits; zero per-case regressions",
+      "time": 1792262438.188928
+    }
+  ],
+  "current_generation": 1,
+  "baseline_version": 0,
+  "fresh_baseline": true,
+  "mode": "live",
+  "budget_policy": "six-physical-requests-v1",
+  "cycles": 1,
+  "limits": {
+    "max_requests_per_cycle": 6,
+    "max_cycles_per_run": 2,
+    "cycles_per_action": 1,
+    "max_tokens_per_call": 1800,
+    "max_input_bytes": 24000,
+    "concurrency": 1,
+    "project_cap_usd": "2.00",
+    "automatic_retries": 1
+  },
+  "cost_usd": "0.0005665000",
+  "cost_note": "Estimate from verified public Crusoe prices; conservative reserves retained for unknown usage",
+  "pricing": {
+    "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+    "input_usd_per_million": "0.05",
+    "output_usd_per_million": "0.20",
+    "cached_input_usd_per_million": "0.03",
+    "source": "https://www.crusoe.ai/cloud/pricing",
+    "model_source": "https://docs.crusoecloud.com/serverless-inference/index.html",
+    "verified_at": "2026-10-17T18:30:00+00:00",
+    "expires_at": "2026-10-18T18:30:00+00:00",
+    "note": "Serverless Inference table, Nemotron 3.5 Lightning. Cached discounts are deliberately ignored for conservative estimates. Exact existing Crusoe model alias is pinned."
+  },
+  "selection": {
+    "selected_version": 1,
+    "reason": "Most development passes, then fewest attempts, then lowest version",
+    "scores": [
+      {
+        "version": 1,
+        "passed": 1,
+        "total": 3,
+        "attempts": 3
+      },
+      {
+        "version": 2,
+        "passed": 0,
+        "total": 3,
+        "attempts": 3
+      }
+    ]
+  },
+  "active_strategy": {
+    "version": 1,
+    "name": "Contract-First Alignment",
+    "instructions": "Inspect contract then config to find mismatches before repair.",
+    "roles": [
+      "Architect",
+      "Executor",
+      "Observer",
+      "Scientist"
+    ],
+    "role_instructions": {
+      "Architect": "Design a bounded approach",
+      "Executor": "Diagnose and repair",
+      "Observer": "Identify failures in evidence gathering",
+      "Scientist": "Propose general strategy improvements"
+    },
+    "sequence": [
+      "inspect_contract",
+      "inspect_config",
+      "repair"
+    ],
+    "tools": [
+      "inspect_contract",
+      "inspect_config"
+    ],
+    "verification": [
+      "final_check"
+    ],
+    "max_attempts": 1
+  },
+  "finished_at": 1792262438.19349,
+  "inference_calls": 6,
+  "total_tokens": 7061,
+  "budget_audit": {
+    "physical_requests": 6,
+    "reported_tokens": 7061,
+    "cost_estimate_usd": "0.0005665000",
+    "entries": [
+      {
+        "id": "a44d0a1472b24e9aa2f6103af96bba28",
+        "run_id": "20261017-114030-02b57b",
+        "cycle": 0,
+        "role": "Architect",
+        "time": 1792262430.803143,
+        "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+        "retry": 0,
+        "input_token_bound": 2050,
+        "max_output_tokens": 250,
+        "reserved_usd": "0.0001525000",
+        "status": "complete",
+        "latency_s": 0.605,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 221,
+          "total_tokens": 332,
+          "completion_tokens": 111,
+          "prompt_tokens_details": null
+        },
+        "charge_usd": "0.0000332500"
+      },
+      {
+        "id": "4a2dfd86fccc4b47b6b9353f859d24b0",
+        "run_id": "20261017-114030-02b57b",
+        "cycle": 0,
+        "role": "Executor",
+        "time": 1792262431.416605,
+        "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+        "retry": 0,
+        "input_token_bound": 7592,
+        "max_output_tokens": 1800,
+        "reserved_usd": "0.0007396000",
+        "status": "complete",
+        "latency_s": 1.614,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 1419,
+          "total_tokens": 1798,
+          "completion_tokens": 379,
+          "prompt_tokens_details": null
+        },
+        "charge_usd": "0.0001467500"
+      },
+      {
+        "id": "1a0da0c449464dbb97aba3cdead39ba9",
+        "run_id": "20261017-114030-02b57b",
+        "cycle": 0,
+        "role": "Observer + Scientist",
+        "time": 1792262433.043365,
+        "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+        "retry": 0,
+        "input_token_bound": 7145,
+        "max_output_tokens": 1600,
+        "reserved_usd": "0.0006772500",
+        "status": "complete",
+        "latency_s": 1.697,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 1616,
+          "total_tokens": 1942,
+          "completion_tokens": 326,
+          "prompt_tokens_details": null
+        },
+        "charge_usd": "0.0001460000"
+      },
+      {
+        "id": "20c729d66e414e57a7113702aeedc2f5",
+        "run_id": "20261017-114030-02b57b",
+        "cycle": 0,
+        "role": "Executor",
+        "time": 1792262434.752029,
+        "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+        "retry": 0,
+        "input_token_bound": 4412,
+        "max_output_tokens": 1800,
+        "reserved_usd": "0.0005806000",
+        "status": "complete",
+        "latency_s": 1.48,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 800,
+          "total_tokens": 991,
+          "completion_tokens": 191,
+          "prompt_tokens_details": null
+        },
+        "charge_usd": "0.0000782000"
+      },
+      {
+        "id": "45b0478695604fd49badfae4b4ebae5b",
+        "run_id": "20261017-114030-02b57b",
+        "cycle": 0,
+        "role": "Executor",
+        "time": 1792262436.245425,
+        "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+        "retry": 0,
+        "input_token_bound": 4425,
+        "max_output_tokens": 1800,
+        "reserved_usd": "0.0005812500",
+        "status": "complete",
+        "latency_s": 0.993,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 775,
+          "total_tokens": 985,
+          "completion_tokens": 210,
+          "prompt_tokens_details": null
+        },
+        "charge_usd": "0.0000807500"
+      },
+      {
+        "id": "85153a8ba6ff472d8bd4c3c5a776b67e",
+        "run_id": "20261017-114030-02b57b",
+        "cycle": 0,
+        "role": "Executor",
+        "time": 1792262437.256659,
+        "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+        "retry": 0,
+        "input_token_bound": 4435,
+        "max_output_tokens": 1800,
+        "reserved_usd": "0.0005817500",
+        "status": "complete",
+        "latency_s": 0.92,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 807,
+          "total_tokens": 1013,
+          "completion_tokens": 206,
+          "prompt_tokens_details": null
+        },
+        "charge_usd": "0.0000815500"
+      }
+    ]
+  }
+}

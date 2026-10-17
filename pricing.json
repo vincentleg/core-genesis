@@ -1,0 +1,11 @@
+{
+  "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+  "input_usd_per_million": "0.05",
+  "output_usd_per_million": "0.20",
+  "cached_input_usd_per_million": "0.03",
+  "source": "https://www.crusoe.ai/cloud/pricing",
+  "model_source": "https://docs.crusoecloud.com/serverless-inference/index.html",
+  "verified_at": "2026-10-17T18:30:00+00:00",
+  "expires_at": "2026-10-18T18:30:00+00:00",
+  "note": "Serverless Inference table, Nemotron 3.5 Lightning. Cached discounts are deliberately ignored for conservative estimates. Exact existing Crusoe model alias is pinned."
+}

@@ -1,0 +1,1366 @@
+{
+  "id": "20261017-110936-321bc4",
+  "status": "complete",
+  "started_at": 1792260576.248512,
+  "suite": "incidents-v1",
+  "suite_sha256": "601cc568038949fca6c2a261ad61db20c177855d1eb1a031ab09c884d5f1fde2",
+  "events": [
+    {
+      "time": 1792260578.6567922,
+      "role": "Architect",
+      "message": "Inference completed",
+      "latency_s": 2.407,
+      "usage": {
+        "prompt_tokens": 155,
+        "total_tokens": 432,
+        "completion_tokens": 277,
+        "prompt_tokens_details": null
+      },
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"approach\": \"The initial team structure presents a critical single-point-of-failure risk. The 'Executor' role is assigned a repair action without a corresponding validation or testing role within the sequence. This creates a high probability of configuration drift or system instability, as repairs are proposed and applied without independent verification. The 'Observer' and 'Scientist' roles are passive; they can document outcomes but cannot interrupt the 'read_logs' -> 'repair' loop to prevent a bad fix from being finalized. Furthermore, the 'read_logs' tool is the sole information source, risking diagnostic blindness if logs are incomplete or corrupted. The hypothesis that symptom-based diagnosis alone is sufficient for complex system repair is fragile and likely to result in recurring issues.\",\n  \"hypothesis\": \"The 'Log-first triage' workflow will fail to maintain system stability because the absence of a dedicated validation step allows untested repairs to be accepted as final. The team will cycle through diagnostic and repair attempts, but without a 'test' or 'verify' role intervening between 'repair' and 'final_check', the system will degrade over successive iterations. The 'max_attempts: 1' constraint exacerbates this, forcing a binary pass/fail outcome on the first diagnostic attempt, which is statistically unlikely to resolve the underlying issue correctly.\"\n}"
+    },
+    {
+      "time": 1792260578.662357,
+      "role": "Architect",
+      "message": "Baseline registered",
+      "analysis": {
+        "approach": "The initial team structure presents a critical single-point-of-failure risk. The 'Executor' role is assigned a repair action without a corresponding validation or testing role within the sequence. This creates a high probability of configuration drift or system instability, as repairs are proposed and applied without independent verification. The 'Observer' and 'Scientist' roles are passive; they can document outcomes but cannot interrupt the 'read_logs' -> 'repair' loop to prevent a bad fix from being finalized. Furthermore, the 'read_logs' tool is the sole information source, risking diagnostic blindness if logs are incomplete or corrupted. The hypothesis that symptom-based diagnosis alone is sufficient for complex system repair is fragile and likely to result in recurring issues.",
+        "hypothesis": "The 'Log-first triage' workflow will fail to maintain system stability because the absence of a dedicated validation step allows untested repairs to be accepted as final. The team will cycle through diagnostic and repair attempts, but without a 'test' or 'verify' role intervening between 'repair' and 'final_check', the system will degrade over successive iterations. The 'max_attempts: 1' constraint exacerbates this, forcing a binary pass/fail outcome on the first diagnostic attempt, which is statistically unlikely to resolve the underlying issue correctly."
+      }
+    },
+    {
+      "time": 1792260578.664948,
+      "role": "Executor",
+      "message": "Diagnosing Gateway drops valid requests",
+      "case_id": "dev-timeout",
+      "version": 0,
+      "split": "development"
+    },
+    {
+      "time": 1792260579.43777,
+      "role": "Executor",
+      "message": "Inference completed",
+      "latency_s": 0.77,
+      "usage": {
+        "prompt_tokens": 179,
+        "total_tokens": 247,
+        "completion_tokens": 68,
+        "prompt_tokens_details": null
+      },
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"diagnosis\": \"Upstream timeout occurs despite normal completion, indicating the gateway's timeout threshold is too low for the request duration. Retry storms result from clients re-sending requests that hit the same timeout limit.\",\n  \"patch\": {\n    \"timeout_ms\": 120000\n  }\n}"
+    },
+    {
+      "time": 1792260579.442202,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "dev-timeout",
+      "version": 0,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "request_completes": false,
+          "retry_budget": false
+        },
+        "resulting_config": {
+          "timeout_ms": 120000,
+          "retries": 3
+        }
+      }
+    },
+    {
+      "time": 1792260579.443964,
+      "role": "Executor",
+      "message": "Diagnosing Database queue saturation",
+      "case_id": "dev-pool",
+      "version": 0,
+      "split": "development"
+    },
+    {
+      "time": 1792260580.20109,
+      "role": "Executor",
+      "message": "Inference completed",
+      "latency_s": 0.756,
+      "usage": {
+        "prompt_tokens": 175,
+        "total_tokens": 222,
+        "completion_tokens": 47,
+        "prompt_tokens_details": null
+      },
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"diagnosis\": \"Pool acquisition timed out under steady traffic despite database health, indicating the connection pool is undersized for current load.\",\n  \"patch\": {\n    \"pool_size\": 20\n  }\n}"
+    },
+    {
+      "time": 1792260580.206777,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "dev-pool",
+      "version": 0,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "load_served": false,
+          "workers_preserved": true
+        },
+        "resulting_config": {
+          "pool_size": 20,
+          "workers": 12
+        }
+      }
+    },
+    {
+      "time": 1792260580.208816,
+      "role": "Executor",
+      "message": "Diagnosing Health checks fail after migration",
+      "case_id": "dev-route",
+      "version": 0,
+      "split": "development"
+    },
+    {
+      "time": 1792260580.772257,
+      "role": "Executor",
+      "message": "Inference completed",
+      "latency_s": 0.561,
+      "usage": {
+        "prompt_tokens": 185,
+        "total_tokens": 234,
+        "completion_tokens": 49,
+        "prompt_tokens_details": null
+      },
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"diagnosis\": \"Health check path mismatch after migration; the service expects a different endpoint than the load balancer is probing.\",\n  \"patch\": {\n    \"health_path\": \"/api/v1/health\"\n  }\n}"
+    },
+    {
+      "time": 1792260580.778733,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "dev-route",
+      "version": 0,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "probe_reaches_route": false,
+          "probe_reaches_listener": true
+        },
+        "resulting_config": {
+          "health_path": "/api/v1/health",
+          "port": 8080
+        }
+      }
+    },
+    {
+      "time": 1792260583.20305,
+      "role": "Observer",
+      "message": "Inference completed",
+      "latency_s": 2.421,
+      "usage": {
+        "prompt_tokens": 675,
+        "total_tokens": 892,
+        "completion_tokens": 217,
+        "prompt_tokens_details": null
+      },
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"weakness\": \"Insufficient verification criteria and missing observability evidence. The verification checks in all three cases fail to confirm the root cause is resolved, and critical diagnostic data (logs, metrics, traces) is not captured as structured evidence.\",\n  \"evidence\": {\n    \"dev-timeout\": \"Request completion and retry budget metrics remain false despite timeout_ms patch. No latency trend data or circuit breaker state captured.\",\n    \"dev-pool\": \"Load served check fails while workers_preserved is true, suggesting pool_size increase did not alleviate saturation. No connection wait time histogram or queue depth metrics provided.\",\n    \"dev-route\": \"Probe reaches listener but not the route, indicating network path issue unaddressed by health_path patch. No TLS handshake logs or route match percentages recorded.\"\n  },\n  \"recommendation\": \"Add quantitative verification checks (success rate thresholds, latency percentiles, resource utilization deltas) and mandate capture of diagnostic artifacts (logs, metrics snapshots, trace IDs) for every remediation attempt.\"\n}"
+    },
+    {
+      "time": 1792260583.208831,
+      "role": "Observer",
+      "message": "Weakness analysis complete",
+      "analysis": {
+        "weakness": "Insufficient verification criteria and missing observability evidence. The verification checks in all three cases fail to confirm the root cause is resolved, and critical diagnostic data (logs, metrics, traces) is not captured as structured evidence.",
+        "evidence": {
+          "dev-timeout": "Request completion and retry budget metrics remain false despite timeout_ms patch. No latency trend data or circuit breaker state captured.",
+          "dev-pool": "Load served check fails while workers_preserved is true, suggesting pool_size increase did not alleviate saturation. No connection wait time histogram or queue depth metrics provided.",
+          "dev-route": "Probe reaches listener but not the route, indicating network path issue unaddressed by health_path patch. No TLS handshake logs or route match percentages recorded."
+        },
+        "recommendation": "Add quantitative verification checks (success rate thresholds, latency percentiles, resource utilization deltas) and mandate capture of diagnostic artifacts (logs, metrics snapshots, trace IDs) for every remediation attempt."
+      }
+    },
+    {
+      "time": 1792260585.908575,
+      "role": "Scientist",
+      "message": "Inference completed",
+      "latency_s": 2.695,
+      "usage": {
+        "prompt_tokens": 641,
+        "total_tokens": 946,
+        "completion_tokens": 305,
+        "prompt_tokens_details": null
+      },
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"candidates\": [\n    {\n      \"name\": \"instrumented_observability_first\",\n      \"instructions\": \"Before any repair, capture structured logs, latency percentiles, and circuit breaker state for the affected component. Define quantitative success thresholds (e.g., 99th percentile latency < 200ms, success rate >= 95%) and verify they are met post-repair.\",\n      \"roles\": [\"Architect\", \"Executor\", \"Observer\", \"Scientist\"],\n      \"tools\": [\"read_logs\", \"inspect_config\", \"inspect_contract\"],\n      \"sequence\": [\"read_logs\", \"inspect_config\", \"inspect_contract\", \"repair\", \"verify\"],\n      \"verification\": [\"final_check\"]\n    },\n    {\n      \"name\": \"contract_driven_capacity_repair\",\n      \"instructions\": \"Inspect service contracts and capacity requirements first. Adjust pool_size or route settings based on independently supplied limits, then capture connection wait time histograms and TLS handshake logs as diagnostic artifacts before confirming resolution.\",\n      \"roles\": [\"Architect\", \"Executor\", \"Observer\", \"Scientist\"],\n      \"tools\": [\"read_logs\", \"inspect_config\", \"inspect_contract\"],\n      \"sequence\": [\"inspect_config\", \"inspect_contract\", \"read_logs\", \"repair\", \"verify\"],\n      \"verification\": [\"final_check\"]\n    }\n  ]\n}"
+    },
+    {
+      "time": 1792260585.91773,
+      "role": "Executor",
+      "message": "Diagnosing Gateway drops valid requests",
+      "case_id": "dev-timeout",
+      "version": 1,
+      "split": "development"
+    },
+    {
+      "time": 1792260586.8149278,
+      "role": "Executor",
+      "message": "Inference completed",
+      "latency_s": 0.892,
+      "usage": {
+        "prompt_tokens": 279,
+        "total_tokens": 339,
+        "completion_tokens": 60,
+        "prompt_tokens_details": null
+      },
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"diagnosis\": \"Timeout threshold (80ms) is below the upstream 99th percentile latency (240ms), causing valid requests to be rejected and triggering retry storms.\",\n  \"patch\": {\n    \"timeout_ms\": 260\n  }\n}"
+    },
+    {
+      "time": 1792260586.826431,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "dev-timeout",
+      "version": 1,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "request_completes": true,
+          "retry_budget": false
+        },
+        "resulting_config": {
+          "timeout_ms": 260,
+          "retries": 3
+        }
+      }
+    },
+    {
+      "time": 1792260586.830148,
+      "role": "Executor",
+      "message": "Diagnosing Database queue saturation",
+      "case_id": "dev-pool",
+      "version": 1,
+      "split": "development"
+    },
+    {
+      "time": 1792260587.551101,
+      "role": "Executor",
+      "message": "Inference completed",
+      "latency_s": 0.717,
+      "usage": {
+        "prompt_tokens": 262,
+        "total_tokens": 309,
+        "completion_tokens": 47,
+        "prompt_tokens_details": null
+      },
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"diagnosis\": \"Pool size of 2 is insufficient for 12 workers and 8 concurrent queries, causing queue saturation.\",\n  \"patch\": {\n    \"pool_size\": 10\n  }\n}"
+    },
+    {
+      "time": 1792260587.5637481,
+      "role": "Verifier",
+      "message": "PASS",
+      "case_id": "dev-pool",
+      "version": 1,
+      "checks": {
+        "passed": true,
+        "checks": {
+          "load_served": true,
+          "workers_preserved": true
+        },
+        "resulting_config": {
+          "pool_size": 10,
+          "workers": 12
+        }
+      }
+    },
+    {
+      "time": 1792260587.5693388,
+      "role": "Executor",
+      "message": "Diagnosing Health checks fail after migration",
+      "case_id": "dev-route",
+      "version": 1,
+      "split": "development"
+    },
+    {
+      "time": 1792260588.145809,
+      "role": "Executor",
+      "message": "Inference completed",
+      "latency_s": 0.573,
+      "usage": {
+        "prompt_tokens": 276,
+        "total_tokens": 337,
+        "completion_tokens": 61,
+        "prompt_tokens_details": null
+      },
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"diagnosis\": \"Health check path mismatch between service contract and runtime configuration. The service is listening on port 8080 and expecting /readyz, but the health check targets /health.\",\n  \"patch\": {\n    \"health_path\": \"/readyz\"\n  }\n}"
+    },
+    {
+      "time": 1792260588.15313,
+      "role": "Verifier",
+      "message": "PASS",
+      "case_id": "dev-route",
+      "version": 1,
+      "checks": {
+        "passed": true,
+        "checks": {
+          "probe_reaches_route": true,
+          "probe_reaches_listener": true
+        },
+        "resulting_config": {
+          "health_path": "/readyz",
+          "port": 8080
+        }
+      }
+    },
+    {
+      "time": 1792260588.1587882,
+      "role": "Executor",
+      "message": "Diagnosing Gateway drops valid requests",
+      "case_id": "dev-timeout",
+      "version": 2,
+      "split": "development"
+    },
+    {
+      "time": 1792260588.89924,
+      "role": "Executor",
+      "message": "Inference completed",
+      "latency_s": 0.736,
+      "usage": {
+        "prompt_tokens": 261,
+        "total_tokens": 340,
+        "completion_tokens": 79,
+        "prompt_tokens_details": null
+      },
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"diagnosis\": \"Upstream p99 latency (240ms) exceeds the configured timeout (80ms), causing valid requests to be terminated as 504s. Retry storms compound the issue by re-queuing requests that still hit the timeout boundary.\",\n  \"patch\": {\n    \"timeout_ms\": 300\n  }\n}"
+    },
+    {
+      "time": 1792260588.912122,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "dev-timeout",
+      "version": 2,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "request_completes": true,
+          "retry_budget": false
+        },
+        "resulting_config": {
+          "timeout_ms": 300,
+          "retries": 3
+        }
+      }
+    },
+    {
+      "time": 1792260588.917036,
+      "role": "Executor",
+      "message": "Diagnosing Database queue saturation",
+      "case_id": "dev-pool",
+      "version": 2,
+      "split": "development"
+    },
+    {
+      "time": 1792260589.5698519,
+      "role": "Executor",
+      "message": "Inference completed",
+      "latency_s": 0.648,
+      "usage": {
+        "prompt_tokens": 244,
+        "total_tokens": 296,
+        "completion_tokens": 52,
+        "prompt_tokens_details": null
+      },
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"diagnosis\": \"Pool size of 2 is insufficient for 12 workers with a concurrent query limit of 8, causing queue saturation under steady traffic.\",\n  \"patch\": {\n    \"pool_size\": 8\n  }\n}"
+    },
+    {
+      "time": 1792260589.581793,
+      "role": "Verifier",
+      "message": "PASS",
+      "case_id": "dev-pool",
+      "version": 2,
+      "checks": {
+        "passed": true,
+        "checks": {
+          "load_served": true,
+          "workers_preserved": true
+        },
+        "resulting_config": {
+          "pool_size": 8,
+          "workers": 12
+        }
+      }
+    },
+    {
+      "time": 1792260589.586369,
+      "role": "Executor",
+      "message": "Diagnosing Health checks fail after migration",
+      "case_id": "dev-route",
+      "version": 2,
+      "split": "development"
+    },
+    {
+      "time": 1792260590.393379,
+      "role": "Executor",
+      "message": "Inference completed",
+      "latency_s": 0.8,
+      "usage": {
+        "prompt_tokens": 258,
+        "total_tokens": 307,
+        "completion_tokens": 49,
+        "prompt_tokens_details": null
+      },
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"diagnosis\": \"Health check path mismatch between service contract and configuration. The service contract registers /readyz but the config specifies /health.\",\n  \"patch\": {\n    \"health_path\": \"/readyz\"\n  }\n}"
+    },
+    {
+      "time": 1792260590.408392,
+      "role": "Verifier",
+      "message": "PASS",
+      "case_id": "dev-route",
+      "version": 2,
+      "checks": {
+        "passed": true,
+        "checks": {
+          "probe_reaches_route": true,
+          "probe_reaches_listener": true
+        },
+        "resulting_config": {
+          "health_path": "/readyz",
+          "port": 8080
+        }
+      }
+    },
+    {
+      "time": 1792260590.4141629,
+      "role": "Scientist",
+      "message": "Development winner selected; opening held-out gate once",
+      "version": 1
+    },
+    {
+      "time": 1792260590.4192371,
+      "role": "Executor",
+      "message": "Diagnosing Report service intermittent 504s",
+      "case_id": "eval-timeout",
+      "version": 0,
+      "split": "held_out"
+    },
+    {
+      "time": 1792260591.083515,
+      "role": "Executor",
+      "message": "Inference completed",
+      "latency_s": 0.659,
+      "usage": {
+        "prompt_tokens": 185,
+        "total_tokens": 247,
+        "completion_tokens": 62,
+        "prompt_tokens_details": null
+      },
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"diagnosis\": \"Gateway timeout threshold is too low, causing premature abandonment of successful upstream responses. Retries compound the issue by re-triggering the same timeout on already-completing requests.\",\n  \"patch\": {\n    \"timeout_ms\": 30000\n  }\n}"
+    },
+    {
+      "time": 1792260591.097429,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "eval-timeout",
+      "version": 0,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "request_completes": false,
+          "retry_budget": false
+        },
+        "resulting_config": {
+          "timeout_ms": 30000,
+          "retries": 4
+        }
+      }
+    },
+    {
+      "time": 1792260591.104626,
+      "role": "Executor",
+      "message": "Diagnosing Worker service cannot acquire connections",
+      "case_id": "eval-pool",
+      "version": 0,
+      "split": "held_out"
+    },
+    {
+      "time": 1792260591.704451,
+      "role": "Executor",
+      "message": "Inference completed",
+      "latency_s": 0.594,
+      "usage": {
+        "prompt_tokens": 177,
+        "total_tokens": 213,
+        "completion_tokens": 36,
+        "prompt_tokens_details": null
+      },
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"diagnosis\": \"Connection pool exhaustion under peak load despite successful pings.\",\n  \"patch\": {\n    \"pool_size\": 20\n  }\n}"
+    },
+    {
+      "time": 1792260591.7178361,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "eval-pool",
+      "version": 0,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "load_served": false,
+          "workers_preserved": true
+        },
+        "resulting_config": {
+          "pool_size": 20,
+          "workers": 20
+        }
+      }
+    },
+    {
+      "time": 1792260591.7229939,
+      "role": "Executor",
+      "message": "Diagnosing New deployment never becomes ready",
+      "case_id": "eval-route",
+      "version": 0,
+      "split": "held_out"
+    },
+    {
+      "time": 1792260592.3580701,
+      "role": "Executor",
+      "message": "Inference completed",
+      "latency_s": 0.627,
+      "usage": {
+        "prompt_tokens": 178,
+        "total_tokens": 215,
+        "completion_tokens": 37,
+        "prompt_tokens_details": null
+      },
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"diagnosis\": \"Readiness probe likely misconfigured or missing path mapping.\",\n  \"patch\": {\n    \"health_path\": \"/healthz\"\n  }\n}"
+    },
+    {
+      "time": 1792260592.374857,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "eval-route",
+      "version": 0,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "probe_reaches_route": false,
+          "probe_reaches_listener": false
+        },
+        "resulting_config": {
+          "health_path": "/healthz",
+          "port": 3000
+        }
+      }
+    },
+    {
+      "time": 1792260592.38015,
+      "role": "Executor",
+      "message": "Diagnosing Report service intermittent 504s",
+      "case_id": "eval-timeout",
+      "version": 1,
+      "split": "held_out"
+    },
+    {
+      "time": 1792260593.408129,
+      "role": "Executor",
+      "message": "Inference completed",
+      "latency_s": 1.023,
+      "usage": {
+        "prompt_tokens": 286,
+        "total_tokens": 355,
+        "completion_tokens": 69,
+        "prompt_tokens_details": null
+      },
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"diagnosis\": \"Timeouts are set to 150ms but upstream responses average 650ms p99, causing immediate 504s. Retries=4 compound load without resolving the root delay.\",\n  \"patch\": {\n    \"timeout_ms\": 800\n  }\n}"
+    },
+    {
+      "time": 1792260593.424129,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "eval-timeout",
+      "version": 1,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "request_completes": true,
+          "retry_budget": false
+        },
+        "resulting_config": {
+          "timeout_ms": 800,
+          "retries": 4
+        }
+      }
+    },
+    {
+      "time": 1792260593.430712,
+      "role": "Executor",
+      "message": "Diagnosing Worker service cannot acquire connections",
+      "case_id": "eval-pool",
+      "version": 1,
+      "split": "held_out"
+    },
+    {
+      "time": 1792260594.141334,
+      "role": "Executor",
+      "message": "Inference completed",
+      "latency_s": 0.704,
+      "usage": {
+        "prompt_tokens": 265,
+        "total_tokens": 322,
+        "completion_tokens": 57,
+        "prompt_tokens_details": null
+      },
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"diagnosis\": \"Connection pool exhaustion under load. With pool_size=4 and workers=20, concurrent queries (15) exceed available connections, causing acquisition timeouts.\",\n  \"patch\": {\n    \"pool_size\": 20\n  }\n}"
+    },
+    {
+      "time": 1792260594.155252,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "eval-pool",
+      "version": 1,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "load_served": false,
+          "workers_preserved": true
+        },
+        "resulting_config": {
+          "pool_size": 20,
+          "workers": 20
+        }
+      }
+    },
+    {
+      "time": 1792260594.160701,
+      "role": "Executor",
+      "message": "Diagnosing New deployment never becomes ready",
+      "case_id": "eval-route",
+      "version": 1,
+      "split": "held_out"
+    },
+    {
+      "time": 1792260595.318932,
+      "role": "Executor",
+      "message": "Inference completed",
+      "latency_s": 1.153,
+      "usage": {
+        "prompt_tokens": 268,
+        "total_tokens": 347,
+        "completion_tokens": 79,
+        "prompt_tokens_details": null
+      },
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"diagnosis\": \"The deployment failed readiness checks because the application is listening on port 3000 but the health check endpoint is registered as /live on port 9090. The readiness requests return 404 because they are hitting the wrong port or path.\",\n  \"patch\": {\n    \"port\": 9090\n  }\n}"
+    },
+    {
+      "time": 1792260595.333011,
+      "role": "Verifier",
+      "message": "FAIL",
+      "case_id": "eval-route",
+      "version": 1,
+      "checks": {
+        "passed": false,
+        "checks": {
+          "probe_reaches_route": false,
+          "probe_reaches_listener": true
+        },
+        "resulting_config": {
+          "health_path": "/status",
+          "port": 9090
+        }
+      }
+    },
+    {
+      "time": 1792260595.346126,
+      "role": "Gate",
+      "message": "ROLLBACK: Requires strict improvement on development and held-out suites",
+      "version": 1
+    }
+  ],
+  "runs": [
+    {
+      "case_id": "dev-timeout",
+      "title": "Gateway drops valid requests",
+      "split": "development",
+      "version": 0,
+      "passed": false,
+      "attempts": [
+        {
+          "diagnosis": "Upstream timeout occurs despite normal completion, indicating the gateway's timeout threshold is too low for the request duration. Retry storms result from clients re-sending requests that hit the same timeout limit.",
+          "patch": {
+            "timeout_ms": 120000
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "request_completes": false,
+              "retry_budget": false
+            },
+            "resulting_config": {
+              "timeout_ms": 120000,
+              "retries": 3
+            }
+          },
+          "latency_s": 0.77,
+          "usage": {
+            "prompt_tokens": 179,
+            "total_tokens": 247,
+            "completion_tokens": 68,
+            "prompt_tokens_details": null
+          }
+        }
+      ],
+      "tools_used": [
+        "read_logs"
+      ]
+    },
+    {
+      "case_id": "dev-pool",
+      "title": "Database queue saturation",
+      "split": "development",
+      "version": 0,
+      "passed": false,
+      "attempts": [
+        {
+          "diagnosis": "Pool acquisition timed out under steady traffic despite database health, indicating the connection pool is undersized for current load.",
+          "patch": {
+            "pool_size": 20
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "load_served": false,
+              "workers_preserved": true
+            },
+            "resulting_config": {
+              "pool_size": 20,
+              "workers": 12
+            }
+          },
+          "latency_s": 0.756,
+          "usage": {
+            "prompt_tokens": 175,
+            "total_tokens": 222,
+            "completion_tokens": 47,
+            "prompt_tokens_details": null
+          }
+        }
+      ],
+      "tools_used": [
+        "read_logs"
+      ]
+    },
+    {
+      "case_id": "dev-route",
+      "title": "Health checks fail after migration",
+      "split": "development",
+      "version": 0,
+      "passed": false,
+      "attempts": [
+        {
+          "diagnosis": "Health check path mismatch after migration; the service expects a different endpoint than the load balancer is probing.",
+          "patch": {
+            "health_path": "/api/v1/health"
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "probe_reaches_route": false,
+              "probe_reaches_listener": true
+            },
+            "resulting_config": {
+              "health_path": "/api/v1/health",
+              "port": 8080
+            }
+          },
+          "latency_s": 0.561,
+          "usage": {
+            "prompt_tokens": 185,
+            "total_tokens": 234,
+            "completion_tokens": 49,
+            "prompt_tokens_details": null
+          }
+        }
+      ],
+      "tools_used": [
+        "read_logs"
+      ]
+    },
+    {
+      "case_id": "dev-timeout",
+      "title": "Gateway drops valid requests",
+      "split": "development",
+      "version": 1,
+      "passed": false,
+      "attempts": [
+        {
+          "diagnosis": "Timeout threshold (80ms) is below the upstream 99th percentile latency (240ms), causing valid requests to be rejected and triggering retry storms.",
+          "patch": {
+            "timeout_ms": 260
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "request_completes": true,
+              "retry_budget": false
+            },
+            "resulting_config": {
+              "timeout_ms": 260,
+              "retries": 3
+            }
+          },
+          "latency_s": 0.892,
+          "usage": {
+            "prompt_tokens": 279,
+            "total_tokens": 339,
+            "completion_tokens": 60,
+            "prompt_tokens_details": null
+          }
+        }
+      ],
+      "tools_used": [
+        "read_logs",
+        "inspect_config",
+        "inspect_contract"
+      ]
+    },
+    {
+      "case_id": "dev-pool",
+      "title": "Database queue saturation",
+      "split": "development",
+      "version": 1,
+      "passed": true,
+      "attempts": [
+        {
+          "diagnosis": "Pool size of 2 is insufficient for 12 workers and 8 concurrent queries, causing queue saturation.",
+          "patch": {
+            "pool_size": 10
+          },
+          "verification": {
+            "passed": true,
+            "checks": {
+              "load_served": true,
+              "workers_preserved": true
+            },
+            "resulting_config": {
+              "pool_size": 10,
+              "workers": 12
+            }
+          },
+          "latency_s": 0.717,
+          "usage": {
+            "prompt_tokens": 262,
+            "total_tokens": 309,
+            "completion_tokens": 47,
+            "prompt_tokens_details": null
+          }
+        }
+      ],
+      "tools_used": [
+        "read_logs",
+        "inspect_config",
+        "inspect_contract"
+      ]
+    },
+    {
+      "case_id": "dev-route",
+      "title": "Health checks fail after migration",
+      "split": "development",
+      "version": 1,
+      "passed": true,
+      "attempts": [
+        {
+          "diagnosis": "Health check path mismatch between service contract and runtime configuration. The service is listening on port 8080 and expecting /readyz, but the health check targets /health.",
+          "patch": {
+            "health_path": "/readyz"
+          },
+          "verification": {
+            "passed": true,
+            "checks": {
+              "probe_reaches_route": true,
+              "probe_reaches_listener": true
+            },
+            "resulting_config": {
+              "health_path": "/readyz",
+              "port": 8080
+            }
+          },
+          "latency_s": 0.573,
+          "usage": {
+            "prompt_tokens": 276,
+            "total_tokens": 337,
+            "completion_tokens": 61,
+            "prompt_tokens_details": null
+          }
+        }
+      ],
+      "tools_used": [
+        "read_logs",
+        "inspect_config",
+        "inspect_contract"
+      ]
+    },
+    {
+      "case_id": "dev-timeout",
+      "title": "Gateway drops valid requests",
+      "split": "development",
+      "version": 2,
+      "passed": false,
+      "attempts": [
+        {
+          "diagnosis": "Upstream p99 latency (240ms) exceeds the configured timeout (80ms), causing valid requests to be terminated as 504s. Retry storms compound the issue by re-queuing requests that still hit the timeout boundary.",
+          "patch": {
+            "timeout_ms": 300
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "request_completes": true,
+              "retry_budget": false
+            },
+            "resulting_config": {
+              "timeout_ms": 300,
+              "retries": 3
+            }
+          },
+          "latency_s": 0.736,
+          "usage": {
+            "prompt_tokens": 261,
+            "total_tokens": 340,
+            "completion_tokens": 79,
+            "prompt_tokens_details": null
+          }
+        }
+      ],
+      "tools_used": [
+        "inspect_config",
+        "inspect_contract",
+        "read_logs"
+      ]
+    },
+    {
+      "case_id": "dev-pool",
+      "title": "Database queue saturation",
+      "split": "development",
+      "version": 2,
+      "passed": true,
+      "attempts": [
+        {
+          "diagnosis": "Pool size of 2 is insufficient for 12 workers with a concurrent query limit of 8, causing queue saturation under steady traffic.",
+          "patch": {
+            "pool_size": 8
+          },
+          "verification": {
+            "passed": true,
+            "checks": {
+              "load_served": true,
+              "workers_preserved": true
+            },
+            "resulting_config": {
+              "pool_size": 8,
+              "workers": 12
+            }
+          },
+          "latency_s": 0.648,
+          "usage": {
+            "prompt_tokens": 244,
+            "total_tokens": 296,
+            "completion_tokens": 52,
+            "prompt_tokens_details": null
+          }
+        }
+      ],
+      "tools_used": [
+        "inspect_config",
+        "inspect_contract",
+        "read_logs"
+      ]
+    },
+    {
+      "case_id": "dev-route",
+      "title": "Health checks fail after migration",
+      "split": "development",
+      "version": 2,
+      "passed": true,
+      "attempts": [
+        {
+          "diagnosis": "Health check path mismatch between service contract and configuration. The service contract registers /readyz but the config specifies /health.",
+          "patch": {
+            "health_path": "/readyz"
+          },
+          "verification": {
+            "passed": true,
+            "checks": {
+              "probe_reaches_route": true,
+              "probe_reaches_listener": true
+            },
+            "resulting_config": {
+              "health_path": "/readyz",
+              "port": 8080
+            }
+          },
+          "latency_s": 0.8,
+          "usage": {
+            "prompt_tokens": 258,
+            "total_tokens": 307,
+            "completion_tokens": 49,
+            "prompt_tokens_details": null
+          }
+        }
+      ],
+      "tools_used": [
+        "inspect_config",
+        "inspect_contract",
+        "read_logs"
+      ]
+    },
+    {
+      "case_id": "eval-timeout",
+      "title": "Report service intermittent 504s",
+      "split": "held_out",
+      "version": 0,
+      "passed": false,
+      "attempts": [
+        {
+          "diagnosis": "Gateway timeout threshold is too low, causing premature abandonment of successful upstream responses. Retries compound the issue by re-triggering the same timeout on already-completing requests.",
+          "patch": {
+            "timeout_ms": 30000
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "request_completes": false,
+              "retry_budget": false
+            },
+            "resulting_config": {
+              "timeout_ms": 30000,
+              "retries": 4
+            }
+          },
+          "latency_s": 0.659,
+          "usage": {
+            "prompt_tokens": 185,
+            "total_tokens": 247,
+            "completion_tokens": 62,
+            "prompt_tokens_details": null
+          }
+        }
+      ],
+      "tools_used": [
+        "read_logs"
+      ]
+    },
+    {
+      "case_id": "eval-pool",
+      "title": "Worker service cannot acquire connections",
+      "split": "held_out",
+      "version": 0,
+      "passed": false,
+      "attempts": [
+        {
+          "diagnosis": "Connection pool exhaustion under peak load despite successful pings.",
+          "patch": {
+            "pool_size": 20
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "load_served": false,
+              "workers_preserved": true
+            },
+            "resulting_config": {
+              "pool_size": 20,
+              "workers": 20
+            }
+          },
+          "latency_s": 0.594,
+          "usage": {
+            "prompt_tokens": 177,
+            "total_tokens": 213,
+            "completion_tokens": 36,
+            "prompt_tokens_details": null
+          }
+        }
+      ],
+      "tools_used": [
+        "read_logs"
+      ]
+    },
+    {
+      "case_id": "eval-route",
+      "title": "New deployment never becomes ready",
+      "split": "held_out",
+      "version": 0,
+      "passed": false,
+      "attempts": [
+        {
+          "diagnosis": "Readiness probe likely misconfigured or missing path mapping.",
+          "patch": {
+            "health_path": "/healthz"
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "probe_reaches_route": false,
+              "probe_reaches_listener": false
+            },
+            "resulting_config": {
+              "health_path": "/healthz",
+              "port": 3000
+            }
+          },
+          "latency_s": 0.627,
+          "usage": {
+            "prompt_tokens": 178,
+            "total_tokens": 215,
+            "completion_tokens": 37,
+            "prompt_tokens_details": null
+          }
+        }
+      ],
+      "tools_used": [
+        "read_logs"
+      ]
+    },
+    {
+      "case_id": "eval-timeout",
+      "title": "Report service intermittent 504s",
+      "split": "held_out",
+      "version": 1,
+      "passed": false,
+      "attempts": [
+        {
+          "diagnosis": "Timeouts are set to 150ms but upstream responses average 650ms p99, causing immediate 504s. Retries=4 compound load without resolving the root delay.",
+          "patch": {
+            "timeout_ms": 800
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "request_completes": true,
+              "retry_budget": false
+            },
+            "resulting_config": {
+              "timeout_ms": 800,
+              "retries": 4
+            }
+          },
+          "latency_s": 1.023,
+          "usage": {
+            "prompt_tokens": 286,
+            "total_tokens": 355,
+            "completion_tokens": 69,
+            "prompt_tokens_details": null
+          }
+        }
+      ],
+      "tools_used": [
+        "read_logs",
+        "inspect_config",
+        "inspect_contract"
+      ]
+    },
+    {
+      "case_id": "eval-pool",
+      "title": "Worker service cannot acquire connections",
+      "split": "held_out",
+      "version": 1,
+      "passed": false,
+      "attempts": [
+        {
+          "diagnosis": "Connection pool exhaustion under load. With pool_size=4 and workers=20, concurrent queries (15) exceed available connections, causing acquisition timeouts.",
+          "patch": {
+            "pool_size": 20
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "load_served": false,
+              "workers_preserved": true
+            },
+            "resulting_config": {
+              "pool_size": 20,
+              "workers": 20
+            }
+          },
+          "latency_s": 0.704,
+          "usage": {
+            "prompt_tokens": 265,
+            "total_tokens": 322,
+            "completion_tokens": 57,
+            "prompt_tokens_details": null
+          }
+        }
+      ],
+      "tools_used": [
+        "read_logs",
+        "inspect_config",
+        "inspect_contract"
+      ]
+    },
+    {
+      "case_id": "eval-route",
+      "title": "New deployment never becomes ready",
+      "split": "held_out",
+      "version": 1,
+      "passed": false,
+      "attempts": [
+        {
+          "diagnosis": "The deployment failed readiness checks because the application is listening on port 3000 but the health check endpoint is registered as /live on port 9090. The readiness requests return 404 because they are hitting the wrong port or path.",
+          "patch": {
+            "port": 9090
+          },
+          "verification": {
+            "passed": false,
+            "checks": {
+              "probe_reaches_route": false,
+              "probe_reaches_listener": true
+            },
+            "resulting_config": {
+              "health_path": "/status",
+              "port": 9090
+            }
+          },
+          "latency_s": 1.153,
+          "usage": {
+            "prompt_tokens": 268,
+            "total_tokens": 347,
+            "completion_tokens": 79,
+            "prompt_tokens_details": null
+          }
+        }
+      ],
+      "tools_used": [
+        "read_logs",
+        "inspect_config",
+        "inspect_contract"
+      ]
+    }
+  ],
+  "strategies": [
+    {
+      "version": 0,
+      "name": "Log-first triage",
+      "instructions": "Diagnose from symptoms and propose the smallest configuration repair.",
+      "roles": [
+        "Architect",
+        "Executor",
+        "Observer",
+        "Scientist"
+      ],
+      "sequence": [
+        "read_logs",
+        "repair"
+      ],
+      "tools": [
+        "read_logs"
+      ],
+      "verification": [
+        "final_check"
+      ],
+      "max_attempts": 1
+    },
+    {
+      "version": 1,
+      "name": "instrumented_observability_first",
+      "instructions": "Before any repair, capture structured logs, latency percentiles, and circuit breaker state for the affected component. Define quantitative success thresholds (e.g., 99th percentile latency < 200ms, success rate >= 95%) and verify they are met post-repair.",
+      "roles": [
+        "Architect",
+        "Executor",
+        "Observer",
+        "Scientist"
+      ],
+      "sequence": [
+        "read_logs",
+        "inspect_config",
+        "inspect_contract",
+        "repair",
+        "verify"
+      ],
+      "tools": [
+        "read_logs",
+        "inspect_config",
+        "inspect_contract"
+      ],
+      "verification": [
+        "final_check"
+      ],
+      "max_attempts": 1
+    },
+    {
+      "version": 2,
+      "name": "contract_driven_capacity_repair",
+      "instructions": "Inspect service contracts and capacity requirements first. Adjust pool_size or route settings based on independently supplied limits, then capture connection wait time histograms and TLS handshake logs as diagnostic artifacts before confirming resolution.",
+      "roles": [
+        "Architect",
+        "Executor",
+        "Observer",
+        "Scientist"
+      ],
+      "sequence": [
+        "inspect_config",
+        "inspect_contract",
+        "read_logs",
+        "repair",
+        "verify"
+      ],
+      "tools": [
+        "read_logs",
+        "inspect_config",
+        "inspect_contract"
+      ],
+      "verification": [
+        "final_check"
+      ],
+      "max_attempts": 1
+    }
+  ],
+  "decisions": [
+    {
+      "version": 1,
+      "action": "rollback",
+      "reason": "Requires strict improvement on development and held-out suites",
+      "time": 1792260595.33968
+    }
+  ],
+  "current_generation": 0,
+  "limits": {
+    "max_calls": 36,
+    "token_stop_threshold": 16000,
+    "max_tokens_per_call": 700,
+    "concurrency": 1
+  },
+  "cost_usd": null,
+  "cost_note": "Pricing not configured; no cost claim",
+  "active_strategy": {
+    "version": 0,
+    "name": "Log-first triage",
+    "instructions": "Diagnose from symptoms and propose the smallest configuration repair.",
+    "roles": [
+      "Architect",
+      "Executor",
+      "Observer",
+      "Scientist"
+    ],
+    "sequence": [
+      "read_logs",
+      "repair"
+    ],
+    "tools": [
+      "read_logs"
+    ],
+    "verification": [
+      "final_check"
+    ],
+    "max_attempts": 1
+  },
+  "finished_at": 1792260595.348948,
+  "inference_calls": 18,
+  "total_tokens": 6600
+}

@@ -1,0 +1,53 @@
+{
+  "id": "20261017-110634-f75b85",
+  "status": "error",
+  "started_at": 1792260394.119688,
+  "suite": "incidents-v1",
+  "suite_sha256": "7cbb22e5452235391df3d18cf41b468932b6aa28c6d9749a0a8a43fe004b3f98",
+  "events": [
+    {
+      "time": 1792260394.1354089,
+      "role": "System",
+      "message": "Run stopped safely: URLError"
+    }
+  ],
+  "runs": [],
+  "strategies": [
+    {
+      "version": 0,
+      "name": "Log-first triage",
+      "instructions": "Diagnose from symptoms and propose the smallest configuration repair.",
+      "roles": [
+        "Architect",
+        "Executor",
+        "Observer",
+        "Scientist"
+      ],
+      "sequence": [
+        "read_logs",
+        "repair"
+      ],
+      "tools": [
+        "read_logs"
+      ],
+      "verification": [
+        "final_check"
+      ],
+      "max_attempts": 1
+    }
+  ],
+  "decisions": [],
+  "current_generation": 0,
+  "limits": {
+    "max_calls": 36,
+    "token_stop_threshold": 16000,
+    "max_tokens_per_call": 700,
+    "concurrency": 1
+  },
+  "cost_usd": null,
+  "cost_note": "Pricing not configured; no cost claim",
+  "error": "URLError",
+  "finished_at": 1792260394.136439,
+  "inference_calls": 1,
+  "total_tokens": 0
+}
