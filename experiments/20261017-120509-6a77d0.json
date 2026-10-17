@@ -1,0 +1,1072 @@
+{
+  "id": "20261017-120509-6a77d0",
+  "status": "error",
+  "started_at": 1792263909.104776,
+  "suite": "incidents-v2-fresh-shards",
+  "suite_sha256": "601cc568038949fca6c2a261ad61db20c177855d1eb1a031ab09c884d5f1fde2",
+  "events": [
+    {
+      "time": 1792263909.108649,
+      "role": "Architect",
+      "message": "Reasoning started",
+      "cycle": 0,
+      "execution_kind": "remote_model"
+    },
+    {
+      "time": 1792263909.8652532,
+      "role": "Architect",
+      "message": "Inference completed",
+      "request_id": "2cb2ede5de794fa595d329aa37d64ef8",
+      "latency_s": 0.748,
+      "usage": {
+        "prompt_tokens": 256,
+        "total_tokens": 373,
+        "completion_tokens": 117,
+        "prompt_tokens_details": null
+      },
+      "cost_estimate_usd": "0.0000362000",
+      "http_status": 200,
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"approach\": \"Execute the incident remediation workflow: first verify initial control logs, then apply targeted fixes to restore service availability while strictly adhering to latency, retry, connection-capacity and readiness contracts. Preserve unrelated worker settings throughout. Validate each change against the sealed incident contract before proceeding to the next step.\",\n  \"success_criteria\": [\n    \"All independent incident contract checks pass with sealed_pass_rate of 1.0\",\n    \"Zero regressions observed on previously passing cases\",\n    \"Work units minimized after full correctness is achieved\"\n  ]\n}",
+      "cycle": 0,
+      "execution_kind": "remote_model"
+    },
+    {
+      "time": 1792263909.878665,
+      "role": "Architect",
+      "message": "Objective and measurable criteria defined",
+      "analysis": {
+        "approach": "Execute the incident remediation workflow: first verify initial control logs, then apply targeted fixes to restore service availability while strictly adhering to latency, retry, connection-capacity and readiness contracts. Preserve unrelated worker settings throughout. Validate each change against the sealed incident contract before proceeding to the next step.",
+        "success_criteria": [
+          "All independent incident contract checks pass with sealed_pass_rate of 1.0",
+          "Zero regressions observed on previously passing cases",
+          "Work units minimized after full correctness is achieved"
+        ]
+      }
+    },
+    {
+      "time": 1792263909.88886,
+      "role": "Architect",
+      "message": "Candidate registered: Log-first control",
+      "node_id": "g0",
+      "parent_id": null,
+      "generation": 0
+    },
+    {
+      "time": 1792263909.8977768,
+      "role": "Executor",
+      "message": "Reasoning started",
+      "cycle": 0,
+      "execution_kind": "remote_model"
+    },
+    {
+      "time": 1792263910.616629,
+      "role": "Executor",
+      "message": "Inference completed",
+      "request_id": "b10a9f67bffc4f7f8cf6f427b65157a2",
+      "latency_s": 0.697,
+      "usage": {
+        "prompt_tokens": 981,
+        "total_tokens": 1078,
+        "completion_tokens": 97,
+        "prompt_tokens_details": null
+      },
+      "cost_estimate_usd": "0.0000684500",
+      "http_status": 200,
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"programs\": [\n    {\n      \"node_id\": \"g0\",\n      \"program\": {\n        \"executor\": [\n          {\n            \"target\": \"timeout_ms\",\n            \"operation\": \"literal\",\n            \"value\": 30000\n          },\n          {\n            \"target\": \"retries\",\n            \"operation\": \"literal\",\n            \"value\": 3\n          }\n        ]\n      }\n    }\n  ]\n}",
+      "cycle": 0,
+      "execution_kind": "remote_model"
+    },
+    {
+      "time": 1792263910.632768,
+      "role": "Executor",
+      "message": "Bounded repair procedure compiled",
+      "node_id": "g0",
+      "rules": 2,
+      "request_id": "b10a9f67bffc4f7f8cf6f427b65157a2"
+    },
+    {
+      "time": 1792263910.635835,
+      "role": "System",
+      "message": "Generation 1 begins",
+      "generation": 1,
+      "parent_id": "g0"
+    },
+    {
+      "time": 1792263910.639565,
+      "role": "Executor",
+      "message": "Executing g0 on development",
+      "node_id": "g0",
+      "suite": "development",
+      "execution_kind": "local_team_runtime"
+    },
+    {
+      "time": 1792263910.642626,
+      "role": "Verifier",
+      "message": "FAIL",
+      "node_id": "g0",
+      "case_id": "development-latency-00",
+      "suite": "development",
+      "tool_calls": 1,
+      "work_units": 4,
+      "execution_kind": "deterministic_verifier"
+    },
+    {
+      "time": 1792263910.647407,
+      "role": "Verifier",
+      "message": "FAIL",
+      "node_id": "g0",
+      "case_id": "development-capacity-01",
+      "suite": "development",
+      "tool_calls": 1,
+      "work_units": 2,
+      "execution_kind": "deterministic_verifier"
+    },
+    {
+      "time": 1792263910.651715,
+      "role": "Verifier",
+      "message": "FAIL",
+      "node_id": "g0",
+      "case_id": "development-routing-02",
+      "suite": "development",
+      "tool_calls": 1,
+      "work_units": 2,
+      "execution_kind": "deterministic_verifier"
+    },
+    {
+      "time": 1792263910.655701,
+      "role": "Verifier",
+      "message": "FAIL",
+      "node_id": "g0",
+      "case_id": "development-latency-03",
+      "suite": "development",
+      "tool_calls": 1,
+      "work_units": 4,
+      "execution_kind": "deterministic_verifier"
+    },
+    {
+      "time": 1792263910.6601532,
+      "role": "Verifier",
+      "message": "FAIL",
+      "node_id": "g0",
+      "case_id": "development-capacity-04",
+      "suite": "development",
+      "tool_calls": 1,
+      "work_units": 2,
+      "execution_kind": "deterministic_verifier"
+    },
+    {
+      "time": 1792263910.66441,
+      "role": "Verifier",
+      "message": "FAIL",
+      "node_id": "g0",
+      "case_id": "development-routing-05",
+      "suite": "development",
+      "tool_calls": 1,
+      "work_units": 2,
+      "execution_kind": "deterministic_verifier"
+    },
+    {
+      "time": 1792263910.675358,
+      "role": "Observer + Scientist",
+      "message": "Reasoning started",
+      "cycle": 0,
+      "execution_kind": "remote_model"
+    },
+    {
+      "time": 1792263915.222761,
+      "role": "Observer + Scientist",
+      "message": "Inference completed",
+      "request_id": "026b30e97a9a4b62be1582490e7addce",
+      "latency_s": 4.533,
+      "usage": {
+        "prompt_tokens": 1783,
+        "total_tokens": 2489,
+        "completion_tokens": 706,
+        "prompt_tokens_details": null
+      },
+      "cost_estimate_usd": "0.0002303500",
+      "http_status": 200,
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"observation\": {\n    \"weakness\": \"Inherited config defaults violate service contracts across all families. Latency cases need higher timeout_ms and retries; capacity cases need larger pool_size and workers; routing cases need corrected health_path and port. Current policy infers repairs from symptoms without inspecting contracts, causing mismatches between deployed config and service expectations.\",\n    \"lesson\": \"Contracts must be inspected before applying symptom-based defaults; config values must align with registered health paths, port expectations, and resource budgets.\"\n  },\n  \"mutations\": [\n    {\n      \"name\": \"contract-first latency fix\",\n      \"reason\": \"Latency incidents show timeout_ms and retries insufficient against upstream p99 and deadline; config must meet contract thresholds.\",\n      \"changes\": {\n        \"instructions\": \"Inspect service contract before proposing timeout/retries; align config with upstream_p99_ms and deadline_ms thresholds.\",\n        \"agents\": [\n          {\n            \"id\": \"executor\",\n            \"specialty\": \"latency\",\n            \"tools\": [\"inspect_config\", \"inspect_contract\", \"read_logs\"],\n            \"instructions\": \"Propose timeout_ms and retries that satisfy upstream_p99_ms and deadline_ms from contract.\"\n          }\n        ],\n        \"workflow\": [\n          {\"agent\": \"executor\", \"action\": \"inspect_contract\"},\n          {\"agent\": \"executor\", \"action\": \"inspect_config\"},\n          {\"agent\": \"executor\", \"action\": \"apply_rules\"},\n          {\"agent\": \"executor\", \"action\": \"commit\"}\n        ],\n        \"review_policy\": \"schema\",\n        \"memory_policy\": \"inherit_verified\",\n        \"cache_evidence\": true\n      }\n    },\n    {\n      \"name\": \"capacity-and-routing alignment\",\n      \"reason\": \"Capacity and routing incidents reveal pool_size/workers and health_path/port mismatches between config and service contract; current settings exceed or miss contract budgets/paths.\",\n      \"changes\": {\n        \"instructions\": \"Inspect service contract for concurrent_queries/connection_budget and registered_health_path/listening_port; adjust pool_size, workers, health_path, port to meet or stay within contracts.\",\n        \"agents\": [\n          {\n            \"id\": \"executor\",\n            \"specialty\": \"capacity\",\n            \"tools\": [\"inspect_config\", \"inspect_contract\", \"read_logs\"],\n            \"instructions\": \"Propose pool_size and workers that respect connection_budget and concurrent_queries limits.\"\n          },\n          {\n            \"id\": \"executor\",\n            \"specialty\": \"routing\",\n            \"tools\": [\"inspect_config\", \"inspect_contract\", \"read_logs\"],\n            \"instructions\": \"Propose health_path and port matching registered_health_path and listening_port from contract.\"\n          }\n        ],\n        \"workflow\": [\n          {\"agent\": \"executor\", \"action\": \"inspect_contract\"},\n          {\"agent\": \"executor\", \"action\": \"inspect_config\"},\n          {\"agent\": \"executor\", \"action\": \"apply_rules\"},\n          {\"agent\": \"executor\", \"action\": \"commit\"}\n        ],\n        \"review_policy\": \"schema\",\n        \"memory_policy\": \"inherit_verified\",\n        \"cache_evidence\": true\n      }\n    }\n  ]\n}",
+      "cycle": 0,
+      "execution_kind": "remote_model"
+    },
+    {
+      "time": 1792263915.2433522,
+      "role": "Observer",
+      "message": "Inherited config defaults violate service contracts across all families. Latency cases need higher timeout_ms and retries; capacity cases need larger pool_size and workers; routing cases need corrected health_path and port. Current policy infers repairs from symptoms without inspecting contracts, causing mismatches between deployed config and service expectations.",
+      "generation": 1,
+      "request_id": "026b30e97a9a4b62be1582490e7addce",
+      "analysis": {
+        "weakness": "Inherited config defaults violate service contracts across all families. Latency cases need higher timeout_ms and retries; capacity cases need larger pool_size and workers; routing cases need corrected health_path and port. Current policy infers repairs from symptoms without inspecting contracts, causing mismatches between deployed config and service expectations.",
+        "lesson": "Contracts must be inspected before applying symptom-based defaults; config values must align with registered health paths, port expectations, and resource budgets."
+      }
+    },
+    {
+      "time": 1792263915.253918,
+      "role": "Scientist",
+      "message": "Candidate registered: contract-first latency fix",
+      "node_id": "g1a",
+      "parent_id": "g0",
+      "generation": 1
+    },
+    {
+      "time": 1792263915.2579808,
+      "role": "System",
+      "message": "Evolution stopped safely: ValueError"
+    }
+  ],
+  "runs": [
+    {
+      "case_id": "development-latency-00",
+      "title": "Latency contract incident",
+      "family": "latency",
+      "split": "development",
+      "passed": false,
+      "patch": {
+        "timeout_ms": 30000,
+        "retries": 3
+      },
+      "verification": {
+        "passed": false,
+        "checks": {
+          "request_completes": false,
+          "retry_budget": false
+        },
+        "resulting_config": {
+          "timeout_ms": 30000,
+          "retries": 3
+        }
+      },
+      "trace": [
+        {
+          "step": 0,
+          "agent": "executor",
+          "specialty": "general",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Gateway 504; upstream completes normally; retry amplification observed."
+        },
+        {
+          "step": 1,
+          "agent": "executor",
+          "specialty": "general",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": [
+            {
+              "target": "timeout_ms",
+              "status": "applied",
+              "value": 30000,
+              "rule": {
+                "target": "timeout_ms",
+                "operation": "literal",
+                "value": 30000
+              }
+            },
+            {
+              "target": "retries",
+              "status": "applied",
+              "value": 3,
+              "rule": {
+                "target": "retries",
+                "operation": "literal",
+                "value": 3
+              }
+            }
+          ]
+        },
+        {
+          "step": 2,
+          "agent": "executor",
+          "specialty": "general",
+          "action": "commit",
+          "kind": "local_tool",
+          "status": "complete",
+          "patch": {
+            "timeout_ms": 30000,
+            "retries": 3
+          }
+        }
+      ],
+      "metrics": {
+        "tool_calls": 1,
+        "rule_steps": 2,
+        "workflow_steps": 3,
+        "work_units": 4,
+        "memory_hits": 0,
+        "latency_s": 0.00017
+      },
+      "provenance": "Executed by the bounded local team interpreter; model-generated program, no per-incident inference or simulated API response",
+      "node_id": "g0",
+      "generation": 0,
+      "suite": "development",
+      "evaluation_id": "round-1",
+      "id": "round-1:g0:development-latency-00"
+    },
+    {
+      "case_id": "development-capacity-01",
+      "title": "Capacity contract incident",
+      "family": "capacity",
+      "split": "development",
+      "passed": false,
+      "patch": {},
+      "verification": {
+        "passed": false,
+        "checks": {
+          "valid_patch": false
+        },
+        "error": "Patch must contain only existing configuration keys"
+      },
+      "trace": [
+        {
+          "step": 0,
+          "agent": "executor",
+          "specialty": "general",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Connection acquisition deadline exceeded under load; database remains healthy."
+        },
+        {
+          "step": 1,
+          "agent": "executor",
+          "specialty": "general",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": []
+        },
+        {
+          "step": 2,
+          "agent": "executor",
+          "specialty": "general",
+          "action": "commit",
+          "kind": "local_tool",
+          "status": "complete",
+          "patch": {}
+        }
+      ],
+      "metrics": {
+        "tool_calls": 1,
+        "rule_steps": 0,
+        "workflow_steps": 3,
+        "work_units": 2,
+        "memory_hits": 0,
+        "latency_s": 7.4e-05
+      },
+      "provenance": "Executed by the bounded local team interpreter; model-generated program, no per-incident inference or simulated API response",
+      "node_id": "g0",
+      "generation": 0,
+      "suite": "development",
+      "evaluation_id": "round-1",
+      "id": "round-1:g0:development-capacity-01"
+    },
+    {
+      "case_id": "development-routing-02",
+      "title": "Routing contract incident",
+      "family": "routing",
+      "split": "development",
+      "passed": false,
+      "patch": {},
+      "verification": {
+        "passed": false,
+        "checks": {
+          "valid_patch": false
+        },
+        "error": "Patch must contain only existing configuration keys"
+      },
+      "trace": [
+        {
+          "step": 0,
+          "agent": "executor",
+          "specialty": "general",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Readiness returns 404; application listener is running after migration."
+        },
+        {
+          "step": 1,
+          "agent": "executor",
+          "specialty": "general",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": []
+        },
+        {
+          "step": 2,
+          "agent": "executor",
+          "specialty": "general",
+          "action": "commit",
+          "kind": "local_tool",
+          "status": "complete",
+          "patch": {}
+        }
+      ],
+      "metrics": {
+        "tool_calls": 1,
+        "rule_steps": 0,
+        "workflow_steps": 3,
+        "work_units": 2,
+        "memory_hits": 0,
+        "latency_s": 6.2e-05
+      },
+      "provenance": "Executed by the bounded local team interpreter; model-generated program, no per-incident inference or simulated API response",
+      "node_id": "g0",
+      "generation": 0,
+      "suite": "development",
+      "evaluation_id": "round-1",
+      "id": "round-1:g0:development-routing-02"
+    },
+    {
+      "case_id": "development-latency-03",
+      "title": "Latency contract incident",
+      "family": "latency",
+      "split": "development",
+      "passed": false,
+      "patch": {
+        "timeout_ms": 30000,
+        "retries": 3
+      },
+      "verification": {
+        "passed": false,
+        "checks": {
+          "request_completes": false,
+          "retry_budget": false
+        },
+        "resulting_config": {
+          "timeout_ms": 30000,
+          "retries": 3
+        }
+      },
+      "trace": [
+        {
+          "step": 0,
+          "agent": "executor",
+          "specialty": "general",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Gateway 504; upstream completes normally; retry amplification observed."
+        },
+        {
+          "step": 1,
+          "agent": "executor",
+          "specialty": "general",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": [
+            {
+              "target": "timeout_ms",
+              "status": "applied",
+              "value": 30000,
+              "rule": {
+                "target": "timeout_ms",
+                "operation": "literal",
+                "value": 30000
+              }
+            },
+            {
+              "target": "retries",
+              "status": "applied",
+              "value": 3,
+              "rule": {
+                "target": "retries",
+                "operation": "literal",
+                "value": 3
+              }
+            }
+          ]
+        },
+        {
+          "step": 2,
+          "agent": "executor",
+          "specialty": "general",
+          "action": "commit",
+          "kind": "local_tool",
+          "status": "complete",
+          "patch": {
+            "timeout_ms": 30000,
+            "retries": 3
+          }
+        }
+      ],
+      "metrics": {
+        "tool_calls": 1,
+        "rule_steps": 2,
+        "workflow_steps": 3,
+        "work_units": 4,
+        "memory_hits": 0,
+        "latency_s": 8.8e-05
+      },
+      "provenance": "Executed by the bounded local team interpreter; model-generated program, no per-incident inference or simulated API response",
+      "node_id": "g0",
+      "generation": 0,
+      "suite": "development",
+      "evaluation_id": "round-1",
+      "id": "round-1:g0:development-latency-03"
+    },
+    {
+      "case_id": "development-capacity-04",
+      "title": "Capacity contract incident",
+      "family": "capacity",
+      "split": "development",
+      "passed": false,
+      "patch": {},
+      "verification": {
+        "passed": false,
+        "checks": {
+          "valid_patch": false
+        },
+        "error": "Patch must contain only existing configuration keys"
+      },
+      "trace": [
+        {
+          "step": 0,
+          "agent": "executor",
+          "specialty": "general",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Connection acquisition deadline exceeded under load; database remains healthy."
+        },
+        {
+          "step": 1,
+          "agent": "executor",
+          "specialty": "general",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": []
+        },
+        {
+          "step": 2,
+          "agent": "executor",
+          "specialty": "general",
+          "action": "commit",
+          "kind": "local_tool",
+          "status": "complete",
+          "patch": {}
+        }
+      ],
+      "metrics": {
+        "tool_calls": 1,
+        "rule_steps": 0,
+        "workflow_steps": 3,
+        "work_units": 2,
+        "memory_hits": 0,
+        "latency_s": 8.8e-05
+      },
+      "provenance": "Executed by the bounded local team interpreter; model-generated program, no per-incident inference or simulated API response",
+      "node_id": "g0",
+      "generation": 0,
+      "suite": "development",
+      "evaluation_id": "round-1",
+      "id": "round-1:g0:development-capacity-04"
+    },
+    {
+      "case_id": "development-routing-05",
+      "title": "Routing contract incident",
+      "family": "routing",
+      "split": "development",
+      "passed": false,
+      "patch": {},
+      "verification": {
+        "passed": false,
+        "checks": {
+          "valid_patch": false
+        },
+        "error": "Patch must contain only existing configuration keys"
+      },
+      "trace": [
+        {
+          "step": 0,
+          "agent": "executor",
+          "specialty": "general",
+          "action": "read_logs",
+          "kind": "local_tool",
+          "status": "complete",
+          "evidence": "Readiness returns 404; application listener is running after migration."
+        },
+        {
+          "step": 1,
+          "agent": "executor",
+          "specialty": "general",
+          "action": "apply_rules",
+          "kind": "local_tool",
+          "status": "complete",
+          "operations": []
+        },
+        {
+          "step": 2,
+          "agent": "executor",
+          "specialty": "general",
+          "action": "commit",
+          "kind": "local_tool",
+          "status": "complete",
+          "patch": {}
+        }
+      ],
+      "metrics": {
+        "tool_calls": 1,
+        "rule_steps": 0,
+        "workflow_steps": 3,
+        "work_units": 2,
+        "memory_hits": 0,
+        "latency_s": 5.9e-05
+      },
+      "provenance": "Executed by the bounded local team interpreter; model-generated program, no per-incident inference or simulated API response",
+      "node_id": "g0",
+      "generation": 0,
+      "suite": "development",
+      "evaluation_id": "round-1",
+      "id": "round-1:g0:development-routing-05"
+    }
+  ],
+  "strategies": [],
+  "decisions": [],
+  "current_generation": 0,
+  "baseline_version": 0,
+  "fresh_baseline": true,
+  "mode": "live",
+  "budget_policy": "structured-v2-six-per-cycle",
+  "cycles": 1,
+  "limits": {
+    "max_requests_per_cycle": 6,
+    "max_cycles_per_run": 2,
+    "planned_model_requests": 8,
+    "concurrency": 1,
+    "project_cap_usd": "2.00",
+    "automatic_retries": 1,
+    "max_output_tokens": 1800,
+    "max_input_bytes": 24000,
+    "max_generations": 3,
+    "max_candidates_per_generation": 2,
+    "max_agents": 4,
+    "max_workflow_steps": 24,
+    "max_program_rules": 12
+  },
+  "cost_usd": "0.0003350000",
+  "cost_note": "Estimate from verified public Crusoe prices; conservative reserves retained for unknown usage",
+  "pricing": {
+    "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+    "input_usd_per_million": "0.05",
+    "output_usd_per_million": "0.20",
+    "cached_input_usd_per_million": "0.03",
+    "source": "https://www.crusoe.ai/cloud/pricing",
+    "model_source": "https://docs.crusoecloud.com/serverless-inference/index.html",
+    "verified_at": "2026-10-17T18:30:00+00:00",
+    "expires_at": "2026-10-18T18:30:00+00:00",
+    "note": "Serverless Inference table, Nemotron 3.5 Lightning. Cached discounts are deliberately ignored for conservative estimates. Exact existing Crusoe model alias is pinned."
+  },
+  "engine_version": 2,
+  "suite_manifest": {
+    "version": "incidents-v2-fresh-shards",
+    "seed": "11789391825789968206",
+    "sha256": "7c38dd473083f2b1f42717b400ad287b4c274bda9c7f684b5a52810b6b5988a7",
+    "suites": {
+      "development": [
+        "development-latency-00",
+        "development-capacity-01",
+        "development-routing-02",
+        "development-latency-03",
+        "development-capacity-04",
+        "development-routing-05"
+      ],
+      "regression": [
+        "dev-timeout",
+        "dev-pool",
+        "dev-route",
+        "eval-timeout",
+        "eval-pool",
+        "eval-route"
+      ],
+      "validation-g1": [
+        "validation-g1-latency-00",
+        "validation-g1-capacity-01",
+        "validation-g1-routing-02",
+        "validation-g1-latency-03",
+        "validation-g1-capacity-04",
+        "validation-g1-routing-05"
+      ],
+      "validation-g2": [
+        "validation-g2-latency-00",
+        "validation-g2-capacity-01",
+        "validation-g2-routing-02",
+        "validation-g2-latency-03",
+        "validation-g2-capacity-04",
+        "validation-g2-routing-05"
+      ],
+      "validation-g3": [
+        "validation-g3-latency-00",
+        "validation-g3-capacity-01",
+        "validation-g3-routing-02",
+        "validation-g3-latency-03",
+        "validation-g3-capacity-04",
+        "validation-g3-routing-05"
+      ],
+      "sealed": [
+        "sealed-latency-00",
+        "sealed-capacity-01",
+        "sealed-routing-02",
+        "sealed-latency-03",
+        "sealed-capacity-04",
+        "sealed-routing-05"
+      ]
+    },
+    "note": "Fresh validation shard per generation; sealed challenge never enters synthesis prompts. Development is fixed for fair iteration."
+  },
+  "objective": "Restore service availability while respecting latency, retry, connection-capacity and readiness contracts. Preserve unrelated worker settings.",
+  "criteria": [
+    {
+      "id": "behavior",
+      "description": "Pass all independent incident contract checks",
+      "target": 1.0,
+      "metric": "sealed_pass_rate"
+    },
+    {
+      "id": "regression",
+      "description": "Never regress a previously passing case",
+      "target": 0,
+      "metric": "regressions"
+    },
+    {
+      "id": "efficiency",
+      "description": "After full correctness, prefer less actual tool/rule/review work",
+      "metric": "work_units"
+    }
+  ],
+  "requested_generations": 3,
+  "nodes": [
+    {
+      "id": "g0",
+      "generation": 0,
+      "parent_id": null,
+      "team": {
+        "name": "Log-first control",
+        "instructions": "Infer repairs from symptoms without inspecting deployed configuration or contracts.",
+        "agents": [
+          {
+            "id": "executor",
+            "specialty": "general",
+            "tools": [
+              "read_logs"
+            ],
+            "instructions": "Propose conservative symptom-based defaults."
+          }
+        ],
+        "workflow": [
+          {
+            "agent": "executor",
+            "action": "read_logs"
+          },
+          {
+            "agent": "executor",
+            "action": "apply_rules"
+          },
+          {
+            "agent": "executor",
+            "action": "commit"
+          }
+        ],
+        "review_policy": "schema",
+        "memory_policy": "none",
+        "cache_evidence": false,
+        "program": {
+          "executor": [
+            {
+              "target": "timeout_ms",
+              "operation": "literal",
+              "value": 30000
+            },
+            {
+              "target": "retries",
+              "operation": "literal",
+              "value": 3
+            }
+          ]
+        }
+      },
+      "memory_snapshot": [],
+      "status": "compiled",
+      "reason": "Initial control team",
+      "changes": [],
+      "team_sha256": "b1664fe67bb435a1adcfcd9dc6de57162c1b59a123e2aea38196e78e27c4fbd9",
+      "metrics": {
+        "development": {
+          "passed": 0,
+          "total": 6,
+          "pass_rate": 0.0,
+          "tool_calls": 6,
+          "rule_steps": 4,
+          "work_units": 16,
+          "memory_hits": 0,
+          "latency_s": 0.000541
+        }
+      },
+      "created_at": 1792263909.8852322,
+      "program_normalizations": [],
+      "compilation_request_id": "b10a9f67bffc4f7f8cf6f427b65157a2"
+    },
+    {
+      "id": "g1a",
+      "generation": 1,
+      "parent_id": "g0",
+      "team": {
+        "name": "contract-first latency fix",
+        "instructions": "Inspect service contract before proposing timeout/retries; align config with upstream_p99_ms and deadline_ms thresholds.",
+        "agents": [
+          {
+            "id": "executor",
+            "specialty": "latency",
+            "tools": [
+              "inspect_config",
+              "inspect_contract",
+              "read_logs"
+            ],
+            "instructions": "Propose timeout_ms and retries that satisfy upstream_p99_ms and deadline_ms from contract."
+          }
+        ],
+        "workflow": [
+          {
+            "agent": "executor",
+            "action": "inspect_contract"
+          },
+          {
+            "agent": "executor",
+            "action": "inspect_config"
+          },
+          {
+            "agent": "executor",
+            "action": "apply_rules"
+          },
+          {
+            "agent": "executor",
+            "action": "commit"
+          }
+        ],
+        "review_policy": "schema",
+        "memory_policy": "inherit_verified",
+        "cache_evidence": true,
+        "program": {}
+      },
+      "memory_snapshot": [],
+      "status": "proposed",
+      "reason": "Latency incidents show timeout_ms and retries insufficient against upstream p99 and deadline; config must meet contract thresholds.",
+      "changes": [
+        {
+          "field": "instructions",
+          "label": "Agent instructions",
+          "before": "Infer repairs from symptoms without inspecting deployed configuration or contracts.",
+          "after": "Inspect service contract before proposing timeout/retries; align config with upstream_p99_ms and deadline_ms thresholds."
+        },
+        {
+          "field": "agents",
+          "label": "Team composition and specialization",
+          "before": [
+            {
+              "id": "executor",
+              "specialty": "general",
+              "tools": [
+                "read_logs"
+              ],
+              "instructions": "Propose conservative symptom-based defaults."
+            }
+          ],
+          "after": [
+            {
+              "id": "executor",
+              "specialty": "latency",
+              "tools": [
+                "inspect_config",
+                "inspect_contract",
+                "read_logs"
+              ],
+              "instructions": "Propose timeout_ms and retries that satisfy upstream_p99_ms and deadline_ms from contract."
+            }
+          ]
+        },
+        {
+          "field": "workflow",
+          "label": "Execution workflow",
+          "before": [
+            {
+              "agent": "executor",
+              "action": "read_logs"
+            },
+            {
+              "agent": "executor",
+              "action": "apply_rules"
+            },
+            {
+              "agent": "executor",
+              "action": "commit"
+            }
+          ],
+          "after": [
+            {
+              "agent": "executor",
+              "action": "inspect_contract"
+            },
+            {
+              "agent": "executor",
+              "action": "inspect_config"
+            },
+            {
+              "agent": "executor",
+              "action": "apply_rules"
+            },
+            {
+              "agent": "executor",
+              "action": "commit"
+            }
+          ]
+        },
+        {
+          "field": "memory_policy",
+          "label": "Lessons and memory",
+          "before": "none",
+          "after": "inherit_verified"
+        },
+        {
+          "field": "cache_evidence",
+          "label": "Evidence reuse",
+          "before": false,
+          "after": true
+        },
+        {
+          "field": "program",
+          "label": "Repair procedure",
+          "before": {
+            "executor": [
+              {
+                "target": "timeout_ms",
+                "operation": "literal",
+                "value": 30000
+              },
+              {
+                "target": "retries",
+                "operation": "literal",
+                "value": 3
+              }
+            ]
+          },
+          "after": {}
+        }
+      ],
+      "team_sha256": "27e9ed4c87ce25535d9408306cf21fb50631898e908884a0f63f7234330c0f63",
+      "metrics": {},
+      "created_at": 1792263915.248419,
+      "observation": {
+        "weakness": "Inherited config defaults violate service contracts across all families. Latency cases need higher timeout_ms and retries; capacity cases need larger pool_size and workers; routing cases need corrected health_path and port. Current policy infers repairs from symptoms without inspecting contracts, causing mismatches between deployed config and service expectations.",
+        "lesson": "Contracts must be inspected before applying symptom-based defaults; config values must align with registered health paths, port expectations, and resource budgets."
+      },
+      "synthesis_request_id": "026b30e97a9a4b62be1582490e7addce"
+    }
+  ],
+  "rounds": [],
+  "memory": [],
+  "ancestor": null,
+  "active_node_id": "g0",
+  "source_hashes": {
+    "team.py": "6f0c0caefd90570efae009d662540ea696e9aa5b017087c34804bb08ba046dfe",
+    "suites.py": "c199084718cdb84266d9e8c928d41de05f49f2ef7d8cf7186439f5ef59b1749b",
+    "benchmark.py": "601cc568038949fca6c2a261ad61db20c177855d1eb1a031ab09c884d5f1fde2"
+  },
+  "inference_calls": 3,
+  "total_tokens": 3940,
+  "objective_analysis": {
+    "approach": "Execute the incident remediation workflow: first verify initial control logs, then apply targeted fixes to restore service availability while strictly adhering to latency, retry, connection-capacity and readiness contracts. Preserve unrelated worker settings throughout. Validate each change against the sealed incident contract before proceeding to the next step.",
+    "success_criteria": [
+      "All independent incident contract checks pass with sealed_pass_rate of 1.0",
+      "Zero regressions observed on previously passing cases",
+      "Work units minimized after full correctness is achieved"
+    ]
+  },
+  "error": "ValueError",
+  "error_detail": "Agent IDs must be unique short identifiers",
+  "finished_at": 1792263915.265013,
+  "budget_audit": {
+    "physical_requests": 3,
+    "reported_tokens": 3940,
+    "cost_estimate_usd": "0.0003350000",
+    "entries": [
+      {
+        "id": "2cb2ede5de794fa595d329aa37d64ef8",
+        "run_id": "20261017-120509-6a77d0",
+        "cycle": 0,
+        "role": "Architect",
+        "time": 1792263909.1098921,
+        "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+        "retry": 0,
+        "input_token_bound": 2253,
+        "max_output_tokens": 350,
+        "reserved_usd": "0.0001826500",
+        "status": "complete",
+        "output_schema_sha256": null,
+        "latency_s": 0.748,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 256,
+          "total_tokens": 373,
+          "completion_tokens": 117,
+          "prompt_tokens_details": null
+        },
+        "charge_usd": "0.0000362000"
+      },
+      {
+        "id": "b10a9f67bffc4f7f8cf6f427b65157a2",
+        "run_id": "20261017-120509-6a77d0",
+        "cycle": 0,
+        "role": "Executor",
+        "time": 1792263909.904324,
+        "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+        "retry": 0,
+        "input_token_bound": 6901,
+        "max_output_tokens": 1800,
+        "reserved_usd": "0.0007050500",
+        "status": "complete",
+        "output_schema_sha256": "72c98542cd2548de9081494e217464b3aeed3b4cd2d295a82914ff65c066213f",
+        "latency_s": 0.697,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 981,
+          "total_tokens": 1078,
+          "completion_tokens": 97,
+          "prompt_tokens_details": null
+        },
+        "charge_usd": "0.0000684500"
+      },
+      {
+        "id": "026b30e97a9a4b62be1582490e7addce",
+        "run_id": "20261017-120509-6a77d0",
+        "cycle": 0,
+        "role": "Observer + Scientist",
+        "time": 1792263910.678337,
+        "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+        "retry": 0,
+        "input_token_bound": 9851,
+        "max_output_tokens": 1800,
+        "reserved_usd": "0.0008525500",
+        "status": "complete",
+        "output_schema_sha256": "41bb9a3347e9d1090e3bcfc23068c17f2e1a6c49c2e18c431d9678b9d09649f6",
+        "latency_s": 4.533,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 1783,
+          "total_tokens": 2489,
+          "completion_tokens": 706,
+          "prompt_tokens_details": null
+        },
+        "charge_usd": "0.0002303500"
+      }
+    ]
+  }
+}

@@ -8,7 +8,7 @@ from core_genesis.budget import RequestBudget
 from core_genesis.crusoe import DEFAULT_MODEL
 from core_genesis.evolution import EvolutionEngine
 from core_genesis.suites import generate, manifest, family
-from core_genesis.team import CONTROL, execute, validate_team, validate_program, compare, aggregate
+from core_genesis.team import CONTROL, execute, validate_team, validate_program, compare, aggregate, normalize_program
 
 
 RULES = [
@@ -29,6 +29,13 @@ def reference_team():
 
 
 class RuntimeTests(unittest.TestCase):
+    def test_unambiguous_json_shapes_normalize_without_new_capabilities(self):
+        program, notes = normalize_program({"agent_id": [{"target": "retries", "operation": "literal", "source": "3"}]}, CONTROL)
+        self.assertEqual(program, {"executor": [{"target": "retries", "operation": "literal", "value": 3}]})
+        self.assertEqual(len(notes), 2)
+        with self.assertRaises(ValueError):
+            normalize_program({"agent_id": [{"target": "port", "operation": "literal", "source": "contract.listening_port"}]}, CONTROL)
+
     def test_general_rules_repair_unseen_values_and_do_not_mutate_fixtures(self):
         team = reference_team()
         for seed in range(20):

@@ -145,3 +145,11 @@ class BudgetTests(unittest.TestCase):
         with self.assertRaises(BudgetError):
             self.ask()
         self.assertEqual(self.client.calls, 0)
+
+    def test_schema_bytes_are_reserved_and_invalid_schema_never_calls_transport(self):
+        with self.assertRaises(BudgetError):
+            self.budget.chat("unit-test", 0, "UnitTest", [], 20, self.client, response_format={"type": "arbitrary"})
+        huge = {"type": "json_schema", "json_schema": {"schema": {"type": "object", "description": "x" * 25000}}}
+        with self.assertRaises(BudgetError):
+            self.budget.chat("unit-test", 0, "UnitTest", [], 20, self.client, response_format=huge)
+        self.assertEqual(self.client.calls, 0)

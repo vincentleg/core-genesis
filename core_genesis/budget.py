@@ -5,6 +5,7 @@ Physical attempts (including retries), not just successful calls, consume the qu
 """
 import contextlib
 import datetime as dt
+import hashlib
 from decimal import Decimal
 import fcntl
 import json
@@ -149,12 +150,14 @@ class RequestBudget:
                     "cost_estimate_usd": dollars(sum((Decimal(e.get("charge_usd", e["reserved_usd"])) for e in entries), Decimal(0))),
                     "entries": entries}
 
-    def chat(self, run_id, cycle, role, messages, max_tokens, client=None):
+    def chat(self, run_id, cycle, role, messages, max_tokens, client=None, response_format=None):
         if type(cycle) is not int or not 0 <= cycle < MAX_CYCLES:
             raise BudgetError("At most two evolution cycles per explicit user run")
         if type(max_tokens) is not int or not 1 <= max_tokens <= MAX_OUTPUT:
             raise BudgetError("Output token limit invalid")
-        input_bytes = len(json.dumps(messages, ensure_ascii=False).encode("utf-8"))
+        if response_format is not None and (not isinstance(response_format, dict) or response_format.get("type") != "json_schema" or not isinstance(response_format.get("json_schema", {}).get("schema"), dict)):
+            raise BudgetError("Invalid constrained-output schema")
+        input_bytes = len(json.dumps(messages, ensure_ascii=False).encode("utf-8")) + (len(json.dumps(response_format).encode()) if response_format else 0)
         if input_bytes > MAX_INPUT_BYTES:
             raise BudgetError("Input exceeds the strict 24KB request limit")
         # UTF-8 bytes bound byte-level tokenizer tokens; framing is over-reserved.
@@ -180,12 +183,14 @@ class RequestBudget:
                             raise BudgetError("Project-wide $2 estimated spending cap would be exceeded")
                         state["entries"].append({"id": entry_id, "run_id": run_id, "cycle": cycle, "role": role,
                             "time": time.time(), "model": DEFAULT_MODEL, "retry": retry, "input_token_bound": input_bound,
-                            "max_output_tokens": max_tokens, "reserved_usd": dollars(reserve), "status": "reserved"})
+                            "max_output_tokens": max_tokens, "reserved_usd": dollars(reserve), "status": "reserved",
+                            "output_schema_sha256": hashlib.sha256(json.dumps(response_format, sort_keys=True).encode()).hexdigest() if response_format else None})
                     start = time.perf_counter()
                     response = None
                     failure = None
                     try:
-                        response = client.chat(messages, max_tokens=max_tokens, temperature=0, chat_template_kwargs={"enable_thinking": False})
+                        structured = {"response_format": response_format} if response_format else {}
+                        response = client.chat(messages, max_tokens=max_tokens, temperature=0, chat_template_kwargs={"enable_thinking": False}, **structured)
                     except Exception as exc:
                         failure = exc
                     latency = round(time.perf_counter() - start, 3)

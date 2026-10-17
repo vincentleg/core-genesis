@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#080b13"><title>CORE GENESIS — Evolution Laboratory</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath fill='none' stroke='%2369b4ff' stroke-width='3' d='M20 3 35 12v16L20 37 5 28V12Z M12 20h16M20 12v16'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/arena.css"><script src="/arena.js" defer></script>
+</head>
+<body>
+<header class="topbar">
+  <a href="/" class="brand"><span class="brand-symbol">✳</span><span>CORE <b>GENESIS</b><small>EVOLUTION LABORATORY / 2.0</small></span></a>
+  <nav><a href="#lineage" class="nav-active">Evolution</a><a href="#battle">Generation battles</a><a href="#memory-bank">Memory</a></nav>
+  <div class="provider"><span class="provider-mark">N</span><span>NVIDIA NEMOTRON<small>REASONING VIA CRUSOE</small></span><a href="https://github.com/vincentleg/core-genesis" target="_blank" rel="noopener" aria-label="View source">↗</a></div>
+</header>
+<div class="workspace">
+<aside class="control-room">
+  <div class="sidebar-title"><span class="cross">+</span> EXPERIMENT CONTROL <span>01</span></div>
+  <label for="mode">EXECUTION MODE</label>
+  <select id="mode"><option value="recorded">Recorded evidence</option><option value="live">Live evolution</option><option value="local">Local test / zero API</option></select>
+  <div id="mode-description" class="mode-description">Genuine execution records. Read-only replay. No new inference.</div>
+  <div class="control-divider"></div>
+  <label for="objective">YOUR OBJECTIVE</label>
+  <textarea id="objective" rows="5" maxlength="600">Restore service availability while respecting latency, retry, connection-capacity and readiness contracts. Preserve unrelated worker settings.</textarea>
+  <div class="scope-note"><span>⌘</span> Scoped to software configuration incidents. Typed repairs; no generated code execution.</div>
+  <div class="round-control"><label for="rounds">EVOLUTION ROUNDS</label><select id="rounds"><option value="3">3 generations</option><option value="2">2 generations</option><option value="1">1 generation</option></select></div>
+  <button id="run-action" class="primary">Load recorded evidence <span>↗</span></button>
+  <p id="action-error" class="action-error" role="alert"></p>
+  <div id="request-plan" class="request-plan">Replay only · 0 external requests</div>
+  <div class="control-divider"></div>
+  <div class="sidebar-title small">EXECUTION ENVELOPE <span>LOCKED</span></div>
+  <div class="envelope"><div><span>Project spending cap</span><b>$2.00</b></div><div><span>Requests / cycle</span><b>≤ 6</b></div><div><span>Cycles / action</span><b>≤ 2</b></div><div><span>Concurrent requests</span><b>1</b></div><div><span>Generated shell / code</span><b class="dim">DISABLED</b></div></div>
+  <div class="budget-meter"><div class="budget-track"><i id="budget-fill"></i></div><div><span id="budget-used">Reading local ledger</span><span id="budget-left"></span></div><p id="budget-note">Estimates include conservative uncertainty reserves.</p></div>
+  <div class="control-divider"></div>
+  <label for="archive">EXPERIMENT ARCHIVE</label><select id="archive"><option value="">Latest completed experiment</option></select>
+  <a id="download" class="export" href="/api/state" download="genesis-evidence.json">EXPORT COMPLETE EVIDENCE <span>↓</span></a>
+  <div class="sidebar-bottom"><span>VERSION N+1</span><small>Independent tests decide.<br>Every generation leaves evidence.</small></div>
+</aside>
+<main>
+  <div class="run-header"><div class="eyebrow"><span id="status-light"></span><span id="run-status">RECORDED EVIDENCE</span><span class="header-slash">/</span><span id="run-id">NO RUN SELECTED</span></div><span id="mode-badge" class="mode-badge">REPLAY · ZERO API</span></div>
+  <section class="hero"><div><h1>Evolution is a process.<br><em>Improvement is a result.</em></h1><p id="objective-display">Watch an agent team change its own procedure, test the alternatives, and earn the next generation.</p></div><div id="experiment-outcome" class="outcome-chip"><span>RESEARCH STATUS</span><b>Awaiting evidence</b></div></section>
+  <section class="stat-grid" aria-label="Real execution metrics">
+    <div class="stat"><span>ACTIVE GENERATION</span><strong id="stat-generation">—</strong><small id="stat-team">No verified team yet</small></div>
+    <div class="stat"><span>SEALED CHALLENGE</span><strong id="stat-score">—</strong><small id="stat-score-detail">Never used for mutation</small></div>
+    <div class="stat"><span>ACTUAL CANDIDATES</span><strong id="stat-candidates">—</strong><small id="stat-candidate-detail">Branching team configurations</small></div>
+    <div class="stat"><span>MODEL REQUESTS</span><strong id="stat-requests">—</strong><small id="stat-cost">No inference on page load</small></div>
+  </section>
+  <section class="panel lineage-panel" id="lineage">
+    <div class="panel-title"><h2><span class="section-index">01</span> Evolution graph <span class="label-new">LIVE LINEAGE</span></h2><div class="graph-legend"><span><i class="dot promoted"></i>Promoted</span><span><i class="dot rejected"></i>Rolled back</span><span><i class="dot neutral"></i>Not selected</span></div></div>
+    <div class="graph-toolbar"><span id="graph-caption">Every branch is a real candidate. Click to inspect its mutation.</span><button id="graph-fit" class="quiet">FIT GRAPH ↔</button></div>
+    <div class="graph-scroll" id="graph-scroll"><svg id="evolution-graph" role="img" aria-label="Candidate evolution tree"></svg><div id="graph-empty" class="empty-state"><span>⌬</span><h3>No evolutionary tree captured yet.</h3><p>Select Live evolution to begin an actual experiment.<br>Older V0 evidence remains available in the archive.</p></div></div>
+    <div id="round-timeline" class="round-timeline"></div>
+  </section>
+  <div class="research-grid">
+    <section class="panel activity-panel">
+      <div class="panel-title"><h2><span class="section-index">02</span> Agent activity</h2><span id="event-count" class="mono muted">0 EVENTS</span></div>
+      <div id="role-strip" class="role-strip"></div>
+      <div class="activity-tabs"><button class="active" data-feed="all">All activity</button><button data-feed="remote">Nemotron reasoning</button><button data-feed="gate">Decisions</button></div>
+      <div id="activity-feed" class="activity-feed" aria-live="polite"></div>
+      <div class="panel-foot"><span class="dot neutral"></span><span id="activity-note">Remote reasoning and deterministic execution are labeled separately.</span></div>
+    </section>
+    <section class="panel inspector-panel" id="inspector">
+      <div class="panel-title"><h2><span class="section-index">03</span> Mutation inspector</h2><span id="inspector-node" class="mono blue">SELECT A NODE</span></div>
+      <div id="inspector-summary" class="inspector-summary"></div>
+      <div class="inspector-tabs"><button class="active" data-inspect="changes">Changes</button><button data-inspect="team">Team & workflow</button><button data-inspect="program">Procedure</button><button data-inspect="cases">Test evidence</button></div>
+      <div id="inspector-content" class="inspector-content"></div>
+    </section>
+  </div>
+  <section class="panel battle-panel" id="battle">
+    <div class="panel-title"><h2><span class="section-index">04</span> Generation battle</h2><span class="mono muted">IDENTICAL INCIDENTS · OBJECTIVE CHECKS</span></div>
+    <div class="battle-selectors"><select id="battle-left" aria-label="First generation"></select><span>VS</span><select id="battle-right" aria-label="Second generation"></select></div>
+    <div id="battle-summary" class="battle-summary"></div>
+    <div class="table-scroll"><table><thead id="battle-head"></thead><tbody id="battle-body"></tbody></table></div>
+    <div id="battle-reason" class="panel-foot"></div>
+  </section>
+  <div class="bottom-grid">
+    <section class="panel" id="memory-bank"><div class="panel-title"><h2><span class="section-index">05</span> Verified memory</h2><span id="memory-count" class="mono blue">0 LESSONS</span></div><div id="memory-content" class="memory-content"></div></section>
+    <section class="panel"><div class="panel-title"><h2><span class="section-index">06</span> Objective contract</h2><span class="mono muted">MEASURABLE · FIXED GATE</span></div><div id="criteria-content" class="criteria-content"></div></section>
+  </div>
+  <footer><span>CORE GENESIS <b>/</b> EVOLUTION ZERO</span><span id="source-note">Real model synthesis. Bounded local execution. Independent verification.</span><span>NO CLAIM WITHOUT EVIDENCE.</span></footer>
+</main>
+</div>
+<dialog id="evidence-dialog"><div class="dialog-head"><div><span class="eyebrow">EXECUTION ARTIFACT</span><h2 id="evidence-title">Verified execution evidence</h2></div><button id="close-evidence" aria-label="Close evidence">×</button></div><div id="evidence-content"></div></dialog>
+</body></html>

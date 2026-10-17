@@ -1,0 +1,323 @@
+{
+  "id": "20261017-115932-4d5777",
+  "status": "error",
+  "started_at": 1792263572.2192268,
+  "suite": "incidents-v2-fresh-shards",
+  "suite_sha256": "601cc568038949fca6c2a261ad61db20c177855d1eb1a031ab09c884d5f1fde2",
+  "events": [
+    {
+      "time": 1792263572.2231302,
+      "role": "Architect",
+      "message": "Reasoning started",
+      "cycle": 0,
+      "execution_kind": "remote_model"
+    },
+    {
+      "time": 1792263572.9791691,
+      "role": "Architect",
+      "message": "Inference completed",
+      "request_id": "0db7104a71164fd49fe99feb419cf1f3",
+      "latency_s": 0.75,
+      "usage": {
+        "prompt_tokens": 256,
+        "total_tokens": 341,
+        "completion_tokens": 85,
+        "prompt_tokens_details": null
+      },
+      "cost_estimate_usd": "0.0000298000",
+      "http_status": 200,
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"approach\": \"Execute the incident remediation workflow: initial log-based diagnosis, then apply controlled mutations to team and workflow as specified. Validate each step against the sealed incident contract and regression guardrails before proceeding.\",\n  \"success_criteria\": [\n    \"All independent incident contract checks pass\",\n    \"Zero regressions on previously passing cases\",\n    \"Work units minimized after correctness is achieved\"\n  ]\n}",
+      "cycle": 0,
+      "execution_kind": "remote_model"
+    },
+    {
+      "time": 1792263572.986196,
+      "role": "Architect",
+      "message": "Objective and measurable criteria defined",
+      "analysis": {
+        "approach": "Execute the incident remediation workflow: initial log-based diagnosis, then apply controlled mutations to team and workflow as specified. Validate each step against the sealed incident contract and regression guardrails before proceeding.",
+        "success_criteria": [
+          "All independent incident contract checks pass",
+          "Zero regressions on previously passing cases",
+          "Work units minimized after correctness is achieved"
+        ]
+      }
+    },
+    {
+      "time": 1792263572.991385,
+      "role": "Architect",
+      "message": "Candidate registered: Log-first control",
+      "node_id": "g0",
+      "parent_id": null,
+      "generation": 0
+    },
+    {
+      "time": 1792263572.996541,
+      "role": "Executor",
+      "message": "Reasoning started",
+      "cycle": 0,
+      "execution_kind": "remote_model"
+    },
+    {
+      "time": 1792263573.6914072,
+      "role": "Executor",
+      "message": "Inference completed",
+      "request_id": "da28f3a2dce7460eaa9f57ba471e0115",
+      "latency_s": 0.68,
+      "usage": {
+        "prompt_tokens": 916,
+        "total_tokens": 1012,
+        "completion_tokens": 96,
+        "prompt_tokens_details": null
+      },
+      "cost_estimate_usd": "0.0000650000",
+      "http_status": 200,
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "output": "{\n  \"programs\": [\n    {\n      \"node_id\": \"g0\",\n      \"program\": {\n        \"agent_id\": [\n          {\n            \"target\": \"timeout_ms\",\n            \"operation\": \"literal\",\n            \"source\": \"5000\"\n          },\n          {\n            \"target\": \"retries\",\n            \"operation\": \"literal\",\n            \"source\": \"3\"\n          }\n        ]\n      }\n    }\n  ]\n}",
+      "cycle": 0,
+      "execution_kind": "remote_model"
+    },
+    {
+      "time": 1792263573.70334,
+      "role": "System",
+      "message": "Evolution stopped safely: ValueError"
+    }
+  ],
+  "runs": [],
+  "strategies": [],
+  "decisions": [],
+  "current_generation": 0,
+  "baseline_version": 0,
+  "fresh_baseline": true,
+  "mode": "live",
+  "budget_policy": "structured-v2-six-per-cycle",
+  "cycles": 1,
+  "limits": {
+    "max_requests_per_cycle": 6,
+    "max_cycles_per_run": 2,
+    "planned_model_requests": 8,
+    "concurrency": 1,
+    "project_cap_usd": "2.00",
+    "automatic_retries": 1,
+    "max_output_tokens": 1800,
+    "max_input_bytes": 24000,
+    "max_generations": 3,
+    "max_candidates_per_generation": 2,
+    "max_agents": 4,
+    "max_workflow_steps": 24,
+    "max_program_rules": 12
+  },
+  "cost_usd": "0.0000948000",
+  "cost_note": "Estimate from verified public Crusoe prices; conservative reserves retained for unknown usage",
+  "pricing": {
+    "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+    "input_usd_per_million": "0.05",
+    "output_usd_per_million": "0.20",
+    "cached_input_usd_per_million": "0.03",
+    "source": "https://www.crusoe.ai/cloud/pricing",
+    "model_source": "https://docs.crusoecloud.com/serverless-inference/index.html",
+    "verified_at": "2026-10-17T18:30:00+00:00",
+    "expires_at": "2026-10-18T18:30:00+00:00",
+    "note": "Serverless Inference table, Nemotron 3.5 Lightning. Cached discounts are deliberately ignored for conservative estimates. Exact existing Crusoe model alias is pinned."
+  },
+  "engine_version": 2,
+  "suite_manifest": {
+    "version": "incidents-v2-fresh-shards",
+    "seed": "8698643080603505219",
+    "sha256": "2347aff598faabe08920cfcda16b3854e93b1249451b7a2cbdac6e0d651e8212",
+    "suites": {
+      "development": [
+        "development-latency-00",
+        "development-capacity-01",
+        "development-routing-02",
+        "development-latency-03",
+        "development-capacity-04",
+        "development-routing-05"
+      ],
+      "regression": [
+        "dev-timeout",
+        "dev-pool",
+        "dev-route",
+        "eval-timeout",
+        "eval-pool",
+        "eval-route"
+      ],
+      "validation-g1": [
+        "validation-g1-latency-00",
+        "validation-g1-capacity-01",
+        "validation-g1-routing-02",
+        "validation-g1-latency-03",
+        "validation-g1-capacity-04",
+        "validation-g1-routing-05"
+      ],
+      "validation-g2": [
+        "validation-g2-latency-00",
+        "validation-g2-capacity-01",
+        "validation-g2-routing-02",
+        "validation-g2-latency-03",
+        "validation-g2-capacity-04",
+        "validation-g2-routing-05"
+      ],
+      "validation-g3": [
+        "validation-g3-latency-00",
+        "validation-g3-capacity-01",
+        "validation-g3-routing-02",
+        "validation-g3-latency-03",
+        "validation-g3-capacity-04",
+        "validation-g3-routing-05"
+      ],
+      "sealed": [
+        "sealed-latency-00",
+        "sealed-capacity-01",
+        "sealed-routing-02",
+        "sealed-latency-03",
+        "sealed-capacity-04",
+        "sealed-routing-05"
+      ]
+    },
+    "note": "Fresh validation shard per generation; sealed challenge never enters synthesis prompts. Development is fixed for fair iteration."
+  },
+  "objective": "Restore service availability while respecting latency, retry, connection-capacity and readiness contracts. Preserve unrelated worker settings.",
+  "criteria": [
+    {
+      "id": "behavior",
+      "description": "Pass all independent incident contract checks",
+      "target": 1.0,
+      "metric": "sealed_pass_rate"
+    },
+    {
+      "id": "regression",
+      "description": "Never regress a previously passing case",
+      "target": 0,
+      "metric": "regressions"
+    },
+    {
+      "id": "efficiency",
+      "description": "After full correctness, prefer less actual tool/rule/review work",
+      "metric": "work_units"
+    }
+  ],
+  "requested_generations": 3,
+  "nodes": [
+    {
+      "id": "g0",
+      "generation": 0,
+      "parent_id": null,
+      "team": {
+        "name": "Log-first control",
+        "instructions": "Infer repairs from symptoms without inspecting deployed configuration or contracts.",
+        "agents": [
+          {
+            "id": "executor",
+            "specialty": "general",
+            "tools": [
+              "read_logs"
+            ],
+            "instructions": "Propose conservative symptom-based defaults."
+          }
+        ],
+        "workflow": [
+          {
+            "agent": "executor",
+            "action": "read_logs"
+          },
+          {
+            "agent": "executor",
+            "action": "apply_rules"
+          },
+          {
+            "agent": "executor",
+            "action": "commit"
+          }
+        ],
+        "review_policy": "schema",
+        "memory_policy": "none",
+        "cache_evidence": false,
+        "program": {
+          "executor": []
+        }
+      },
+      "memory_snapshot": [],
+      "status": "baseline",
+      "reason": "Initial control team",
+      "changes": [],
+      "team_sha256": "7c30246d1b678a2af4a41e873d8366e69d02533784ef6a514a90cdf36daa1f8e",
+      "metrics": {},
+      "created_at": 1792263572.990108
+    }
+  ],
+  "rounds": [],
+  "memory": [],
+  "ancestor": null,
+  "active_node_id": "g0",
+  "source_hashes": {
+    "team.py": "917b463f6bba9c9076dd73379c74eac604cba23a90cb64594f0950546d50bf1f",
+    "suites.py": "c199084718cdb84266d9e8c928d41de05f49f2ef7d8cf7186439f5ef59b1749b",
+    "benchmark.py": "601cc568038949fca6c2a261ad61db20c177855d1eb1a031ab09c884d5f1fde2"
+  },
+  "inference_calls": 2,
+  "total_tokens": 1353,
+  "objective_analysis": {
+    "approach": "Execute the incident remediation workflow: initial log-based diagnosis, then apply controlled mutations to team and workflow as specified. Validate each step against the sealed incident contract and regression guardrails before proceeding.",
+    "success_criteria": [
+      "All independent incident contract checks pass",
+      "Zero regressions on previously passing cases",
+      "Work units minimized after correctness is achieved"
+    ]
+  },
+  "error": "ValueError",
+  "error_detail": "Program refers to unknown agents",
+  "finished_at": 1792263573.711777,
+  "budget_audit": {
+    "physical_requests": 2,
+    "reported_tokens": 1353,
+    "cost_estimate_usd": "0.0000948000",
+    "entries": [
+      {
+        "id": "0db7104a71164fd49fe99feb419cf1f3",
+        "run_id": "20261017-115932-4d5777",
+        "cycle": 0,
+        "role": "Architect",
+        "time": 1792263572.224436,
+        "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+        "retry": 0,
+        "input_token_bound": 2253,
+        "max_output_tokens": 350,
+        "reserved_usd": "0.0001826500",
+        "status": "complete",
+        "latency_s": 0.75,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 256,
+          "total_tokens": 341,
+          "completion_tokens": 85,
+          "prompt_tokens_details": null
+        },
+        "charge_usd": "0.0000298000"
+      },
+      {
+        "id": "da28f3a2dce7460eaa9f57ba471e0115",
+        "run_id": "20261017-115932-4d5777",
+        "cycle": 0,
+        "role": "Executor",
+        "time": 1792263573.000036,
+        "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+        "retry": 0,
+        "input_token_bound": 4960,
+        "max_output_tokens": 1800,
+        "reserved_usd": "0.0006080000",
+        "status": "complete",
+        "latency_s": 0.68,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 916,
+          "total_tokens": 1012,
+          "completion_tokens": 96,
+          "prompt_tokens_details": null
+        },
+        "charge_usd": "0.0000650000"
+      }
+    ]
+  }
+}

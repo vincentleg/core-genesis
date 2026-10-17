@@ -3,7 +3,7 @@ import hashlib
 from pathlib import Path
 
 from .suites import manifest
-from .team import validate_team, execute, fingerprint, compare, aggregate
+from .team import validate_team, validate_program, execute, fingerprint, compare, aggregate
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -19,6 +19,17 @@ def replay_v2(state):
     if len(nodes) != len(state["nodes"]):
         raise ValueError("Duplicate lineage node")
     for node in nodes.values():
+        if node["status"] == "invalid":
+            if any(record["node_id"] == node["id"] for record in state["runs"]):
+                raise ValueError("Invalid candidate was executed")
+            try:
+                if node["invalid_phase"] == "configuration":
+                    validate_team(node["team"], program_required=False)
+                else:
+                    validate_program(node["rejected_program"], node["team"])
+            except ValueError:
+                continue
+            raise ValueError("Recorded invalid candidate is actually valid")
         team = validate_team(node["team"])
         if fingerprint(team) != node["team_sha256"]:
             raise ValueError("Team fingerprint mismatch")
@@ -48,7 +59,12 @@ def replay_v2(state):
         def score(node_id):
             results = records(node_id, "development")
             return sum(r["passed"] for r in results), -sum(r["metrics"]["work_units"] for r in results), -round_info["candidates"].index(node_id)
-        if max(round_info["candidates"], key=score) != round_info["selected"]:
+        valid_candidates = [node_id for node_id in round_info["candidates"] if nodes[node_id]["status"] != "invalid"]
+        if not valid_candidates:
+            if decision["kind"] != "invalid_mutations" or decision["action"] != "rollback" or round_info["selected"] is not None:
+                raise ValueError("Invalid-mutation rollback mismatch")
+            continue
+        if max(valid_candidates, key=score) != round_info["selected"]:
             raise ValueError("Development selection mismatch")
         parent, candidate = decision["parent_id"], decision["candidate_id"]
         suite = "validation-g%d" % generation

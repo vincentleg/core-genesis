@@ -64,7 +64,8 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
                 if file.is_file():
                     return self.send(200, json.loads(file.read_text()))
                 return self.send(404, {"error": "Unknown experiment"})
-            assets = {"/": ("index.html", "text/html; charset=utf-8"), "/app.js": ("app.js", "text/javascript; charset=utf-8"), "/style.css": ("style.css", "text/css; charset=utf-8")}
+            assets = {"/": ("arena.html", "text/html; charset=utf-8"), "/arena.js": ("arena.js", "text/javascript; charset=utf-8"), "/arena.css": ("arena.css", "text/css; charset=utf-8"),
+                      "/app.js": ("app.js", "text/javascript; charset=utf-8"), "/style.css": ("style.css", "text/css; charset=utf-8")}
             if path in assets:
                 name, mime = assets[path]
                 return self.send(200, (ROOT / "web" / name).read_bytes(), mime)

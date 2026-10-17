@@ -112,6 +112,28 @@ def validate_program(program, team):
     return result
 
 
+def normalize_program(program, team):
+    """Normalize two unambiguous JSON representation errors, never invent logic."""
+    raw = copy.deepcopy(program)
+    notes = []
+    if isinstance(raw, dict) and set(raw) == {"agent_id"} and len(team["agents"]) == 1:
+        agent_id = team["agents"][0]["id"]
+        raw = {agent_id: raw["agent_id"]}
+        notes.append("Bound placeholder agent_id to the only declared agent: " + agent_id)
+    if isinstance(raw, dict):
+        for rules in raw.values():
+            if not isinstance(rules, list):
+                continue
+            for rule in rules:
+                if isinstance(rule, dict) and rule.get("operation") == "literal" and "value" not in rule:
+                    source = rule.get("source")
+                    if isinstance(source, str) and source.isascii() and source.isdigit() and len(source) <= 6:
+                        rule["value"] = int(source)
+                        rule.pop("source")
+                        notes.append("Canonicalized numeric literal source to integer value")
+    return validate_program(raw, team), notes
+
+
 def mutation_diff(parent, candidate):
     changes = []
     labels = {"instructions": "Agent instructions", "agents": "Team composition and specialization", "workflow": "Execution workflow",
