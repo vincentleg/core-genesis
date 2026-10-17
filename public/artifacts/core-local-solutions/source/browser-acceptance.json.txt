@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "mission": "mission-20261017-145411-2e83ef",
+  "journey": [
+    "campus mission result",
+    "open prototype",
+    "create problem",
+    "submit solution",
+    "pending human review"
+  ],
+  "errors": [],
+  "originalCoreModified": false
+}

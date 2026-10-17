@@ -132,6 +132,21 @@ class CompanyTests(unittest.TestCase):
             self.assertTrue(state.get('evolution'))
             self.assertFalse(any('Growth Director' in role for role, _ in client.prompts))
 
+    def test_supported_build_contract_has_explicit_authority_and_normalized_events(self):
+        from core_genesis.company import FLAGSHIP
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            transport = MissionTransport()
+            company = Company(root / 'company', RequestBudget(root / 'budget', history=root / 'history'), transport, snapshot)
+            with self.assertRaisesRegex(ValueError, 'Supported scope'):
+                company.start('Purchase infrastructure and deploy the original CORE website.')
+            state = company.start(FLAGSHIP)
+            self.assertEqual(state['mission_kind'], 'build_local_solutions')
+            self.assertIn('Modify or execute original CORE', state['authorization']['prohibited'])
+            self.assertEqual([e['type'] for e in state['events']], ['mission.created', 'mission.authorized'])
+            self.assertTrue(all(all(k in e for k in ('timestamp', 'mission_id', 'department', 'status', 'evidence')) for e in state['events']))
+            self.assertEqual(transport.prompts, [])
+
     def test_public_export_withholds_unapproved_draft_text_and_raw_model_output(self):
         from core_genesis.publication import public_company_record
         private = {"artifacts": {"growth": {"strategy": "Private draft strategy", "posts": [{"text": "Private draft text", "visual_brief": "Private brief"}]}},

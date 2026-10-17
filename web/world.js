@@ -232,7 +232,7 @@ document.addEventListener('click',event=>{
 });
 document.addEventListener('input',event=>{if(event.target.id==='scenario-budget')recomputeProcurement();});
 document.addEventListener('change',event=>{if(event.target.id==='procurement-priority')recomputeProcurement();});
-$('play').onclick=play;$('next').onclick=()=>{pause();advance();};$('watch').onclick=startStory;
+$('play').onclick=play;$('next').onclick=()=>{pause();advance();};$('watch').onclick=()=>showDepartment('hq');
 $('evidence-button').onclick=()=>showEvidence();$('close-evidence').onclick=()=>$('evidence-modal').close();
 $('close-context').onclick=()=>{$('context').classList.add('hidden');};
 $('home').onclick=()=>{campus?.reset();$('context').classList.add('hidden');$('welcome').classList.remove('exploring');};

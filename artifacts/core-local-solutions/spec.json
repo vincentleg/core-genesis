@@ -1,0 +1,20 @@
+{
+  "application_title": "CORE Local Solutions First Brick",
+  "introduction": "The prototype implements a fixed audited scaffold that handles problem submission, solution storage, local human review, and safe rendering. It respects the three architecture constraints: confinement to local workflow permissions, deterministic evaluation before any human authorization, and the use",
+  "require_location": true,
+  "minimum_description_chars": 10,
+  "maximum_description_chars": 1000,
+  "design_rationale": "A fixed scaffold guarantees that all actions are audited and confined to local permissions, while deterministic evaluation ensures that no change is applied without explicit human approval. The scaffold also enforces text limits and provides a clear integration point for future extensions.",
+  "integration_plan": [
+    "1. Deploy the scaffold in a sandboxed environment isolated from production.",
+    "2. Configure the copy to match the verified brief's terminology and limits.",
+    "3. Enforce the text limits via the scaffold's validation layer.",
+    "4. Connect the scaffold to the human review UI using only the authorized labels ('record-review', 'stop')."
+  ],
+  "source_ids": [
+    "S1",
+    "S2",
+    "S3",
+    "S4"
+  ]
+}

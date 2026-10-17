@@ -1,4 +1,6 @@
-# Living Company — truthful demonstration guide
+# Earlier mission-analysis milestone — archived guide
+
+For the current working software demo, use [FIRST_BRICK_DEMO.md](FIRST_BRICK_DEMO.md).
 
 Public world: https://core-genesis-living.vercel.app
 

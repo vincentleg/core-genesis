@@ -229,3 +229,7 @@ node_modules/
 
 # Private local operating records may include unapproved communication drafts.
 company/
+
+# Runtime prototype records and isolated test stores are not source evidence.
+artifacts/**/data/
+artifacts/**/.test-work/

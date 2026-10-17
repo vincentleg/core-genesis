@@ -1,0 +1,190 @@
+{
+  "mission_id": "mission-20261017-145411-2e83ef",
+  "commit": "c016d732faaef495c7facce29b7595e3be2a6f19",
+  "brief": {
+    "summary": "Three architecture, design and human-authorization constraints relevant to the Local Solutions prototype are: (1) All actions must be confined to local workflow permissions (L0/L1) and cannot invoke external authorization; (2) Human review/",
+    "priorities": [
+      {
+        "title": "Local workflow confinement",
+        "finding": "All actions must be confined to local workflow permissions (L0/L1) and cannot invoke external authorization",
+        "actions": [
+          "Audit scripts/lib/authority.mjs to confirm AUTHORITY.AUTHENTICATED_APPROVAL_SYSTEM === false and LOCAL set includes only allowed actions",
+          "Verify that no script attempts external API calls by scanning scripts/ for network requests"
+        ],
+        "verification": [
+          "Check that authorityGate() returns authorizesRealWorld: false for all actions",
+          "Confirm test/build.test.js passes without external fetches"
+        ],
+        "uncertainty": "The excerpt does not list every script; absence of evidence is not proof of compliance",
+        "citations": [
+          {
+            "source_id": "S7",
+            "line_start": 1,
+            "line_end": 1,
+            "quote": "// Constitution V1: local workflow permissions are never real-world authorization."
+          }
+        ]
+      },
+      {
+        "title": "Deterministic evaluation before human authorization",
+        "finding": "Human authorization requires a deterministic evaluation of proposals; no real-world changes are permitted without explicit human approval",
+        "actions": [
+          "Review docs/ARCHITECTURE.md to locate the coordination gateway description and confirm it is the only point of human authorization",
+          "Inspect scripts/integrity-check.mjs to ensure it enforces deterministic evaluation before any export",
+          "Run test/test/integrity-check.test.js if present to confirm deterministic gate behavior"
+        ],
+        "verification": [
+          "Confirm that the gateway description in ARCHITECTURE.md mentions 'deterministic gateway evaluates; humans authorize'",
+          "Ensure integrity-check.mjs is listed in integrity-allowlist.json"
+        ],
+        "uncertainty": "The provided ARCHITECTURE.md excerpt does not include the full gateway implementation; only a high\u2011level reference is available",
+        "citations": [
+          {
+            "source_id": "S1",
+            "line_start": 3,
+            "line_end": 3,
+            "quote": "CORE builds a parallel 3D Earth in which proposed infrastructure changes can be simulated and stress-tested before peopl"
+          }
+        ]
+      },
+      {
+        "title": "Human authorization must be explicit and recorded",
+        "finding": "Human authorization must be explicit, recorded and cannot be implied by automated processes; only labeled human actions (e.g., 'record-review', 'stop', 'resume') are permitted",
+        "actions": [
+          "Examine docs/AUTHORITY_POLICY.md to list the authorized human action labels and confirm they match any user\u2011submitted proposal workflow",
+          "Check scripts/lib/authority.mjs for the set of authorized labels and ensure no additional labels are used",
+          "Validate that test scripts reference only these labels (e.g., test/authority.test.js if present)"
+        ],
+        "verification": [
+          "Confirm that the authorized labels in AUTHORITY_POLICY.md include 'record-review' and 'stop' as the only review\u2011related actions",
+          "Ensure that any UI or API endpoint for submitting problems maps to one of these labels"
+        ],
+        "uncertainty": "The excerpt does not show the actual UI or API mapping; only the label list is provided",
+        "citations": [
+          {
+            "source_id": "S4",
+            "line_start": 3,
+            "line_end": 3,
+            "quote": "Application de Constitution V1/FD04, pas syst\u00e8me d\u2019identit\u00e9 professionnelle."
+          }
+        ]
+      }
+    ],
+    "limitations": [
+      "Only eight bounded file excerpts were inspected; source absence is not evidence of absence.",
+      "No code, tests, deployments or runtime behavior of CORE were executed.",
+      "Recommendations are hypotheses requiring maintainer review."
+    ]
+  },
+  "sources": [
+    {
+      "id": "S1",
+      "path": "README.md",
+      "commit": "c016d732faaef495c7facce29b7595e3be2a6f19",
+      "blob_sha": "dc5950f57a58cb9f9ff5b2c8d8759a73986db90a",
+      "url": "https://github.com/vincentleg/core/blob/c016d732faaef495c7facce29b7595e3be2a6f19/README.md",
+      "line_start": 1,
+      "line_end": 6,
+      "text": "# CORE \u2014 Creation Of Reborn Earth\n\nCORE builds a parallel 3D Earth in which proposed infrastructure changes can be simulated and stress-tested before people authorize them. The first intended product is coordination of road and utility works. **Agents propose; a deterministic gateway evaluates; humans authorize. CORE applies nothing to real infrastructure.**\n\nThis repository currently contains a static prototype, not a calibrated digital twin or production approval system.\n",
+      "full_line_count": 75,
+      "truncated": true,
+      "content_sha256": "f34f7bc87c389ccafa8d82363e92fd68b169de59932c267a87c620e9e94d58cd"
+    },
+    {
+      "id": "S2",
+      "path": "docs/ARCHITECTURE.md",
+      "commit": "c016d732faaef495c7facce29b7595e3be2a6f19",
+      "blob_sha": "2fe259319bad104f968338c712d94e7aa499c0e8",
+      "url": "https://github.com/vincentleg/core/blob/c016d732faaef495c7facce29b7595e3be2a6f19/docs/ARCHITECTURE.md",
+      "line_start": 1,
+      "line_end": 16,
+      "text": "# Existing architecture\n\nHistorical architecture through Phase 4; later layers: PHASE_9_ARCHITECTURE.md, PHASE_10_REPORT.md, PHASE_11_REPORT.md. Consolidation controls and remaining boundaries: SECURITY_BASELINE.md; authority/sequence: MASTER_ROADMAP.md. This document is not a current completeness claim.\n\nCurrent state: Phase 4 (model-assisted agents, evaluated learning, living City Intelligence) complete \u2014 see `PHASE_4_REPORT.md`, `PHASE_4_AUDIT.md` and `CITY_INTELLIGENCE_ARCHITECTURE.md`.\n\nCORE is a static two-page application with committed public-data snapshots. There is no backend, database, account system, worker pool, LLM service, telemetry pipeline, or infrastructure actuator.\n\n```mermaid\nflowchart LR\n  Providers[Map and font providers] --> Globe[index.html / MapLibre]\n  World[src/sf-world.js procedural landmarks] --> Globe\n  Snapshot[scripts/sf-snapshot.mjs + src/sf-data.js] --> Data[data/sf GeoJSON + manifest]\n  Data --> View[src/sf-view.js pilot view and inspector]\n  View --> Globe\n  Data --> Coord[src/coord.js deterministic agents + coordination gateway]",
+      "full_line_count": 89,
+      "truncated": true,
+      "content_sha256": "2580ef5b376c4f07d26e9b9b4eaaac2806680ec31a05fccf7b1d0cb136bd9824"
+    },
+    {
+      "id": "S3",
+      "path": "docs/MASTER_ROADMAP.md",
+      "commit": "c016d732faaef495c7facce29b7595e3be2a6f19",
+      "blob_sha": "3e83e3a0079db51fd2955779cfe54f320fe6a2b3",
+      "url": "https://github.com/vincentleg/core/blob/c016d732faaef495c7facce29b7595e3be2a6f19/docs/MASTER_ROADMAP.md",
+      "line_start": 1,
+      "line_end": 6,
+      "text": "# CORE \u2014 master roadmap consolid\u00e9\n\nStatut : reconstruction documentaire, pas ratification r\u00e9troactive. Base audit\u00e9e : `1f0adb4` ; Phases 10/11 livr\u00e9es \u00e0 `a25169c` / `088ebe4`. Directions FD01\u2013FD08 approuv\u00e9es le 2026-10-14 ; mission actuelle : **Phase 13, moteur scientifique et preuve de bout en bout**, apr\u00e8s r\u00e9cup\u00e9ration et livraison du Workstream 12, sans ouverture publique ni phase cosm\u00e9tique. Constitution V1 et directions actuelles : [FOUNDER_DECISIONS.md](FOUNDER_DECISIONS.md). Les d\u00e9cisions de conversation absentes du d\u00e9p\u00f4t restent UNVERIFIED / FOUNDER CONFIRMATION REQUIRED.\n\n## Hi\u00e9rarchie des preuves et produits\n",
+      "full_line_count": 99,
+      "truncated": true,
+      "content_sha256": "1b02ad8fd1c4f836ed78bc4578cd5b112b289d95bb0456245d49a53eaecb674c"
+    },
+    {
+      "id": "S4",
+      "path": "docs/AUTHORITY_POLICY.md",
+      "commit": "c016d732faaef495c7facce29b7595e3be2a6f19",
+      "blob_sha": "892e02d5c4838d569a4dd54d9a643ad1aa1b94bd",
+      "url": "https://github.com/vincentleg/core/blob/c016d732faaef495c7facce29b7595e3be2a6f19/docs/AUTHORITY_POLICY.md",
+      "line_start": 1,
+      "line_end": 9,
+      "text": "# CORE \u2014 autorit\u00e9, classes d\u2019action et escalade\n\nApplication de Constitution V1/FD04, pas syst\u00e8me d\u2019identit\u00e9 professionnelle.\n\n| Classe / risque | Autonomie et v\u00e9rification | Autorit\u00e9 / \u00e9tat actuel |\n| --- | --- | --- |\n| L0 \u2014 lecture/recherche locale, faible | Sources/outils autoris\u00e9s, provenance, limites de donn\u00e9es et permissions existantes | Autonome dans le p\u00e9rim\u00e8tre de mission |\n| L1 \u2014 calcul/simulation/proposition/critique/r\u00e9vision, born\u00e9 | Entr\u00e9es int\u00e8gres, calcul d\u00e9terministe, contraintes, incertitude et dissidence ; STOP et budgets existants | Autonome localement ; aucune autorisation r\u00e9elle |\n| L2 \u2014 revue enregistr\u00e9e, export local ou reprise, moyen local | Jeton loopback, Host/Origin, chemins autoris\u00e9s et labels de revue existants | Modifie un dossier local seulement ; `human:name` est un label non authentifi\u00e9 |",
+      "full_line_count": 18,
+      "truncated": true,
+      "content_sha256": "704ea09bcbc4387d26919ad74899b64c13f918f3adba8e52328afb668b0d96fd"
+    },
+    {
+      "id": "S5",
+      "path": "build.js",
+      "commit": "c016d732faaef495c7facce29b7595e3be2a6f19",
+      "blob_sha": "a2e0c3429e5015fd7758a0eff133869f8b6c27ab",
+      "url": "https://github.com/vincentleg/core/blob/c016d732faaef495c7facce29b7595e3be2a6f19/build.js",
+      "line_start": 1,
+      "line_end": 5,
+      "text": "const fs=require('fs');\nconst {assemble}=require('./scripts/lib/corridor-build.cjs');\nconst t=fs.readFileSync('src/template.html','utf8');\nconst out=assemble(t,fs.readFileSync('src/engine.js','utf8'),fs.readFileSync('src/app.js','utf8'));\nfs.writeFileSync('corridor.html',out); console.log('built',out.length,'bytes');",
+      "full_line_count": 5,
+      "truncated": false,
+      "content_sha256": "4194ed421984e190dc75d201001d4206911c1b68867628c55739cf163108359a"
+    },
+    {
+      "id": "S6",
+      "path": "src/agent-motion.js",
+      "commit": "c016d732faaef495c7facce29b7595e3be2a6f19",
+      "blob_sha": "e44977e8d9f883b475a2e2139a1359205ed114a2",
+      "url": "https://github.com/vincentleg/core/blob/c016d732faaef495c7facce29b7595e3be2a6f19/src/agent-motion.js",
+      "line_start": 1,
+      "line_end": 13,
+      "text": "// CORE \u2014 agent motion and population rendering (Phase 8).\n// Every registered profile is discoverable. Phase 9: agents stay at their virtual post unless a source gives them a\n// reason to move \u2014 no random wandering. Motion sources, always labelled:\n//   \u2022 recorded activity \u2014 trips driven by recorded autonomous missions (src/civ-activity.js): to the cited evidence\n//     location and back, on the validated pedestrian network (OSM walkways that cross no building footprint);\n//   \u2022 replay \u2014 positions driven by agents-world.js from a recorded mission log;\n//   \u2022 live \u2014 on the founder's machine only, agents of tasks the local supervisor is actually running\n//     (.core-local/live.json, never fetched on the public site).\n// Rendering by zoom: < 13.5 zone aggregates; 13.5\u201315.8 WebGL figures; \u2265 15.8 articulated DOM avatars for agents\n// in view (capped). The loop pauses when the tab is hidden; reduced motion freezes positions.\n(function () {\n  'use strict';\n  const G = globalThis, POP = () => G.CORE_POPULATION;",
+      "full_line_count": 257,
+      "truncated": true,
+      "content_sha256": "75c0331ab243728e20c8f7df4306d68f8e549214228e3c9a58021e8cb30b164e"
+    },
+    {
+      "id": "S7",
+      "path": "scripts/lib/authority.mjs",
+      "commit": "c016d732faaef495c7facce29b7595e3be2a6f19",
+      "blob_sha": "3c6318cedd2b072975766e17e6b68a4843ea3561",
+      "url": "https://github.com/vincentleg/core/blob/c016d732faaef495c7facce29b7595e3be2a6f19/scripts/lib/authority.mjs",
+      "line_start": 1,
+      "line_end": 8,
+      "text": "// Constitution V1: local workflow permissions are never real-world authorization.\nexport const AUTHORITY = Object.freeze({ constitution: '1.0', externalActionsEnabled: false, authenticatedApprovalSystem: false, reviewerLabelsAreIdentity: false });\nconst LOCAL = new Set(['research', 'simulate', 'propose', 'critique', 'revise', 'record-review', 'stop', 'resume', 'export-local']);\nexport function authorityGate(action) {\n  const allowed = LOCAL.has(action);\n  return { allowed, authorizesRealWorld: false, risk: allowed ? 'LOCAL_BOUNDED' : 'EXTERNAL_OR_UNKNOWN', reason: allowed ? 'Local workflow only; existing permissions, STOP and evidence gates still apply.' : 'BLOCKED: no authenticated approval system or external execution adapter.' };\n}\nconst ROUTES = Object.freeze({ '/api/start': 'research', '/api/decision': 'propose', '/api/world': 'research', '/api/discover': 'research', '/api/decide': 'record-review', '/api/stop': 'stop', '/api/resume': 'resume', '/api/export': 'export-local' });",
+      "full_line_count": 9,
+      "truncated": true,
+      "content_sha256": "4b044d3d877ac73a93a7b85b232c40836575ab8bf0af736e23f92815aace106b"
+    },
+    {
+      "id": "S8",
+      "path": "test/build.test.js",
+      "commit": "c016d732faaef495c7facce29b7595e3be2a6f19",
+      "blob_sha": "67f045131066a49018e85f67081ee76fe99cec54",
+      "url": "https://github.com/vincentleg/core/blob/c016d732faaef495c7facce29b7595e3be2a6f19/test/build.test.js",
+      "line_start": 1,
+      "line_end": 18,
+      "text": "const test = require('node:test');\nconst assert = require('node:assert/strict');\nconst fs = require('node:fs');\nconst vm = require('node:vm');\n\ntest('committed corridor matches source assembly exactly', () => {\n  const expected = require('../scripts/lib/corridor-build.cjs').assemble(fs.readFileSync('src/template.html', 'utf8'), fs.readFileSync('src/engine.js', 'utf8'), fs.readFileSync('src/app.js', 'utf8'));\n  assert.equal(fs.readFileSync('corridor.html', 'utf8'), expected);\n});\n\ntest('inline scripts in both pages parse as JavaScript', () => {\n  for (const file of ['index.html', 'corridor.html']) {\n    const html = fs.readFileSync(file, 'utf8');\n    for (const script of html.matchAll(/<script\\b[^>]*>([\\s\\S]*?)<\\/script>/g)) {\n      new vm.Script(script[1], { filename: file });\n    }\n  }\n});",
+      "full_line_count": 18,
+      "truncated": false,
+      "content_sha256": "ca1a347771d95957f0ab77a7ce537e93ea2cc3608a9140868dc89a27b68ca5cf"
+    }
+  ],
+  "limitations": [
+    "Only eight bounded file excerpts inspected; source absence is not evidence of absence.",
+    "No code, tests, deployments or runtime behavior of CORE were executed.",
+    "Recommendations are hypotheses requiring maintainer review."
+  ]
+}

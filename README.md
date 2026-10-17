@@ -16,7 +16,7 @@ This is a bounded operational prototype. The long-term CORE civilization, immers
 | Engineering | Real Nemotron engineering priorities and Markdown deliverable with exact source citations; bounded evidence correction; existing deterministic incident-repair compiler |
 | Research | Read-only public GitHub metadata, compact branch head, tree and eight bounded safe file excerpts from `vincentleg/core`; pinned sources and explicit uncertainties |
 | Operations | Recorded interdepartmental handoffs, strict source/line/quote verification and existing three-family incident diagnosis |
-| Product Research | Five separate real Nemotron calls with distinct synthetic perspectives; structured concerns and disagreement, explicitly not human research |
+| Product Testing | Three actual local browser testers with screenshots and errors; separate synthetic audience campaigns up to 100 through explicit five-call batches |
 | Growth & PR | Truthful X, Instagram and GitHub draft queue; CEO review for manual export only; no publisher, accounts or audience metrics; LinkedIn excluded |
 | Economy | Computed budget/priority simulation, alternatives, sourced price snapshot plus clearly synthetic scenarios, risk and local human-review history; no transaction capability |
 | Evolution Lab | Real Nemotron team mutations, fresh validation, regression gates, memory, ancestry, promotion and rollback |
@@ -68,7 +68,36 @@ Headless execution:
 The optional seed reproduces benchmark instances, not stochastic provider output. Omitting --fresh restores the last completed experiment's active team, including when later candidates were rolled back.
 
 
-## Real company workflow — verified October 17
+## Working software delivery — First Brick
+
+Give GENESIS the preloaded mission from the campus CEO Office. The supported build scope is deliberately specific: **CORE Local Solutions**, an isolated app where a person submits a local problem and a linked proposed solution, initially pending human review. Unsupported arbitrary development, external actions and CORE modifications are rejected or outside the explicit mission contract.
+
+A genuine completed mission, [`mission-20261017-145411-2e83ef`](mission-evidence/mission-20261017-145411-2e83ef.json), produced the [versioned runnable artifact](artifacts/core-local-solutions/runs/mission-20261017-145411-2e83ef). Research inspected actual immutable CORE source. Engineering used real Nemotron reasoning to select a safe specification; a predefined audited scaffold supplied the executable implementation. **This is configuration-driven generation, not unrestricted autonomous coding.** Operations ran a guarded fixed test process with **seven actual passing tests**, including HTTP startup, problem creation, solution submission, pending review, persistence, input validation and authority checks. A previous failed citation mission is preserved rather than rewritten.
+
+    python3 artifacts/core-local-solutions/app.py --port 8091
+    python3 -I artifacts/core-local-solutions/verify.py
+
+Open http://127.0.0.1:8091. The app is also reachable through the company mission's **OPEN PROTOTYPE** action. No new server deployment is needed. Source, build report and proposed integration plan are inspectable. Local review cannot authorize real-world action or change CORE.
+
+The mission used **10 requests, 33,199 reported tokens and $0.00218915 estimated usage**. Active V1 citation preflight ran on its real Research brief. A further mutation produced **no independent gain and was rolled back**; no promotion was forced. The earlier 4/6→6/6 held-out citation-fixture improvement remains separately inspectable.
+
+Product Testing then ran **three actual Chrome contexts**, covering desktop, small-screen/keyboard and unsafe-input/authority cases: **3/3 passed**, with real screenshots, zero JavaScript errors and zero extra model requests. A fresh seven-test regression run passed. No repair was needed; the bounded controller can reproduce failures and attempt one audited-scaffold restoration, then rerun the same browsers and regressions. It cannot repair arbitrary new code.
+
+For browser tooling only:
+
+    npm ci --ignore-scripts
+    # Chrome is used when installed; otherwise: npx playwright install chromium
+
+Synthetic audience campaigns support **up to 100**, at most **five independent calls per explicit batch**. The captured campaign has **5/100 completed**, not 100. Its first actual batch used five requests, 8,025 tokens and $0.000489 estimated usage. No automatic continuation, fake customers or invented engagement metrics exist.
+
+The public site provides **VERIFIED EXECUTION REPLAY**, actual source downloads and a separately labeled **browser-only artifact preview** using local browser storage. Python and live inference stay local. The original CORE project is never modified, executed or deployed.
+
+    python3 scripts/verify_mission.py mission-evidence/mission-20261017-145411-2e83ef.json
+    python3 scripts/verify_testing.py public/evidence/product-testing.json
+
+See [three-minute demo instructions](docs/FIRST_BRICK_DEMO.md). No new video was produced.
+
+## Earlier company workflow — preserved evidence
 
 Captured mission [`mission-20261017-142256-b15161`](mission-evidence/mission-20261017-142256-b15161.json) analyzed public CORE commit `c016d732faaef495c7facce29b7595e3be2a6f19`. Research and Engineering produced three proposed priorities with **3/3 citation sets verified**. Five synthetic personas evaluated the proposal in separate real model calls. Growth prepared a private approval queue. Nothing was posted, purchased, executed in CORE or written to CORE.
 
@@ -148,7 +177,7 @@ Subsequent genuine continuation [20261017-123736-61ea83](experiments/20261017-12
 
 The Arena connects the four accepted mutations across these actual histories, with direct links to their source experiments. Each experiment still shows all competing branches and rejected proposals. Scores from different sealed shards are never treated as identical-task comparisons.
 
-The current network-disabled suite contains **60 passing Python tests**, alongside **five passing deterministic procurement tests**. Chrome checks cover graph/inspector interaction, real tool traces, captured reasoning, 3D department interactions, mission creation, procurement recomputation, recorded organizational transformations, mobile layout and zero inference from read-only activity.
+The current network-disabled suite contains **66 passing Python tests**, alongside **five passing deterministic procurement tests**. Chrome checks cover graph/inspector interaction, real tool traces, captured reasoning, 3D department interactions, mission creation, procurement recomputation, recorded organizational transformations, mobile layout and zero inference from read-only activity.
 
 The new Living Company HQ also triggered genuine live experiment [20261017-133419-f6762d](experiments/20261017-133419-f6762d.json): two promotions improved development and fresh validation **0/6 → 4/6 → 6/6**, with no regressions. Crusoe HTTP 429 stopped the third round after the bounded retry. The original record contains **no sealed outcome** and is retained as such. Ten physical attempts, 14,168 reported tokens and $0.00480235 estimated usage plus retained failed-attempt reserves. Independent replay reproduced its 84 executions and two decisions.
 

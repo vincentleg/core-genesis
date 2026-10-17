@@ -1,7 +1,10 @@
+import {mountTesting} from './testing-ui.js';
 /** Real mission control; public hosting only replays genuine recorded work. */
 export function mountCompany({campus,openContext,showEvidence,escape:esc,capabilities}){
  const $=id=>document.getElementById(id);
  let state={mission:{status:'idle',events:[],departments:{}},governance:{paused:false,audit:[],decisions:[]}},mode='recorded',timer=null,eventIndex=0,activeView=null,playTimer=null;
+ const FLAGSHIP='Analyze the existing CORE project and build a working, isolated prototype of a system where people can submit local problems and propose solutions. Use evidence-based reasoning, preserve human authorization, test the implementation, and present the results for my approval.';
+ const testingControl=mountTesting({capabilities,showEvidence,escape:esc,campus});
  const title='<span class="eyebrow">HUMAN CEO · BOUNDED AGENT AUTHORITY</span><h2>CEO Office</h2>';
  function badge(value){return '<span class="capability">'+esc(value.replaceAll('_',' ').toUpperCase())+'</span>';}
  async function request(path,data,action){
@@ -10,12 +13,12 @@ export function mountCompany({campus,openContext,showEvidence,escape:esc,capabil
  }
  function missionDetails(){
   const mission=state.mission,artifacts=mission.artifacts||{};
-  let html='<div class="company-state">'+badge(mode==='live'?'LIVE · ACTUAL REQUESTS':'GENUINE MISSION · REPLAY')+' '+badge(mission.status)+'</div>';
+  let html='<div class="company-state">'+badge(mode==='live'?'LIVE LOCAL EXECUTION':'VERIFIED EXECUTION REPLAY')+' '+badge(mission.status)+'</div>';
   html+='<p id="company-live-progress" class="fine">'+esc(mission.events?.at(-1)?.message||'No current activity')+'</p>';
   if(!mission.id)return html+'<p>No real repository mission has been recorded yet. No result is inferred.</p>';
   html+='<p class="mission-objective">'+esc(mission.objective)+'</p><p class="fine">Mission '+esc(mission.id)+'<br>CORE commit '+esc(mission.snapshot?.commit||'Retrieval pending')+'<br>Read-only GitHub evidence; no CORE changes or test execution.</p>';
   const usage=mission.usage;
-  html+='<div class="company-resource">'+(usage?'<b>'+usage.physical_requests+' actual attempts</b><span>'+Number(usage.reported_tokens||0).toLocaleString()+' reported tokens · ~$'+Number(usage.cost_estimate_usd||0).toFixed(6)+' estimated incl. failed-request reserves</span>':'<b>Budgeted execution</b><span>9 planned model calls, up to 12 physical attempts, single concurrency. Project cap $2.</span>')+'</div>';
+  html+='<div class="company-resource">'+(usage?'<b>'+usage.physical_requests+' actual attempts</b><span>'+Number(usage.reported_tokens||0).toLocaleString()+' reported tokens · ~$'+Number(usage.cost_estimate_usd||0).toFixed(6)+' estimated incl. failed-request reserves</span>':'<b>Budgeted execution</b><span>Up to 11 planned calls including citation correction, 12 physical attempts maximum, single concurrency. Project cap $2.</span>')+'</div>';
   html+='<div class="mission-actions"><button class="secondary" data-company="sources">Inspect actual CORE source evidence ↗</button><button class="secondary" data-company="deliverable">Engineering deliverable ↗</button><button class="secondary" data-company="panel">Synthetic research ('+(mission.panel||[]).length+'/5) ↗</button><button class="secondary" data-company="growth">Growth approval queue ↗</button><button class="secondary" data-company="evolution">Workflow evolution evidence ↗</button><button class="secondary" data-company="audit">Handoffs & audit trail ↗</button></div>';
   if(mission.error_detail)html+='<p class="callout">'+esc(mission.error_detail)+'</p>';
   html+='<h3>Department operations</h3>';
@@ -39,13 +42,34 @@ export function mountCompany({campus,openContext,showEvidence,escape:esc,capabil
   html+='<p class="fine">Strategic priorities: useful CORE development, traceable evidence, independent evaluation and human authority. '+state.governance.decisions.filter(d=>d.status==='pending_ceo_review').length+' decisions awaiting CEO review.</p>';
   if(state.budget)html+='<div class="company-resource"><b>$'+Number(state.budget.committed_estimate_and_reserves_usd||0).toFixed(4)+' committed / $2 cap</b><span>$'+Number(state.budget.remaining_usd||0).toFixed(4)+' remaining · usage estimates plus conservative reserves</span></div>';
   if(capabilities().company){
-   html+='<label for="company-objective">Assign a real CORE mission</label><textarea id="company-objective" maxlength="600">Analyze the current CORE GitHub repository, identify the three most important development priorities, and prepare an actionable plan.</textarea><button class="primary" data-company="start" '+(state.governance.paused||state.mission.status==='running'?'disabled':'')+'>Assign mission to departments <span>↗</span></button><p class="fine">Real Crusoe / Nemotron calls. Public GitHub GETs only. Five independent synthetic persona calls, one Growth draft and a separate objective evolution gate. Nothing is published or purchased.</p><button class="emergency" data-company="'+(state.governance.paused?'resume':'pause')+'">'+(state.governance.paused?'Resume authority · do not restart work':'Emergency pause · company-wide')+'</button><p class="fine">Pause blocks new inference and retrieval. An in-flight request may finish. Resume never automatically restarts a mission.</p>';
+   html+='<label for="company-objective">Assign a real CORE mission</label><textarea id="company-objective" maxlength="600">'+esc(FLAGSHIP)+'</textarea><button class="primary" data-company="start" '+(state.governance.paused||state.mission.status==='running'?'disabled':'')+'>LAUNCH MISSION <span>↗</span></button><p class="fine">Real Crusoe / Nemotron calls. Public GitHub GETs only. Five independent synthetic persona calls, one Growth draft and a separate objective evolution gate. Nothing is published or purchased.</p><button class="emergency" data-company="'+(state.governance.paused?'resume':'pause')+'">'+(state.governance.paused?'Resume authority · do not restart work':'Emergency pause · company-wide')+'</button><p class="fine">Pause blocks new inference and retrieval. An in-flight request may finish. Resume never automatically restarts a mission.</p>';
   }else{
    html+='<p class="callout">Public experience: genuine recorded company work. New inference and CEO authority controls remain local; no public paid endpoint.</p><button class="primary" data-company="replay">Replay actual department handoffs <span>↗</span></button>';
   }
-  html+='<div id="company-error" class="fine"></div>'+missionDetails();
+  html+='<div id="company-error" class="fine"></div>'+resultCard()+missionDetails();
   openContext(html);
  }
+ function prototype(){return state.mission.artifacts?.prototype;}
+ function previewUrl(){return capabilities().company?prototype().preview_url:'./artifacts/core-local-solutions/index.html';}
+ function artifactUrl(name){return capabilities().company?'/artifact/'+state.mission.id+'/'+name:'./artifacts/core-local-solutions/source/'+name+'.txt';}
+ function resultCard(){
+  const p=prototype();if(!p)return '';
+  const outcome=p.test_report.outcome;
+  return '<section class="artifact-result"><span class="eyebrow">'+(p.test_report.passed?'GENESIS HAS BUILT YOUR FIRST CORE CAPABILITY':'PROTOTYPE NEEDS REVIEW')+'</span><h3>CORE Local Solutions</h3><p>'+outcome.tests_run+' actual tests · '+outcome.failures+' failures · '+outcome.errors+' errors<br>Isolated application. '+esc((state.governance.decisions.find(d=>d.type==='artifact_review'&&d.mission_id===state.mission.id)?.status||'pending_ceo_review').replaceAll('_',' '))+'</p><a class="primary artifact-open" href="'+esc(previewUrl())+'" target="_blank" rel="noopener">OPEN PROTOTYPE ↗</a><button class="secondary" data-company="result">Review delivered capability ↗</button></section>';
+ }
+ function result(){
+  const p=prototype();if(!p)return;
+  const m=state.mission,o=p.test_report.outcome;
+  let html='<p><b>Requested:</b> '+esc(m.objective)+'</p><p><b>Built:</b> a working problem → proposed solution → local human-review application, using an audited scaffold and real Nemotron-selected specification.</p><div class="metric-row"><div><b>'+o.tests_run+'</b><span>ACTUAL TESTS</span></div><div><b>'+o.failures+'</b><span>FAILURES</span></div><div><b>'+Math.round((m.finished_at-m.created_at)||0)+'s</b><span>EXECUTION TIME</span></div></div>'+resultCard();
+  html+='<div class="mission-actions"><button class="secondary" data-company="artifact-source">INSPECT SOURCE ↗</button><button class="secondary" data-company="test-results">VIEW TEST RESULTS ↗</button><button class="secondary" data-company="integration">REVIEW FOR CORE ↗</button><button class="secondary" data-company="improve">REQUEST IMPROVEMENT ↗</button><button class="secondary" data-company="evolution">WORKFLOW EVOLUTION ↗</button></div>';
+  html+='<p>'+Object.keys(p.files).length+' source/configuration files · '+(m.usage?.physical_requests||0)+' requests · '+(m.usage?.reported_tokens||0)+' tokens · ~$'+Number(m.usage?.cost_estimate_usd||0).toFixed(6)+' estimated.</p><p class="callout">No production integration, authenticated identity or real-world authorization. Synthetic reviews are not customer validation. Public preview uses browser-only storage; local mode runs the tested Python backend.</p>';
+  const decision=state.governance.decisions.find(d=>d.mission_id===m.id&&d.type==='artifact_review');
+  if(decision){html+='<p>'+badge(decision.status)+'</p>';if(capabilities().company&&decision.status==='pending_ceo_review')html+='<button class="primary" data-company="approve" data-artifact="true" data-decision-id="'+esc(decision.id)+'">CEO: accept for local review</button><button class="secondary" data-company="reject" data-artifact="true" data-decision-id="'+esc(decision.id)+'">Request revision</button>';}
+  showEvidence('GENESIS delivered · CORE Local Solutions',html);
+ }
+ function artifactSource(){const p=prototype();if(!p)return;showEvidence('Generated source · immutable mission artifact','<p>'+esc(p.implementation)+'</p><p>Version '+esc(state.mission.id)+' · original CORE unchanged.</p>'+Object.entries(p.files).map(([name,hash])=>'<div class="evidence-event"><a target="_blank" rel="noopener" href="'+esc(artifactUrl(name))+'">'+esc(name)+' ↗</a><small>SHA-256 '+esc(hash)+'</small></div>').join('')+(!capabilities().company?'<a class="primary artifact-open" href="./artifacts/core-local-solutions/source.zip">Download runnable source archive ↧</a>':''));}
+ function testResults(){const p=prototype();if(!p)return;showEvidence('Operations · actual process output','<p>'+esc(p.test_report.scope)+'</p><p>Exit code '+p.test_report.exit_code+' · '+p.test_report.outcome.tests_run+' tests run</p><pre>'+esc(p.test_report.stderr)+'</pre><pre>'+esc(JSON.stringify(p.test_report.outcome,null,2))+'</pre><a target="_blank" rel="noopener" href="'+esc(artifactUrl('build-report.json'))+'">Machine-readable report ↗</a>');}
+ function integration(){const p=prototype();if(!p)return;showEvidence('Review for CORE · proposal only','<p>No CORE changes, deployment or real-world execution is authorized by this prototype.</p><ol>'+p.integration_plan.map(v=>'<li>'+esc(v)+'</li>').join('')+'</ol><p>CEO approval and maintainer review are required before any separate integration task. The existing CORE project is pre-existing external work.</p>');}
  function showDeliverable(){
   const mission=state.mission,report=mission.artifacts?.engineering,snapshot=mission.snapshot;
   if(!report)return showEvidence('Deliverable not available','<p>The Engineering stage has not produced a result. No completion is inferred.</p>');
@@ -101,11 +125,11 @@ export function mountCompany({campus,openContext,showEvidence,escape:esc,capabil
   showEvidence('Company audit · actual handoffs','<p>Each entry records a real assignment and its observed result or failure. No automatic external communications, purchases, account changes or CORE writes are implemented.</p>'+state.mission.handoffs.map(h=>'<div class="evidence-event"><b>'+esc(h.source_agent)+' → '+esc(h.destination_agent)+'</b><small>'+new Date(h.timestamp*1000).toLocaleString()+' · '+esc(h.status)+'</small><p>'+esc(h.task)+'</p><pre>'+esc(JSON.stringify({evidence:h.evidence,result:h.result},null,2))+'</pre></div>').join('')+'<h3>CEO decision audit</h3><pre>'+esc(JSON.stringify(state.governance.audit,null,2))+'</pre>');
  }
  function department(id){
-  activeView=id;const status=state.mission.departments?.[id],names={research:'Research',engineering:'Engineering',product:'Product Research',growth:'Growth & PR',operations:'Operations',evolution:'Evolution Lab'};
+  activeView=id;const status=state.mission.departments?.[id],names={research:'Research',engineering:'Engineering',product:'Product Testing',growth:'Growth & PR',operations:'Operations',evolution:'Evolution Lab'};
   let html='<span class="eyebrow">REAL COMPANY OPERATIONS</span><h2>'+names[id]+'</h2>'+badge(status?.state||'idle')+'<p>'+esc(status?.last_activity||'No active assignment. Idle ambience is decorative, not work.')+'</p><p class="fine">Agent '+esc(status?.agent||'unassigned')+' · configuration V'+(state.mission.configuration?.version||0)+'<br>Mission '+esc(state.mission.id||'none')+'</p>';
   if(id==='research')html+='<button class="primary" data-company="sources">Inspect actual CORE source ↗</button>';
   if(id==='research'||id==='engineering')html+='<button class="secondary" data-company="deliverable">Inspect CORE deliverable ↗</button>';
-  if(id==='product')html+='<button class="primary" data-company="panel">Inspect five-person synthetic panel ↗</button>';
+  if(id==='product')html+='<button class="primary" data-company="testing">Open Product Testing Lab ↗</button><button class="secondary" data-company="panel">Inspect five-person synthetic panel ↗</button>';
   if(id==='growth')html+='<button class="primary" data-company="growth">Review official-channel drafts ↗</button>';
   if(id==='operations')html+='<button class="primary" data-company="audit">Inspect actual handoffs ↗</button>';
   if(id==='evolution')html+='<button class="primary" data-company="evolution">Inspect mission policy evolution ↗</button>';
@@ -115,13 +139,14 @@ export function mountCompany({campus,openContext,showEvidence,escape:esc,capabil
  function animate(event){
   campus()?.ensureAgent(event.agent,event.department);
   campus()?.showEvent({role:event.agent,message:event.message,time:event.time,company:true},event.department);
+  if(event.type==='research.started'||event.type==='engineering.started'||event.type==='operations.testing'||event.type==='mission.awaiting_approval')campus()?.selectDepartment(event.department);
   if(event.execution_kind==='independent_gate'&&state.mission.evolution){
    const evolution=state.mission.evolution;
    campus()?.applyPolicy(evolution.active_policy,evolution.resulting_version,evolution.action==='promote');
    $('generation-name').textContent='Mission policy V'+evolution.resulting_version;
    $('generation-detail').textContent=evolution.action.toUpperCase()+' · independent citation-preflight validation';
   }
-  $('mode-label').textContent=mode==='live'?'LIVE · COMPANY MISSION':'RECORDED · REAL COMPANY WORK';
+  $('mode-label').textContent=mode==='live'?'LIVE LOCAL EXECUTION':'VERIFIED EXECUTION REPLAY';
   $('playback-type').textContent=mode==='live'?'REAL CORE MISSION · CRUSOE / NEMOTRON':'GENUINE CORE MISSION · REPLAY';
   $('playback-title').textContent=event.agent+': '+event.message;
   $('playback-detail').textContent=(mode==='live'?'Actual activity':'Recorded activity; timing compressed')+' · '+state.mission.id;
@@ -140,7 +165,7 @@ export function mountCompany({campus,openContext,showEvidence,escape:esc,capabil
  }
  async function action(name,target){
   try{
-   if(name==='office')office();
+   if(name==='testing')testingControl.open();if(name==='office')office();if(name==='result')result();if(name==='artifact-source')artifactSource();if(name==='test-results')testResults();if(name==='integration')integration();if(name==='improve'){if($('evidence-modal').open)$('evidence-modal').close();office();$('company-objective').value=FLAGSHIP+' Improvement objective: improve clarity and usability while retaining all required workflows.';$('company-objective').focus();}
    if(name==='deliverable')showDeliverable();if(name==='sources')sources();if(name==='panel')panel();if(name==='growth')growth();if(name==='evolution')evolution();if(name==='audit')audit();
    if(name==='replay'){
     clearInterval(playTimer);mode='recorded';let index=0;$('context').classList.add('hidden');
@@ -156,7 +181,7 @@ export function mountCompany({campus,openContext,showEvidence,escape:esc,capabil
    }
    if(['pause','resume','approve','reject'].includes(name)){
     await request('/api/company/control',{action:name,decision_id:target.dataset.decisionId},'ceo');await refresh();
-    if(name==='approve'||name==='reject'){if($('evidence-modal').open)$('evidence-modal').close();growth();}else office();
+    if(name==='approve'||name==='reject'){if($('evidence-modal').open)$('evidence-modal').close();if(target.dataset.artifact)result();else growth();}else office();
    }
   }catch(error){if($('company-error'))$('company-error').textContent=error.message;target.disabled=false;}
  }

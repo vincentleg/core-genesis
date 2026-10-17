@@ -2717,6 +2717,744 @@
         "prompt_tokens_details": null
       },
       "charge_usd": "0.0001101000"
+    },
+    {
+      "id": "4e6b750cf0304f49b31537989aa7b49a",
+      "run_id": "mission-20261017-144653-19adde",
+      "cycle": 0,
+      "role": "Research Lead",
+      "time": 1792273628.275511,
+      "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 14150,
+      "pricing_snapshot": {
+        "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+        "input_usd_per_million": "0.05",
+        "output_usd_per_million": "0.20",
+        "cached_input_usd_per_million": "0.03",
+        "source": "https://www.crusoe.ai/cloud/pricing",
+        "model_source": "https://api.inference.crusoecloud.com/v1/models",
+        "verified_at": "2026-10-17T21:14:50+00:00",
+        "expires_at": "2026-10-18T21:14:50+00:00",
+        "context_length": 262144,
+        "supported_parameters_verified": [
+          "response_format",
+          "structured_outputs",
+          "chat_template_kwargs"
+        ],
+        "note": "Official Serverless Inference table lists Nemotron 3 Nano 30B-A3B-FP8 at $0.05 input/$0.20 output per million tokens. Authenticated read-only provider metadata returned HTTP 200 and the exact model ID, identical pricing and supported parameters. No chat request was made for discovery. Cached discounts are ignored."
+      },
+      "max_output_tokens": 1800,
+      "reserved_usd": "0.0010675000",
+      "status": "complete",
+      "output_schema_sha256": "e5dc5c97a711c3842b7f2a727511640a28b7e4e13ccc59a38246f408c313d23e",
+      "latency_s": 11.628,
+      "http_status": 200,
+      "rate_limits": {},
+      "usage": {
+        "prompt_tokens": 3328,
+        "total_tokens": 4445,
+        "completion_tokens": 1117,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0003898000"
+    },
+    {
+      "id": "08ab2757aa224be4ae07b3b659915712",
+      "run_id": "mission-20261017-144653-19adde",
+      "cycle": 0,
+      "role": "Engineering Lead",
+      "time": 1792273639.943928,
+      "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 18471,
+      "pricing_snapshot": {
+        "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+        "input_usd_per_million": "0.05",
+        "output_usd_per_million": "0.20",
+        "cached_input_usd_per_million": "0.03",
+        "source": "https://www.crusoe.ai/cloud/pricing",
+        "model_source": "https://api.inference.crusoecloud.com/v1/models",
+        "verified_at": "2026-10-17T21:14:50+00:00",
+        "expires_at": "2026-10-18T21:14:50+00:00",
+        "context_length": 262144,
+        "supported_parameters_verified": [
+          "response_format",
+          "structured_outputs",
+          "chat_template_kwargs"
+        ],
+        "note": "Official Serverless Inference table lists Nemotron 3 Nano 30B-A3B-FP8 at $0.05 input/$0.20 output per million tokens. Authenticated read-only provider metadata returned HTTP 200 and the exact model ID, identical pricing and supported parameters. No chat request was made for discovery. Cached discounts are ignored."
+      },
+      "max_output_tokens": 1800,
+      "reserved_usd": "0.0012835500",
+      "status": "complete",
+      "output_schema_sha256": "e5dc5c97a711c3842b7f2a727511640a28b7e4e13ccc59a38246f408c313d23e",
+      "latency_s": 9.767,
+      "http_status": 200,
+      "rate_limits": {},
+      "usage": {
+        "prompt_tokens": 4337,
+        "total_tokens": 5438,
+        "completion_tokens": 1101,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0004370500"
+    },
+    {
+      "id": "1587bc5081c5491389e5e245fdec6fc3",
+      "run_id": "mission-20261017-144653-19adde",
+      "cycle": 0,
+      "role": "Engineering Lead",
+      "time": 1792273649.750704,
+      "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 18966,
+      "pricing_snapshot": {
+        "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+        "input_usd_per_million": "0.05",
+        "output_usd_per_million": "0.20",
+        "cached_input_usd_per_million": "0.03",
+        "source": "https://www.crusoe.ai/cloud/pricing",
+        "model_source": "https://api.inference.crusoecloud.com/v1/models",
+        "verified_at": "2026-10-17T21:14:50+00:00",
+        "expires_at": "2026-10-18T21:14:50+00:00",
+        "context_length": 262144,
+        "supported_parameters_verified": [
+          "response_format",
+          "structured_outputs",
+          "chat_template_kwargs"
+        ],
+        "note": "Official Serverless Inference table lists Nemotron 3 Nano 30B-A3B-FP8 at $0.05 input/$0.20 output per million tokens. Authenticated read-only provider metadata returned HTTP 200 and the exact model ID, identical pricing and supported parameters. No chat request was made for discovery. Cached discounts are ignored."
+      },
+      "max_output_tokens": 1800,
+      "reserved_usd": "0.0013083000",
+      "status": "complete",
+      "output_schema_sha256": "e5dc5c97a711c3842b7f2a727511640a28b7e4e13ccc59a38246f408c313d23e",
+      "latency_s": 8.969,
+      "http_status": 200,
+      "rate_limits": {},
+      "usage": {
+        "prompt_tokens": 4449,
+        "total_tokens": 5550,
+        "completion_tokens": 1101,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0004426500"
+    },
+    {
+      "id": "84ada1cd79bc449e8bd03bd823995b90",
+      "run_id": "mission-20261017-145411-2e83ef",
+      "cycle": 0,
+      "role": "Research Lead",
+      "time": 1792274054.945367,
+      "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 17156,
+      "pricing_snapshot": {
+        "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+        "input_usd_per_million": "0.05",
+        "output_usd_per_million": "0.20",
+        "cached_input_usd_per_million": "0.03",
+        "source": "https://www.crusoe.ai/cloud/pricing",
+        "model_source": "https://api.inference.crusoecloud.com/v1/models",
+        "verified_at": "2026-10-17T21:14:50+00:00",
+        "expires_at": "2026-10-18T21:14:50+00:00",
+        "context_length": 262144,
+        "supported_parameters_verified": [
+          "response_format",
+          "structured_outputs",
+          "chat_template_kwargs"
+        ],
+        "note": "Official Serverless Inference table lists Nemotron 3 Nano 30B-A3B-FP8 at $0.05 input/$0.20 output per million tokens. Authenticated read-only provider metadata returned HTTP 200 and the exact model ID, identical pricing and supported parameters. No chat request was made for discovery. Cached discounts are ignored."
+      },
+      "max_output_tokens": 1800,
+      "reserved_usd": "0.0012178000",
+      "status": "complete",
+      "output_schema_sha256": "30bca8d951a96fc20b06f2588261feed0220e6e5a8edb29dbebfa3edac9d4f02",
+      "latency_s": 5.484,
+      "http_status": 200,
+      "rate_limits": {},
+      "usage": {
+        "prompt_tokens": 3337,
+        "total_tokens": 4118,
+        "completion_tokens": 781,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0003230500"
+    },
+    {
+      "id": "c3c2d152b887474087a305197f88a4c4",
+      "run_id": "mission-20261017-145411-2e83ef",
+      "cycle": 0,
+      "role": "Engineering Lead",
+      "time": 1792274060.467905,
+      "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 21012,
+      "pricing_snapshot": {
+        "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+        "input_usd_per_million": "0.05",
+        "output_usd_per_million": "0.20",
+        "cached_input_usd_per_million": "0.03",
+        "source": "https://www.crusoe.ai/cloud/pricing",
+        "model_source": "https://api.inference.crusoecloud.com/v1/models",
+        "verified_at": "2026-10-17T21:14:50+00:00",
+        "expires_at": "2026-10-18T21:14:50+00:00",
+        "context_length": 262144,
+        "supported_parameters_verified": [
+          "response_format",
+          "structured_outputs",
+          "chat_template_kwargs"
+        ],
+        "note": "Official Serverless Inference table lists Nemotron 3 Nano 30B-A3B-FP8 at $0.05 input/$0.20 output per million tokens. Authenticated read-only provider metadata returned HTTP 200 and the exact model ID, identical pricing and supported parameters. No chat request was made for discovery. Cached discounts are ignored."
+      },
+      "max_output_tokens": 1800,
+      "reserved_usd": "0.0014106000",
+      "status": "complete",
+      "output_schema_sha256": "30bca8d951a96fc20b06f2588261feed0220e6e5a8edb29dbebfa3edac9d4f02",
+      "latency_s": 5.367,
+      "http_status": 200,
+      "rate_limits": {},
+      "usage": {
+        "prompt_tokens": 4164,
+        "total_tokens": 5045,
+        "completion_tokens": 881,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0003844000"
+    },
+    {
+      "id": "ac8cef365d154b9ea011942c51e4e743",
+      "run_id": "mission-20261017-145411-2e83ef",
+      "cycle": 0,
+      "role": "Implementation Designer",
+      "time": 1792274065.884598,
+      "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 7075,
+      "pricing_snapshot": {
+        "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+        "input_usd_per_million": "0.05",
+        "output_usd_per_million": "0.20",
+        "cached_input_usd_per_million": "0.03",
+        "source": "https://www.crusoe.ai/cloud/pricing",
+        "model_source": "https://api.inference.crusoecloud.com/v1/models",
+        "verified_at": "2026-10-17T21:14:50+00:00",
+        "expires_at": "2026-10-18T21:14:50+00:00",
+        "context_length": 262144,
+        "supported_parameters_verified": [
+          "response_format",
+          "structured_outputs",
+          "chat_template_kwargs"
+        ],
+        "note": "Official Serverless Inference table lists Nemotron 3 Nano 30B-A3B-FP8 at $0.05 input/$0.20 output per million tokens. Authenticated read-only provider metadata returned HTTP 200 and the exact model ID, identical pricing and supported parameters. No chat request was made for discovery. Cached discounts are ignored."
+      },
+      "max_output_tokens": 850,
+      "reserved_usd": "0.0005237500",
+      "status": "complete",
+      "output_schema_sha256": "fdc645c821c73201da0db41d78ca13fd6159d1e09ea3b394e4a99aff2184da39",
+      "latency_s": 3.1,
+      "http_status": 200,
+      "rate_limits": {},
+      "usage": {
+        "prompt_tokens": 1049,
+        "total_tokens": 1340,
+        "completion_tokens": 291,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0001106500"
+    },
+    {
+      "id": "f5305b80fb674f0ea5b2304e9d35b06e",
+      "run_id": "mission-20261017-145411-2e83ef",
+      "cycle": 0,
+      "role": "Synthetic Accessibility advocate",
+      "time": 1792274069.930588,
+      "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 12657,
+      "pricing_snapshot": {
+        "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+        "input_usd_per_million": "0.05",
+        "output_usd_per_million": "0.20",
+        "cached_input_usd_per_million": "0.03",
+        "source": "https://www.crusoe.ai/cloud/pricing",
+        "model_source": "https://api.inference.crusoecloud.com/v1/models",
+        "verified_at": "2026-10-17T21:14:50+00:00",
+        "expires_at": "2026-10-18T21:14:50+00:00",
+        "context_length": 262144,
+        "supported_parameters_verified": [
+          "response_format",
+          "structured_outputs",
+          "chat_template_kwargs"
+        ],
+        "note": "Official Serverless Inference table lists Nemotron 3 Nano 30B-A3B-FP8 at $0.05 input/$0.20 output per million tokens. Authenticated read-only provider metadata returned HTTP 200 and the exact model ID, identical pricing and supported parameters. No chat request was made for discovery. Cached discounts are ignored."
+      },
+      "max_output_tokens": 450,
+      "reserved_usd": "0.0007228500",
+      "status": "complete",
+      "output_schema_sha256": "30764e477b822b0781e67526a91fc7d1aecb925c465e91c54b525d5fd51e0514",
+      "latency_s": 1.821,
+      "http_status": 200,
+      "rate_limits": {},
+      "usage": {
+        "prompt_tokens": 3293,
+        "total_tokens": 3468,
+        "completion_tokens": 175,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0001996500"
+    },
+    {
+      "id": "4b992fd79c624066a8a67e99fb57f9a4",
+      "run_id": "mission-20261017-145411-2e83ef",
+      "cycle": 0,
+      "role": "Synthetic Open-source maintainer",
+      "time": 1792274071.78621,
+      "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 12657,
+      "pricing_snapshot": {
+        "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+        "input_usd_per_million": "0.05",
+        "output_usd_per_million": "0.20",
+        "cached_input_usd_per_million": "0.03",
+        "source": "https://www.crusoe.ai/cloud/pricing",
+        "model_source": "https://api.inference.crusoecloud.com/v1/models",
+        "verified_at": "2026-10-17T21:14:50+00:00",
+        "expires_at": "2026-10-18T21:14:50+00:00",
+        "context_length": 262144,
+        "supported_parameters_verified": [
+          "response_format",
+          "structured_outputs",
+          "chat_template_kwargs"
+        ],
+        "note": "Official Serverless Inference table lists Nemotron 3 Nano 30B-A3B-FP8 at $0.05 input/$0.20 output per million tokens. Authenticated read-only provider metadata returned HTTP 200 and the exact model ID, identical pricing and supported parameters. No chat request was made for discovery. Cached discounts are ignored."
+      },
+      "max_output_tokens": 450,
+      "reserved_usd": "0.0007228500",
+      "status": "complete",
+      "output_schema_sha256": "30764e477b822b0781e67526a91fc7d1aecb925c465e91c54b525d5fd51e0514",
+      "latency_s": 3.252,
+      "http_status": 200,
+      "rate_limits": {},
+      "usage": {
+        "prompt_tokens": 3297,
+        "total_tokens": 3425,
+        "completion_tokens": 128,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0001904500"
+    },
+    {
+      "id": "eb8af875c76b499baefe56b7647e272b",
+      "run_id": "mission-20261017-145411-2e83ef",
+      "cycle": 0,
+      "role": "Synthetic Community contributor",
+      "time": 1792274075.083477,
+      "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 12639,
+      "pricing_snapshot": {
+        "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+        "input_usd_per_million": "0.05",
+        "output_usd_per_million": "0.20",
+        "cached_input_usd_per_million": "0.03",
+        "source": "https://www.crusoe.ai/cloud/pricing",
+        "model_source": "https://api.inference.crusoecloud.com/v1/models",
+        "verified_at": "2026-10-17T21:14:50+00:00",
+        "expires_at": "2026-10-18T21:14:50+00:00",
+        "context_length": 262144,
+        "supported_parameters_verified": [
+          "response_format",
+          "structured_outputs",
+          "chat_template_kwargs"
+        ],
+        "note": "Official Serverless Inference table lists Nemotron 3 Nano 30B-A3B-FP8 at $0.05 input/$0.20 output per million tokens. Authenticated read-only provider metadata returned HTTP 200 and the exact model ID, identical pricing and supported parameters. No chat request was made for discovery. Cached discounts are ignored."
+      },
+      "max_output_tokens": 450,
+      "reserved_usd": "0.0007219500",
+      "status": "complete",
+      "output_schema_sha256": "30764e477b822b0781e67526a91fc7d1aecb925c465e91c54b525d5fd51e0514",
+      "latency_s": 1.723,
+      "http_status": 200,
+      "rate_limits": {},
+      "usage": {
+        "prompt_tokens": 3292,
+        "total_tokens": 3463,
+        "completion_tokens": 171,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0001988000"
+    },
+    {
+      "id": "06d1e6c2c70e46978747ea5305244b12",
+      "run_id": "mission-20261017-145411-2e83ef",
+      "cycle": 1,
+      "role": "Synthetic Municipal operations planner",
+      "time": 1792274076.8435001,
+      "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 12680,
+      "pricing_snapshot": {
+        "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+        "input_usd_per_million": "0.05",
+        "output_usd_per_million": "0.20",
+        "cached_input_usd_per_million": "0.03",
+        "source": "https://www.crusoe.ai/cloud/pricing",
+        "model_source": "https://api.inference.crusoecloud.com/v1/models",
+        "verified_at": "2026-10-17T21:14:50+00:00",
+        "expires_at": "2026-10-18T21:14:50+00:00",
+        "context_length": 262144,
+        "supported_parameters_verified": [
+          "response_format",
+          "structured_outputs",
+          "chat_template_kwargs"
+        ],
+        "note": "Official Serverless Inference table lists Nemotron 3 Nano 30B-A3B-FP8 at $0.05 input/$0.20 output per million tokens. Authenticated read-only provider metadata returned HTTP 200 and the exact model ID, identical pricing and supported parameters. No chat request was made for discovery. Cached discounts are ignored."
+      },
+      "max_output_tokens": 450,
+      "reserved_usd": "0.0007240000",
+      "status": "complete",
+      "output_schema_sha256": "30764e477b822b0781e67526a91fc7d1aecb925c465e91c54b525d5fd51e0514",
+      "latency_s": 1.814,
+      "http_status": 200,
+      "rate_limits": {},
+      "usage": {
+        "prompt_tokens": 3296,
+        "total_tokens": 3445,
+        "completion_tokens": 149,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0001946000"
+    },
+    {
+      "id": "970112eba080434f8f942b1542ee6e31",
+      "run_id": "mission-20261017-145411-2e83ef",
+      "cycle": 1,
+      "role": "Synthetic Scientific reviewer",
+      "time": 1792274078.698116,
+      "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 12648,
+      "pricing_snapshot": {
+        "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+        "input_usd_per_million": "0.05",
+        "output_usd_per_million": "0.20",
+        "cached_input_usd_per_million": "0.03",
+        "source": "https://www.crusoe.ai/cloud/pricing",
+        "model_source": "https://api.inference.crusoecloud.com/v1/models",
+        "verified_at": "2026-10-17T21:14:50+00:00",
+        "expires_at": "2026-10-18T21:14:50+00:00",
+        "context_length": 262144,
+        "supported_parameters_verified": [
+          "response_format",
+          "structured_outputs",
+          "chat_template_kwargs"
+        ],
+        "note": "Official Serverless Inference table lists Nemotron 3 Nano 30B-A3B-FP8 at $0.05 input/$0.20 output per million tokens. Authenticated read-only provider metadata returned HTTP 200 and the exact model ID, identical pricing and supported parameters. No chat request was made for discovery. Cached discounts are ignored."
+      },
+      "max_output_tokens": 450,
+      "reserved_usd": "0.0007224000",
+      "status": "complete",
+      "output_schema_sha256": "30764e477b822b0781e67526a91fc7d1aecb925c465e91c54b525d5fd51e0514",
+      "latency_s": 2.333,
+      "http_status": 200,
+      "rate_limits": {},
+      "usage": {
+        "prompt_tokens": 3293,
+        "total_tokens": 3467,
+        "completion_tokens": 174,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0001994500"
+    },
+    {
+      "id": "2ed97f191afe4a878b4cf7fab18d85e1",
+      "run_id": "mission-20261017-145411-2e83ef",
+      "cycle": 1,
+      "role": "Growth Director",
+      "time": 1792274081.0911202,
+      "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 13182,
+      "pricing_snapshot": {
+        "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+        "input_usd_per_million": "0.05",
+        "output_usd_per_million": "0.20",
+        "cached_input_usd_per_million": "0.03",
+        "source": "https://www.crusoe.ai/cloud/pricing",
+        "model_source": "https://api.inference.crusoecloud.com/v1/models",
+        "verified_at": "2026-10-17T21:14:50+00:00",
+        "expires_at": "2026-10-18T21:14:50+00:00",
+        "context_length": 262144,
+        "supported_parameters_verified": [
+          "response_format",
+          "structured_outputs",
+          "chat_template_kwargs"
+        ],
+        "note": "Official Serverless Inference table lists Nemotron 3 Nano 30B-A3B-FP8 at $0.05 input/$0.20 output per million tokens. Authenticated read-only provider metadata returned HTTP 200 and the exact model ID, identical pricing and supported parameters. No chat request was made for discovery. Cached discounts are ignored."
+      },
+      "max_output_tokens": 900,
+      "reserved_usd": "0.0008391000",
+      "status": "complete",
+      "output_schema_sha256": "a047320aa3039d7e0460eb6ec571c08d13c6dbbdf8ecbdb471d2dff4d36e31df",
+      "latency_s": 3.585,
+      "http_status": 200,
+      "rate_limits": {},
+      "usage": {
+        "prompt_tokens": 3398,
+        "total_tokens": 3882,
+        "completion_tokens": 484,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0002667000"
+    },
+    {
+      "id": "da4640713a244d3c979acd2db03eef6e",
+      "run_id": "mission-20261017-145411-2e83ef",
+      "cycle": 1,
+      "role": "Scientist",
+      "time": 1792274084.731225,
+      "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 7072,
+      "pricing_snapshot": {
+        "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+        "input_usd_per_million": "0.05",
+        "output_usd_per_million": "0.20",
+        "cached_input_usd_per_million": "0.03",
+        "source": "https://www.crusoe.ai/cloud/pricing",
+        "model_source": "https://api.inference.crusoecloud.com/v1/models",
+        "verified_at": "2026-10-17T21:14:50+00:00",
+        "expires_at": "2026-10-18T21:14:50+00:00",
+        "context_length": 262144,
+        "supported_parameters_verified": [
+          "response_format",
+          "structured_outputs",
+          "chat_template_kwargs"
+        ],
+        "note": "Official Serverless Inference table lists Nemotron 3 Nano 30B-A3B-FP8 at $0.05 input/$0.20 output per million tokens. Authenticated read-only provider metadata returned HTTP 200 and the exact model ID, identical pricing and supported parameters. No chat request was made for discovery. Cached discounts are ignored."
+      },
+      "max_output_tokens": 900,
+      "reserved_usd": "0.0005336000",
+      "status": "complete",
+      "output_schema_sha256": "8eeb455e2ff4c24b01e0d8c1bee8217fb177fec959d383a0eaf080698c2a9e4b",
+      "latency_s": 2.391,
+      "http_status": 200,
+      "rate_limits": {},
+      "usage": {
+        "prompt_tokens": 1252,
+        "total_tokens": 1546,
+        "completion_tokens": 294,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0001214000"
+    },
+    {
+      "id": "b4fc3746cb394a25bdba6aee6e25a06e",
+      "run_id": "audience-1792274614-2a60c4-batch-1",
+      "cycle": 0,
+      "role": "synthetic-001",
+      "time": 1792274615.063767,
+      "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 6564,
+      "pricing_snapshot": {
+        "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+        "input_usd_per_million": "0.05",
+        "output_usd_per_million": "0.20",
+        "cached_input_usd_per_million": "0.03",
+        "source": "https://www.crusoe.ai/cloud/pricing",
+        "model_source": "https://api.inference.crusoecloud.com/v1/models",
+        "verified_at": "2026-10-17T21:14:50+00:00",
+        "expires_at": "2026-10-18T21:14:50+00:00",
+        "context_length": 262144,
+        "supported_parameters_verified": [
+          "response_format",
+          "structured_outputs",
+          "chat_template_kwargs"
+        ],
+        "note": "Official Serverless Inference table lists Nemotron 3 Nano 30B-A3B-FP8 at $0.05 input/$0.20 output per million tokens. Authenticated read-only provider metadata returned HTTP 200 and the exact model ID, identical pricing and supported parameters. No chat request was made for discovery. Cached discounts are ignored."
+      },
+      "max_output_tokens": 450,
+      "reserved_usd": "0.0004182000",
+      "status": "complete",
+      "output_schema_sha256": "9420df47a558c3a631947f74463cfc7d79569c6b7502a7e1296cc5fc57d0923c",
+      "latency_s": 3.095,
+      "http_status": 200,
+      "rate_limits": {},
+      "usage": {
+        "prompt_tokens": 1487,
+        "total_tokens": 1611,
+        "completion_tokens": 124,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0000991500"
+    },
+    {
+      "id": "85973e6bf77b45c5ab387b5672d48135",
+      "run_id": "audience-1792274614-2a60c4-batch-1",
+      "cycle": 0,
+      "role": "synthetic-002",
+      "time": 1792274618.1753118,
+      "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 6565,
+      "pricing_snapshot": {
+        "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+        "input_usd_per_million": "0.05",
+        "output_usd_per_million": "0.20",
+        "cached_input_usd_per_million": "0.03",
+        "source": "https://www.crusoe.ai/cloud/pricing",
+        "model_source": "https://api.inference.crusoecloud.com/v1/models",
+        "verified_at": "2026-10-17T21:14:50+00:00",
+        "expires_at": "2026-10-18T21:14:50+00:00",
+        "context_length": 262144,
+        "supported_parameters_verified": [
+          "response_format",
+          "structured_outputs",
+          "chat_template_kwargs"
+        ],
+        "note": "Official Serverless Inference table lists Nemotron 3 Nano 30B-A3B-FP8 at $0.05 input/$0.20 output per million tokens. Authenticated read-only provider metadata returned HTTP 200 and the exact model ID, identical pricing and supported parameters. No chat request was made for discovery. Cached discounts are ignored."
+      },
+      "max_output_tokens": 450,
+      "reserved_usd": "0.0004182500",
+      "status": "complete",
+      "output_schema_sha256": "9420df47a558c3a631947f74463cfc7d79569c6b7502a7e1296cc5fc57d0923c",
+      "latency_s": 1.862,
+      "http_status": 200,
+      "rate_limits": {},
+      "usage": {
+        "prompt_tokens": 1488,
+        "total_tokens": 1611,
+        "completion_tokens": 123,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0000990000"
+    },
+    {
+      "id": "dbdd335cf65c49e6a6438bbcba418789",
+      "run_id": "audience-1792274614-2a60c4-batch-1",
+      "cycle": 0,
+      "role": "synthetic-003",
+      "time": 1792274620.053565,
+      "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 6565,
+      "pricing_snapshot": {
+        "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+        "input_usd_per_million": "0.05",
+        "output_usd_per_million": "0.20",
+        "cached_input_usd_per_million": "0.03",
+        "source": "https://www.crusoe.ai/cloud/pricing",
+        "model_source": "https://api.inference.crusoecloud.com/v1/models",
+        "verified_at": "2026-10-17T21:14:50+00:00",
+        "expires_at": "2026-10-18T21:14:50+00:00",
+        "context_length": 262144,
+        "supported_parameters_verified": [
+          "response_format",
+          "structured_outputs",
+          "chat_template_kwargs"
+        ],
+        "note": "Official Serverless Inference table lists Nemotron 3 Nano 30B-A3B-FP8 at $0.05 input/$0.20 output per million tokens. Authenticated read-only provider metadata returned HTTP 200 and the exact model ID, identical pricing and supported parameters. No chat request was made for discovery. Cached discounts are ignored."
+      },
+      "max_output_tokens": 450,
+      "reserved_usd": "0.0004182500",
+      "status": "complete",
+      "output_schema_sha256": "9420df47a558c3a631947f74463cfc7d79569c6b7502a7e1296cc5fc57d0923c",
+      "latency_s": 1.981,
+      "http_status": 200,
+      "rate_limits": {},
+      "usage": {
+        "prompt_tokens": 1489,
+        "total_tokens": 1598,
+        "completion_tokens": 109,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0000962500"
+    },
+    {
+      "id": "b6c71e6ba28b49a29788f7c53b5d69da",
+      "run_id": "audience-1792274614-2a60c4-batch-1",
+      "cycle": 0,
+      "role": "synthetic-004",
+      "time": 1792274622.058389,
+      "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 6564,
+      "pricing_snapshot": {
+        "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+        "input_usd_per_million": "0.05",
+        "output_usd_per_million": "0.20",
+        "cached_input_usd_per_million": "0.03",
+        "source": "https://www.crusoe.ai/cloud/pricing",
+        "model_source": "https://api.inference.crusoecloud.com/v1/models",
+        "verified_at": "2026-10-17T21:14:50+00:00",
+        "expires_at": "2026-10-18T21:14:50+00:00",
+        "context_length": 262144,
+        "supported_parameters_verified": [
+          "response_format",
+          "structured_outputs",
+          "chat_template_kwargs"
+        ],
+        "note": "Official Serverless Inference table lists Nemotron 3 Nano 30B-A3B-FP8 at $0.05 input/$0.20 output per million tokens. Authenticated read-only provider metadata returned HTTP 200 and the exact model ID, identical pricing and supported parameters. No chat request was made for discovery. Cached discounts are ignored."
+      },
+      "max_output_tokens": 450,
+      "reserved_usd": "0.0004182000",
+      "status": "complete",
+      "output_schema_sha256": "9420df47a558c3a631947f74463cfc7d79569c6b7502a7e1296cc5fc57d0923c",
+      "latency_s": 2.167,
+      "http_status": 200,
+      "rate_limits": {},
+      "usage": {
+        "prompt_tokens": 1488,
+        "total_tokens": 1612,
+        "completion_tokens": 124,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0000992000"
+    },
+    {
+      "id": "e5cf2427274846d9a5678861713d0d45",
+      "run_id": "audience-1792274614-2a60c4-batch-1",
+      "cycle": 0,
+      "role": "synthetic-005",
+      "time": 1792274624.2465322,
+      "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 6560,
+      "pricing_snapshot": {
+        "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+        "input_usd_per_million": "0.05",
+        "output_usd_per_million": "0.20",
+        "cached_input_usd_per_million": "0.03",
+        "source": "https://www.crusoe.ai/cloud/pricing",
+        "model_source": "https://api.inference.crusoecloud.com/v1/models",
+        "verified_at": "2026-10-17T21:14:50+00:00",
+        "expires_at": "2026-10-18T21:14:50+00:00",
+        "context_length": 262144,
+        "supported_parameters_verified": [
+          "response_format",
+          "structured_outputs",
+          "chat_template_kwargs"
+        ],
+        "note": "Official Serverless Inference table lists Nemotron 3 Nano 30B-A3B-FP8 at $0.05 input/$0.20 output per million tokens. Authenticated read-only provider metadata returned HTTP 200 and the exact model ID, identical pricing and supported parameters. No chat request was made for discovery. Cached discounts are ignored."
+      },
+      "max_output_tokens": 450,
+      "reserved_usd": "0.0004180000",
+      "status": "complete",
+      "output_schema_sha256": "9420df47a558c3a631947f74463cfc7d79569c6b7502a7e1296cc5fc57d0923c",
+      "latency_s": 2.51,
+      "http_status": 200,
+      "rate_limits": {},
+      "usage": {
+        "prompt_tokens": 1488,
+        "total_tokens": 1593,
+        "completion_tokens": 105,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0000954000"
     }
   ]
 }

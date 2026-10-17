@@ -1,0 +1,15 @@
+{
+  "mission_id": "mission-20261017-145411-2e83ef",
+  "implementation": "Audited predefined Python scaffold plus real Nemotron-selected specification. No model-generated code or shell executes.",
+  "files": {
+    "spec.json": "92289359c80e8f8d3b0eaee5c31bd80ca96954a28c96c48fa641974cb97cdb45",
+    "index.html": "c95e54b9d64d0b6f63e03c2f232a9eb19dcfbae12b84f32a6ba0e5c321cd9659",
+    "research-brief.json": "62119cea6e54379a600962d7be1da62a16873093a52ea7f70612c411c3b921f0",
+    "README.md": "c0fe9fac9141a65fc66b8c6772003c43248eee445396a498c17bc7d0cb704ba6",
+    "style.css": "104a3ead12c295110d6594ba553eeb8a5203486e684ffdfc8f945b6a3c373566",
+    "app.py": "52e1e173dbd0a5baa81077a8dac99c7132acd11272d81224c81db507ca921b1a",
+    "verify.py": "559b0a8456f7d1509ce70f0b2aba58eb28cffac5b19e274940cd496a2d175201",
+    "app.js": "e7ed19332aff1b337ca15ccb00999bdb31c23df34a8663443b496ac43ef67f80",
+    "test_app.py": "1645c3d6a5662057cb9303c8e33d9e23c6e9043b65e90626cae2220eafa7461f"
+  }
+}

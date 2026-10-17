@@ -10,11 +10,27 @@ from .evolution import EvolutionEngine, DEFAULT_OBJECTIVE
 from .budget import BudgetError
 from .local_test import run_checks
 from .company import Company, Paused
+from .testing_lab import BrowserLab
+from .audience import AudiencePanel
 
 
 def serve(host="127.0.0.1", port=8080, fresh=False):
     engine = EvolutionEngine(fresh=fresh)
     company = Company(budget=engine.budget)
+    browser_lab = BrowserLab(company)
+    audience = AudiencePanel(company)
+    prototype_apps = {}
+    prototype_lock = threading.Lock()
+    def prototype(identity):
+        from .artifact_builder import run_directory
+        from .scaffolds.local_solutions.app import Application
+        directory = run_directory(identity)
+        if not json.loads((directory / 'build-report.json').read_text()).get('passed'):
+            raise ValueError('Prototype has not passed Operations verification')
+        with prototype_lock:
+            if identity not in prototype_apps:
+                prototype_apps[identity] = Application(directory)
+            return prototype_apps[identity]
     local_report = {"mode": "local", "status": "idle", "external_api_calls": 0}
     local_lock = threading.Lock()
     histories = sorted(engine.directory.glob("*.json"))
@@ -40,6 +56,37 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
 
         def do_GET(self):
             path = urlparse(self.path).path
+            if path == '/api/company/testing':
+                return self.send(200, {'browser': browser_lab.snapshot(), 'audience': audience.snapshot()})
+            if path.startswith('/testing-evidence/'):
+                parts = path.split('/')
+                if len(parts) != 5 or not parts[2].startswith('browser-') or any(c not in 'browser-0123456789abcdef' for c in parts[2]) or parts[3] not in {'before', 'reproduce', 'after'} or parts[4] not in {'report.json', 'resident.png', 'mobile.png', 'safety.png'}:
+                    return self.send(404, {'error': 'Unknown testing evidence'})
+                file = browser_lab.directory / parts[2] / parts[3] / parts[4]
+                if file.is_file():
+                    return self.send(200, json.loads(file.read_text())) if file.suffix == '.json' else self.send(200, file.read_bytes(), 'image/png')
+                return self.send(404, {'error': 'Evidence not captured'})
+            if path.startswith('/prototype/'):
+                from .artifact_builder import run_directory
+                from .scaffolds.local_solutions.app import Application, dispatch
+                parts = path.split('/')
+                try:
+                    directory = run_directory(parts[2])
+                    if not (directory / 'build-report.json').is_file() or not json.loads((directory / 'build-report.json').read_text()).get('passed'):
+                        raise ValueError('Prototype has not passed Operations verification')
+                    return dispatch(self, prototype(parts[2]), '/prototype/' + parts[2])
+                except (ValueError, OSError, IndexError) as exc:
+                    return self.send(404, {'error': str(exc)})
+            if path.startswith('/artifact/'):
+                from .artifact_builder import run_directory, FILES
+                parts = path.split('/')
+                try:
+                    if len(parts) != 4 or parts[3] not in {*FILES, 'spec.json', 'research-brief.json', 'manifest.json', 'build-report.json', 'failed-build-report.json'}:
+                        raise ValueError('Unknown artifact file')
+                    file = run_directory(parts[2]) / parts[3]
+                    return self.send(200, json.loads(file.read_text())) if file.suffix == '.json' else self.send(200, file.read_bytes(), 'text/plain; charset=utf-8')
+                except (ValueError, OSError) as exc:
+                    return self.send(404, {'error': str(exc)})
             if path == "/api/company":
                 return self.send(200, {"mission": company.snapshot(), "governance": company.governance()})
             if path == "/api/company/history":
@@ -91,6 +138,7 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
                       "/world.js": ("world.js", "text/javascript; charset=utf-8"), "/world.css": ("world.css", "text/css; charset=utf-8"),
                       "/campus.js": ("campus.js", "text/javascript; charset=utf-8"), "/economy.js": ("economy.js", "text/javascript; charset=utf-8"),
                       "/company-ui.js": ("company-ui.js", "text/javascript; charset=utf-8"),
+                      "/testing-ui.js": ("testing-ui.js", "text/javascript; charset=utf-8"),
                       "/company.css": ("company.css", "text/css; charset=utf-8"),
                       "/vendor/three.module.js": ("vendor/three.module.js", "text/javascript; charset=utf-8"), "/vendor/three.core.min.js": ("vendor/three.core.min.js", "text/javascript; charset=utf-8"),
                       "/arena.js": ("arena.js", "text/javascript; charset=utf-8"), "/arena.css": ("arena.css", "text/css; charset=utf-8"),
@@ -101,6 +149,17 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
             self.send(404, {"error": "Not found"})
 
         def do_POST(self):
+            if urlparse(self.path).path.startswith('/prototype/'):
+                from .artifact_builder import run_directory
+                from .scaffolds.local_solutions.app import Application, dispatch
+                parts = urlparse(self.path).path.split('/')
+                try:
+                    directory = run_directory(parts[2])
+                    if not json.loads((directory / 'build-report.json').read_text()).get('passed'):
+                        raise ValueError('Unverified prototype')
+                    return dispatch(self, prototype(parts[2]), '/prototype/' + parts[2])
+                except (ValueError, OSError, IndexError) as exc:
+                    return self.send(404, {'error': str(exc)})
             # Reject cross-origin forms and DNS rebinding before any credit-spending action.
             expected = {"127.0.0.1:" + str(port), "localhost:" + str(port)}
             if self.headers.get("Host") not in expected:
@@ -108,8 +167,31 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
             origin = self.headers.get("Origin")
             if origin and origin not in {"http://" + host for host in expected}:
                 return self.send(403, {"error": "Same origin required"})
-            if self.headers.get("X-Genesis-Action") not in {"evolve", "local-test", "mission", "ceo"}:
+            if self.headers.get("X-Genesis-Action") not in {"evolve", "local-test", "mission", "ceo", "testing"}:
                 return self.send(403, {"error": "Explicit action header required"})
+            if self.path in {'/api/company/testing/browser', '/api/company/testing/audience', '/api/company/testing/batch'}:
+                if self.headers.get('X-Genesis-Action') != 'testing':
+                    return self.send(403, {'error': 'Explicit testing action required'})
+                try:
+                    if engine.snapshot().get('status') == 'running' or browser_lab.snapshot().get('status') == 'running' or audience.snapshot().get('status') == 'running':
+                        raise ValueError('Wait for active work to finish')
+                    length = int(self.headers.get('Content-Length', '0'))
+                    if not 1 <= length <= 1024:
+                        raise ValueError('Bounded request required')
+                    data = json.loads(self.rfile.read(length))
+                    if not isinstance(data, dict) or set(data) - {'target'}:
+                        raise ValueError('Unknown testing fields')
+                    if self.path.endswith('/browser'):
+                        result = browser_lab.start()
+                        threading.Thread(target=browser_lab.run, daemon=True).start()
+                    elif self.path.endswith('/audience'):
+                        result = audience.create(data.get('target', 100))
+                    else:
+                        result = audience.prepare_batch()
+                        threading.Thread(target=audience.run_batch, daemon=True).start()
+                    return self.send(202, result)
+                except (ValueError, TypeError, BudgetError, Paused) as exc:
+                    return self.send(400, {'error': str(exc)})
             if self.path in {"/api/company/mission", "/api/company/control"}:
                 expected_action = "mission" if self.path.endswith("/mission") else "ceo"
                 if self.headers.get("X-Genesis-Action") != expected_action:
@@ -128,6 +210,8 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
                         return self.send(200, company.control(data.get("action"), data.get("decision_id")))
                     if engine.snapshot().get("status") == "running":
                         raise ValueError("An evolution experiment is already active")
+                    if browser_lab.snapshot().get('status') == 'running' or audience.snapshot().get('status') == 'running':
+                        raise ValueError('Product Testing work is active')
                     result = company.start(data.get("objective"))
                     threading.Thread(target=company.run, daemon=True).start()
                     return self.send(202, {"id": result["id"]})

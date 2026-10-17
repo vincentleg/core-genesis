@@ -9,7 +9,7 @@ export const DEPARTMENTS=[
  {id:'evolution',name:'Evolution Lab',short:'Evolution',icon:'⌬',color:'#81828e',x:-5,z:9,status:'FUNCTIONAL · VERSION N+1',role:'Scientist',description:'Independently testing better ways for the organization to operate.'},
  {id:'core',name:'CORE World',short:'CORE World',icon:'◎',color:'#698879',x:-7,z:-9,status:'FUTURE VISION',role:'Future connection',description:'A gateway to Creation Of Reborn Earth. A shared future for human and artificial intelligence.'},
  {id:'growth',name:'Growth & PR',short:'Growth',icon:'↗',color:'#a2865b',x:12,z:-7,status:'DRAFTS · CEO APPROVAL',role:'Growth Director',description:'Grounded official-channel drafts. No personal accounts, publishing or invented audience metrics.'},
- {id:'product',name:'Product Research',short:'Product Research',icon:'◫',color:'#6b8384',x:-13,z:5,status:'SYNTHETIC RESEARCH',role:'Synthetic User Research Lead',description:'Independent synthetic critiques of actual proposed CORE improvements. Not real user research.'}
+ {id:'product',name:'Product Testing',short:'Product Testing',icon:'◫',color:'#6b8384',x:-13,z:5,status:'BROWSERS + SYNTHETIC',role:'Synthetic User Research Lead',description:'Independent synthetic critiques of actual proposed CORE improvements. Not real user research.'}
 ];
 
 export function createCampus(container,{onDepartment,onAgent,onReady,onError}={}){
@@ -66,7 +66,7 @@ export function createCampus(container,{onDepartment,onAgent,onReady,onError}={}
  const buildings=new Map(),hitObjects=[],labels=[];
  function makeLabel(d){
   const button=document.createElement('button');button.className='building-label';button.dataset.department=d.id;button.style.setProperty('--color',d.color);
-  button.innerHTML='<i></i>'+d.name+'<small>'+({'hq':'GOVERN & COORDINATE','engineering':'BUILD & VERIFY','research':'INVESTIGATE','operations':'RESTORE','economy':'PLAN RESOURCES','evolution':'EVOLVE & VALIDATE','core':'THE NEXT HORIZON','growth':'DRAFT & REVIEW','product':'SYNTHETIC CRITIQUE'}[d.id])+'</small>';
+  button.innerHTML='<i></i>'+d.name+'<small>'+({'hq':'GOVERN & COORDINATE','engineering':'BUILD & VERIFY','research':'INVESTIGATE','operations':'RESTORE','economy':'PLAN RESOURCES','evolution':'EVOLVE & VALIDATE','core':'THE NEXT HORIZON','growth':'DRAFT & REVIEW','product':'BROWSER + SYNTHETIC'}[d.id])+'</small>';
   button.addEventListener('pointerdown',event=>event.stopPropagation());button.onclick=()=>onDepartment?.(d.id);
   document.getElementById('labels').appendChild(button);labels.push({element:button,position:new T.Vector3(d.x,0,d.z),height:d.id==='hq'?6:4.1});
  }

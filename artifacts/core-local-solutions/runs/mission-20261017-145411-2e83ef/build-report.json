@@ -1,0 +1,26 @@
+{
+  "started_at": 1792274069.018077,
+  "finished_at": 1792274069.910721,
+  "command": [
+    "python3",
+    "-I",
+    "verify.py"
+  ],
+  "exit_code": 0,
+  "stdout": "{\"passed\": true, \"tests_run\": 7, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"latency_s\": 0.5517, \"guard_violations\": [], \"guard\": \"Fixed audited scaffold and test commands only; no generated code or shell. Python audit hook is defense in depth, not an OS security sandbox.\", \"external_network_requests\": 0, \"tests\": []}\n",
+  "stderr": "test_human_review_never_authorizes_real_world_action (test_app.LocalSolutionsTests) ... ok\ntest_invalid_problem_and_unsafe_evidence_rejected (test_app.LocalSolutionsTests) ... ok\ntest_model_configuration_is_enforced (test_app.LocalSolutionsTests) ... ok\ntest_problem_and_pending_solution_persist (test_app.LocalSolutionsTests) ... ok\ntest_real_http_start_create_propose_read_and_reject_cross_origin (test_app.LocalSolutionsTests) ... ok\ntest_unknown_problem_and_permission_fields_rejected (test_app.LocalSolutionsTests) ... ok\ntest_user_text_is_data_not_executable_markup (test_app.LocalSolutionsTests) ... ok\n\n----------------------------------------------------------------------\nRan 7 tests in 0.552s\n\nOK\n",
+  "outcome": {
+    "passed": true,
+    "tests_run": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "latency_s": 0.5517,
+    "guard_violations": [],
+    "guard": "Fixed audited scaffold and test commands only; no generated code or shell. Python audit hook is defense in depth, not an OS security sandbox.",
+    "external_network_requests": 0,
+    "tests": []
+  },
+  "passed": true,
+  "scope": "Actual isolated scaffold tests and loopback HTTP acceptance; no original CORE execution or external network permitted."
+}

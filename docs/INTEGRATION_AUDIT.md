@@ -22,3 +22,15 @@ Only general workflow ideas informed the independent implementation. No third-pa
 - No impressions, follower counts or engagement metrics are displayed without source data.
 - The 100-person panel is an explicit future batch plan, not an implemented or measured research result.
 - External provider availability and configuration requirements were reviewed from documentation; installed or operational third-party integrations are not implied.
+
+## Product Testing update — actual local browser execution
+
+Rechecked Tunnel and OpenPersonaSimulation from their public README/license pages. Tunnel still states proprietary/all rights reserved: no source reuse. OpenPersona remains MIT and explicitly distinguishes synthetic reactions from real market behavior; its broader simulation stack is unnecessary for this bounded pipeline.
+
+[Stagehand](https://github.com/browserbase/stagehand) is MIT and documents local browser support. Its README demonstrates model-directed browser operations with separate model credentials. Direct Crusoe/Nemotron compatibility was not verified, so no Stagehand integration is claimed. Installing it would duplicate existing browser tooling and add an unneeded model adapter.
+
+Decision: use the already-working local **Playwright** package and Chrome. The optional development dependency is pinned in package-lock.json. Three deterministic browser testing actors run actual sessions against the generated Python application; their scripted actions are not represented as LLM reasoning. They capture screenshots, browser errors, actual task completion and reproducible failures. There is no Browserbase cloud account, remote browser service or extra model cost.
+
+Synthetic research now supports 5–100 perspectives per campaign, frozen artifact context, five calls per explicit batch, single concurrency and the existing global budget. A 100-target campaign is not a claim that 100 evaluations ran; the UI reports actual completed reviews and per-batch usage. No automatic batch continuation occurs.
+
+The bounded repair controller reproduces a browser failure, permits one restoration of audited scaffold files and reruns the identical cases plus real regression tests. It cannot autonomously invent or execute code to repair arbitrary bugs. Unresolved failures remain visible. Browser outcomes are queued as workflow evidence for Evolution Lab; they do not bypass independent promotion gates.

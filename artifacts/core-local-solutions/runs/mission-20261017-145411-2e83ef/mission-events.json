@@ -1,0 +1,431 @@
+[
+  {
+    "timestamp": 1792274051.456863,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "hq",
+    "type": "mission.created",
+    "status": "working",
+    "evidence": [
+      "mission-20261017-145411-2e83ef"
+    ],
+    "message": "Mission contract created"
+  },
+  {
+    "timestamp": 1792274051.457289,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "hq",
+    "type": "mission.authorized",
+    "status": "working",
+    "evidence": [
+      "authorization"
+    ],
+    "message": "Explicit local mission action authorized bounded work; consequential authority retained by CEO"
+  },
+  {
+    "timestamp": 1792274051.458163,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "hq",
+    "type": "hq.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Mission structured into bounded Research, Engineering, Product Research, Growth and Evolution assignments"
+  },
+  {
+    "timestamp": 1792274051.459167,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "research",
+    "type": "research.started",
+    "status": "working",
+    "evidence": [],
+    "message": "Checking public CORE metadata and immutable source evidence"
+  },
+  {
+    "timestamp": 1792274054.9225311,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "research",
+    "type": "research.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Retrieved eight bounded public file excerpts at pinned commit c016d732fa"
+  },
+  {
+    "timestamp": 1792274054.942008,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "research",
+    "type": "research.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron reasoning started"
+  },
+  {
+    "timestamp": 1792274060.4449449,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "research",
+    "type": "research.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron result recorded"
+  },
+  {
+    "timestamp": 1792274060.4483352,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "research",
+    "type": "research.completed",
+    "status": "idle",
+    "evidence": [
+      "artifacts.research",
+      "preflight"
+    ],
+    "message": "Structured brief and active V1 citation preflight recorded"
+  },
+  {
+    "timestamp": 1792274060.455922,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "engineering",
+    "type": "engineering.started",
+    "status": "working",
+    "evidence": [
+      "260fc10166"
+    ],
+    "message": "Engineering received the cited Research brief"
+  },
+  {
+    "timestamp": 1792274060.4643729,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "engineering",
+    "type": "engineering.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron reasoning started"
+  },
+  {
+    "timestamp": 1792274065.863772,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "engineering",
+    "type": "engineering.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron result recorded"
+  },
+  {
+    "timestamp": 1792274065.8743339,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "operations",
+    "type": "operations.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "3/3 priority citation sets verified"
+  },
+  {
+    "timestamp": 1792274065.881176,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "engineering",
+    "type": "engineering.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron reasoning started"
+  },
+  {
+    "timestamp": 1792274069.0010529,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "engineering",
+    "type": "engineering.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron result recorded"
+  },
+  {
+    "timestamp": 1792274069.011241,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "engineering",
+    "type": "artifact.created",
+    "status": "working",
+    "evidence": [
+      "artifacts/core-local-solutions/runs/mission-20261017-145411-2e83ef",
+      "artifacts.implementation_spec"
+    ],
+    "message": "Versioned working application files created from audited scaffold and Nemotron configuration"
+  },
+  {
+    "timestamp": 1792274069.0148091,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "operations",
+    "type": "operations.testing",
+    "status": "working",
+    "evidence": [
+      "verify.py",
+      "test_app.py"
+    ],
+    "message": "Executing fixed isolated tests and real loopback HTTP acceptance"
+  },
+  {
+    "timestamp": 1792274069.914475,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "operations",
+    "type": "test.passed",
+    "status": "idle",
+    "evidence": [
+      "artifacts.prototype.test_report"
+    ],
+    "message": "7 actual tests executed; 0 failures and 0 errors"
+  },
+  {
+    "timestamp": 1792274069.927074,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "product",
+    "type": "product.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron reasoning started"
+  },
+  {
+    "timestamp": 1792274071.764854,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "product",
+    "type": "product.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron result recorded"
+  },
+  {
+    "timestamp": 1792274071.781245,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "product",
+    "type": "product.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron reasoning started"
+  },
+  {
+    "timestamp": 1792274075.0585248,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "product",
+    "type": "product.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron result recorded"
+  },
+  {
+    "timestamp": 1792274075.0792892,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "product",
+    "type": "product.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron reasoning started"
+  },
+  {
+    "timestamp": 1792274076.824142,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "product",
+    "type": "product.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron result recorded"
+  },
+  {
+    "timestamp": 1792274076.839157,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "product",
+    "type": "product.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron reasoning started"
+  },
+  {
+    "timestamp": 1792274078.6754181,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "product",
+    "type": "product.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron result recorded"
+  },
+  {
+    "timestamp": 1792274078.6936152,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "product",
+    "type": "product.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron reasoning started"
+  },
+  {
+    "timestamp": 1792274081.053375,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "product",
+    "type": "product.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron result recorded"
+  },
+  {
+    "timestamp": 1792274081.063494,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "product",
+    "type": "product_review.completed",
+    "status": "working",
+    "evidence": [
+      "panel",
+      "panel_summary"
+    ],
+    "message": "Five independent synthetic evaluations recorded; agreement and disagreement summarized"
+  },
+  {
+    "timestamp": 1792274081.075905,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "economy",
+    "type": "economy.updated",
+    "status": "idle",
+    "evidence": [
+      "artifacts.economy"
+    ],
+    "message": "Verified remaining project budget and token-price reservation; no purchase authorized"
+  },
+  {
+    "timestamp": 1792274081.086659,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "growth",
+    "type": "growth.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron reasoning started"
+  },
+  {
+    "timestamp": 1792274084.6955452,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "growth",
+    "type": "growth.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron result recorded"
+  },
+  {
+    "timestamp": 1792274084.711824,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "growth",
+    "type": "growth.activity",
+    "status": "awaiting_ceo",
+    "evidence": [],
+    "message": "Truthful draft queued for CEO review; no accounts connected and nothing published"
+  },
+  {
+    "timestamp": 1792274084.726003,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "evolution",
+    "type": "evolution.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron reasoning started"
+  },
+  {
+    "timestamp": 1792274087.144804,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "evolution",
+    "type": "evolution.activity",
+    "status": "working",
+    "evidence": [],
+    "message": "Nemotron result recorded"
+  },
+  {
+    "timestamp": 1792274087.156765,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "evolution",
+    "type": "evolution.candidate_proposed",
+    "status": "working",
+    "evidence": [
+      "Scientist output"
+    ],
+    "message": "Two real bounded policy candidates proposed"
+  },
+  {
+    "timestamp": 1792274087.162741,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "evolution",
+    "type": "evolution.candidate_tested",
+    "status": "working",
+    "evidence": [
+      "evolution"
+    ],
+    "message": "Development selection, fresh held-out comparison and regression gate executed"
+  },
+  {
+    "timestamp": 1792274087.177183,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "evolution",
+    "type": "evolution.rejected",
+    "status": "idle",
+    "evidence": [
+      "evolution"
+    ],
+    "message": "ROLLBACK: No independent success gain or fully correct efficiency gain; baseline retained"
+  },
+  {
+    "timestamp": 1792274087.1827211,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "hq",
+    "type": "mission.awaiting_approval",
+    "status": "awaiting_ceo",
+    "evidence": [
+      "artifacts.prototype",
+      "artifacts.prototype.test_report"
+    ],
+    "message": "Working prototype and actual tests delivered for CEO review; original CORE unchanged"
+  },
+  {
+    "timestamp": 1792274087.188009,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "hq",
+    "type": "mission.completed",
+    "status": "awaiting_ceo",
+    "evidence": [],
+    "message": "Authorized local execution finished; consequential actions remain unapproved"
+  },
+  {
+    "timestamp": 1792274548.201746,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "product",
+    "type": "product_testing.started",
+    "status": "working",
+    "evidence": [
+      "browser-1792274548-bc1d06"
+    ],
+    "message": "Three actual local browser testers authorized; no model calls"
+  },
+  {
+    "timestamp": 1792274556.896586,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "product",
+    "type": "product_testing.result",
+    "status": "idle",
+    "evidence": [
+      "browser-1792274548-bc1d06",
+      "resident.png"
+    ],
+    "message": "Actual browser case passed"
+  },
+  {
+    "timestamp": 1792274556.9017751,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "product",
+    "type": "product_testing.result",
+    "status": "idle",
+    "evidence": [
+      "browser-1792274548-bc1d06",
+      "mobile.png"
+    ],
+    "message": "Actual browser case passed"
+  },
+  {
+    "timestamp": 1792274556.906195,
+    "mission_id": "mission-20261017-145411-2e83ef",
+    "department": "product",
+    "type": "product_testing.result",
+    "status": "idle",
+    "evidence": [
+      "browser-1792274548-bc1d06",
+      "safety.png"
+    ],
+    "message": "Actual browser case passed"
+  }
+]
