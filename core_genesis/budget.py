@@ -22,6 +22,7 @@ MAX_REQUESTS = 6
 MAX_CYCLES = 2
 MAX_OUTPUT = 1800
 MAX_INPUT_BYTES = 24000
+MISSION_MODEL = "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
 
 
 class BudgetError(RuntimeError):
@@ -45,13 +46,16 @@ class RequestBudget:
         self.pricing_path = Path(pricing_path or ROOT / "pricing.json")
         self.history = Path(history or ROOT / "experiments")
 
-    def pricing(self):
+    def pricing(self, model=DEFAULT_MODEL):
         try:
-            price = json.loads(self.pricing_path.read_text())
+            if model not in {DEFAULT_MODEL, MISSION_MODEL}:
+                raise ValueError()
+            path = self.pricing_path if model == DEFAULT_MODEL else self.pricing_path.with_name("mission-pricing.json")
+            price = json.loads(path.read_text())
             now = dt.datetime.now(dt.timezone.utc)
             verified = dt.datetime.fromisoformat(price["verified_at"])
             expiry = dt.datetime.fromisoformat(price["expires_at"])
-            if price["model"] != DEFAULT_MODEL or price["source"] != "https://www.crusoe.ai/cloud/pricing":
+            if price["model"] != model or price["source"] != "https://www.crusoe.ai/cloud/pricing":
                 raise ValueError()
             if not verified <= now < expiry or expiry - verified > dt.timedelta(hours=25):
                 raise ValueError()
@@ -60,6 +64,15 @@ class RequestBudget:
             return price
         except (OSError, ValueError, KeyError, TypeError, ArithmeticError):
             raise BudgetError("Live inference locked: verified pricing is missing, invalid, or expired") from None
+
+    def check_pause(self):
+        path = self.directory.parent / "company" / "governance.json"
+        if path.exists():
+            try:
+                if json.loads(path.read_text())["paused"] is not False:
+                    raise BudgetError("CEO emergency pause blocks new inference; an in-flight request may finish")
+            except (OSError, ValueError, KeyError):
+                raise BudgetError("Company authority state is unreadable; inference blocked") from None
 
     def _bootstrap(self, price):
         """Import real pre-budget usage; retain pessimistic reserves for hidden retries.
@@ -151,6 +164,7 @@ class RequestBudget:
                     "entries": entries}
 
     def chat(self, run_id, cycle, role, messages, max_tokens, client=None, response_format=None):
+        self.check_pause()
         if type(cycle) is not int or not 0 <= cycle < MAX_CYCLES:
             raise BudgetError("At most two evolution cycles per explicit user run")
         if type(max_tokens) is not int or not 1 <= max_tokens <= MAX_OUTPUT:
@@ -169,10 +183,11 @@ class RequestBudget:
                 raise BudgetError("Another project inference request is active") from None
             try:
                 client = client or CrusoeClient(max_retries=0, timeout=30)
-                if client.model != DEFAULT_MODEL or client.max_retries != 0:
-                    raise BudgetError("Budget requires the pinned model and disabled client retries")
+                if client.max_retries != 0:
+                    raise BudgetError("Budget requires disabled client retries")
                 for retry in range(2):
-                    price = self.pricing()
+                    self.check_pause()
+                    price = self.pricing(client.model)
                     reserve = price_tokens(price, input_bound, max_tokens)
                     entry_id = uuid.uuid4().hex
                     with self.ledger() as state:
@@ -182,20 +197,22 @@ class RequestBudget:
                         if self.committed(state) + reserve > CAP:
                             raise BudgetError("Project-wide $2 estimated spending cap would be exceeded")
                         state["entries"].append({"id": entry_id, "run_id": run_id, "cycle": cycle, "role": role,
-                            "time": time.time(), "model": DEFAULT_MODEL, "retry": retry, "input_token_bound": input_bound,
+                            "time": time.time(), "model": client.model, "retry": retry, "input_token_bound": input_bound,
+                            "pricing_snapshot": price,
                             "max_output_tokens": max_tokens, "reserved_usd": dollars(reserve), "status": "reserved",
                             "output_schema_sha256": hashlib.sha256(json.dumps(response_format, sort_keys=True).encode()).hexdigest() if response_format else None})
                     start = time.perf_counter()
                     response = None
                     failure = None
                     try:
+                        self.check_pause()
                         structured = {"response_format": response_format} if response_format else {}
                         response = client.chat(messages, max_tokens=max_tokens, temperature=0, chat_template_kwargs={"enable_thinking": False}, **structured)
                     except Exception as exc:
                         failure = exc
                     latency = round(time.perf_counter() - start, 3)
                     usage = response.get("usage", {}) if isinstance(response, dict) else {}
-                    valid = (response is not None and response.get("model") == DEFAULT_MODEL and
+                    valid = (response is not None and response.get("model") == client.model and
                              all(type(usage.get(k)) is int and usage[k] >= 0 for k in ("prompt_tokens", "completion_tokens", "total_tokens")) and
                              usage["prompt_tokens"] <= input_bound and usage["completion_tokens"] <= max_tokens and
                              usage["total_tokens"] == usage["prompt_tokens"] + usage["completion_tokens"])
@@ -203,20 +220,35 @@ class RequestBudget:
                         entry = next(e for e in state["entries"] if e["id"] == entry_id)
                         entry.update({"latency_s": latency, "status": "complete" if valid else "unknown_usage",
                                       "http_status": client.last_status})
+                        headers = {key.lower(): str(value) for key, value in getattr(client, "last_headers", {}).items()}
+                        entry["rate_limits"] = {key: headers[key] for key in (
+                            "x-ratelimit-limit-requests", "x-ratelimit-remaining-requests",
+                            "x-ratelimit-limit-tokens", "x-ratelimit-remaining-tokens") if key in headers and headers[key].isdigit()}
                         if valid:
                             entry["usage"] = usage
                             entry["charge_usd"] = dollars(price_tokens(price, usage["prompt_tokens"], usage["completion_tokens"]))
                         else:
                             entry["error"] = type(failure).__name__ if failure else "InvalidUsageOrModel"
+                            if isinstance(failure, CrusoeError):
+                                try:
+                                    error = json.loads(failure.body).get("error", {})
+                                    message = error.get("message", "") if isinstance(error, dict) else ""
+                                    secret = getattr(client, "_api_key", "")
+                                    if secret:
+                                        message = message.replace(secret, "[REDACTED]")
+                                    entry["provider_error_message"] = message[:200]
+                                except (ValueError, TypeError, AttributeError):
+                                    pass
                             # The full reserve remains charged after timeout, partial response or crash.
                     if valid:
+                        self.check_pause()
                         return response, {"request_id": entry_id, "latency_s": latency, "usage": usage,
                                           "cost_estimate_usd": entry["charge_usd"], "http_status": client.last_status}
                     retryable = isinstance(failure, urllib.error.URLError) or isinstance(failure, CrusoeError) and failure.status in {429, 500, 502, 503, 504}
                     if retry == 0 and retryable:
                         # Never hammer a throttled endpoint. Longer cooldowns stop
                         # this explicit run rather than scheduling background work.
-                        wait = 2.0
+                        wait = 10.0 if isinstance(failure, CrusoeError) and failure.status == 429 else 2.0
                         raw_wait = getattr(client, "last_headers", {}).get("Retry-After")
                         if raw_wait is not None:
                             try:

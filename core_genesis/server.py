@@ -9,10 +9,12 @@ from .engine import ROOT
 from .evolution import EvolutionEngine, DEFAULT_OBJECTIVE
 from .budget import BudgetError
 from .local_test import run_checks
+from .company import Company, Paused
 
 
 def serve(host="127.0.0.1", port=8080, fresh=False):
     engine = EvolutionEngine(fresh=fresh)
+    company = Company(budget=engine.budget)
     local_report = {"mode": "local", "status": "idle", "external_api_calls": 0}
     local_lock = threading.Lock()
     histories = sorted(engine.directory.glob("*.json"))
@@ -38,9 +40,23 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
 
         def do_GET(self):
             path = urlparse(self.path).path
+            if path == "/api/company":
+                return self.send(200, {"mission": company.snapshot(), "governance": company.governance()})
+            if path == "/api/company/history":
+                return self.send(200, [{"id": p.stem} for p in sorted(company.missions.glob("*.json"), reverse=True)])
+            if path.startswith("/api/company/mission/"):
+                name = path.rsplit("/", 1)[-1]
+                suffix = ".md" if name.endswith(".md") else ".json"
+                identity = name[:-3] if suffix == ".md" else name
+                if not identity.startswith("mission-") or any(c not in "mission-0123456789abcdef" for c in identity):
+                    return self.send(400, {"error": "Invalid mission identity"})
+                file = company.missions / (identity + suffix)
+                if file.is_file():
+                    return self.send(200, file.read_bytes(), "text/markdown; charset=utf-8") if suffix == ".md" else self.send(200, json.loads(file.read_text()))
+                return self.send(404, {"error": "Mission not found"})
             if path == "/capabilities.json":
-                return self.send(200, {"live": True, "mode": "local_budgeted_live", "note": "Inference requires an explicit user action; existing budget limits apply."})
-            if path in {"/evidence/story.json", "/evidence/continuation.json", "/evidence/verified.json", "/evidence/manifest.json"}:
+                return self.send(200, {"live": True, "company": True, "mode": "local_budgeted_live", "note": "Inference requires an explicit user action; existing budget limits apply."})
+            if path in {"/evidence/story.json", "/evidence/continuation.json", "/evidence/verified.json", "/evidence/manifest.json", "/evidence/company-mission.json"}:
                 file = ROOT / "public" / path.lstrip("/")
                 if file.is_file():
                     return self.send(200, json.loads(file.read_text()))
@@ -74,6 +90,8 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
             assets = {"/": ("world.html", "text/html; charset=utf-8"), "/arena": ("arena.html", "text/html; charset=utf-8"),
                       "/world.js": ("world.js", "text/javascript; charset=utf-8"), "/world.css": ("world.css", "text/css; charset=utf-8"),
                       "/campus.js": ("campus.js", "text/javascript; charset=utf-8"), "/economy.js": ("economy.js", "text/javascript; charset=utf-8"),
+                      "/company-ui.js": ("company-ui.js", "text/javascript; charset=utf-8"),
+                      "/company.css": ("company.css", "text/css; charset=utf-8"),
                       "/vendor/three.module.js": ("vendor/three.module.js", "text/javascript; charset=utf-8"), "/vendor/three.core.min.js": ("vendor/three.core.min.js", "text/javascript; charset=utf-8"),
                       "/arena.js": ("arena.js", "text/javascript; charset=utf-8"), "/arena.css": ("arena.css", "text/css; charset=utf-8"),
                       "/app.js": ("app.js", "text/javascript; charset=utf-8"), "/style.css": ("style.css", "text/css; charset=utf-8")}
@@ -90,8 +108,31 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
             origin = self.headers.get("Origin")
             if origin and origin not in {"http://" + host for host in expected}:
                 return self.send(403, {"error": "Same origin required"})
-            if self.headers.get("X-Genesis-Action") not in {"evolve", "local-test"}:
+            if self.headers.get("X-Genesis-Action") not in {"evolve", "local-test", "mission", "ceo"}:
                 return self.send(403, {"error": "Explicit action header required"})
+            if self.path in {"/api/company/mission", "/api/company/control"}:
+                expected_action = "mission" if self.path.endswith("/mission") else "ceo"
+                if self.headers.get("X-Genesis-Action") != expected_action:
+                    return self.send(403, {"error": "Explicit CEO or mission action required"})
+                try:
+                    length = int(self.headers.get("Content-Length", "0"))
+                    if not 1 <= length <= 4096:
+                        raise ValueError("Invalid request size")
+                    data = json.loads(self.rfile.read(length))
+                    if not isinstance(data, dict):
+                        raise ValueError("Request must be an object")
+                    allowed = {"objective"} if self.path.endswith("/mission") else {"action", "decision_id"}
+                    if set(data) - allowed:
+                        raise ValueError("Unknown company request fields")
+                    if self.path.endswith("/control"):
+                        return self.send(200, company.control(data.get("action"), data.get("decision_id")))
+                    if engine.snapshot().get("status") == "running":
+                        raise ValueError("An evolution experiment is already active")
+                    result = company.start(data.get("objective"))
+                    threading.Thread(target=company.run, daemon=True).start()
+                    return self.send(202, {"id": result["id"]})
+                except (ValueError, TypeError, Paused, BudgetError) as exc:
+                    return self.send(400, {"error": str(exc)})
             if self.path == "/api/local-test":
                 if self.headers.get("X-Genesis-Action") != "local-test":
                     return self.send(403, {"error": "Local test action required"})
@@ -115,6 +156,9 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
             if self.headers.get("X-Genesis-Action") != "evolve":
                 return self.send(403, {"error": "Live evolution action required"})
             try:
+                company.guard()
+                if company.snapshot().get("status") == "running":
+                    raise ValueError("A company mission is already active")
                 length = int(self.headers.get("Content-Length", "0"))
                 if not 0 <= length <= 4096:
                     return self.send(413, {"error": "Objective request too large"})
@@ -125,7 +169,7 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
                     return self.send(409, {"error": "Experiment already running"})
             except BudgetError as exc:
                 return self.send(503, {"error": str(exc)})
-            except (ValueError, TypeError) as exc:
+            except (ValueError, TypeError, Paused) as exc:
                 return self.send(400, {"error": str(exc)})
             threading.Thread(target=engine.run, daemon=True).start()
             self.send(202, {"id": engine.snapshot()["id"]})

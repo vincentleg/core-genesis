@@ -6,16 +6,18 @@ The autonomous organization behind **CORE — Creation Of Reborn Earth**.
 
 **Explore the public 3D world: https://core-genesis-living.vercel.app**
 
-An optimistic miniature company campus replaces the dashboard as the main experience. Click departments, inspect agents, create a scoped mission, explore a computed procurement proposal, or watch a genuine evolution experiment transform the organization. The public site is a static, zero-inference replay hosted on the verified Vercel **Hobby** plan. Live reasoning stays local behind the existing budget manager.
+A procedural architectural campus is the control surface for a bounded AI organization. The human founder assigns a CORE repository-analysis mission from the CEO Office. Research reads real, commit-pinned public code; Engineering prepares cited priorities; five independent synthetic personas critique the proposal; Growth prepares private drafts for CEO review. A separate reproducible evidence gate evaluates changes to the workflow. The public site is a static, zero-inference replay hosted on the verified Vercel **Hobby** plan. Live reasoning stays local behind the existing budget manager.
 
 This is a bounded operational prototype. The long-term CORE civilization, immersive Earth, collective intelligence, enterprise ecosystem and governance systems are a vision; they are not claimed as implemented here. The independent CORE project and website are untouched.
 
 | Department | Implemented scope |
 | --- | --- |
-| Genesis HQ | Local mission object, measurable criteria, transparent deterministic department assignments; explicit local live-run action |
-| Engineering | Existing bounded procedure compiler, field ownership and deterministic repair tests |
-| Research | Internal development-evidence analysis; model rationale labeled as hypothesis; no external retrieval claimed |
-| Operations | Three-family in-memory incident diagnosis and contract verification |
+| CEO Office | Real mission assignment, department state, pending decisions, budget visibility, audit and company-wide emergency pause |
+| Engineering | Real Nemotron engineering priorities and Markdown deliverable with exact source citations; bounded evidence correction; existing deterministic incident-repair compiler |
+| Research | Read-only public GitHub metadata, compact branch head, tree and eight bounded safe file excerpts from `vincentleg/core`; pinned sources and explicit uncertainties |
+| Operations | Recorded interdepartmental handoffs, strict source/line/quote verification and existing three-family incident diagnosis |
+| Product Research | Five separate real Nemotron calls with distinct synthetic perspectives; structured concerns and disagreement, explicitly not human research |
+| Growth & PR | Truthful X, Instagram and GitHub draft queue; CEO review for manual export only; no publisher, accounts or audience metrics; LinkedIn excluded |
 | Economy | Computed budget/priority simulation, alternatives, sourced price snapshot plus clearly synthetic scenarios, risk and local human-review history; no transaction capability |
 | Evolution Lab | Real Nemotron team mutations, fresh validation, regression gates, memory, ancestry, promotion and rollback |
 | CORE World | Clearly labeled future gateway explaining the broader CORE mission |
@@ -46,7 +48,7 @@ Python 3.9+. Zero third-party runtime dependencies.
     # Set CRUSOE_API_KEY in .env using existing credits.
     python3 -m core_genesis.server --fresh
 
-Open **http://127.0.0.1:8080** for the living company. Recorded evidence is the default. Open Genesis HQ to create a scoped mission and explicitly start a bounded live run. The technical Arena at **/arena** retains the three-mode controls and one-to-three-round selection.
+Open **http://127.0.0.1:8080** for the living company. Recorded evidence is the default. Open the CEO Office to explicitly assign a real CORE analysis mission. This uses 9 planned reasoning calls, at most one evidence-correction call, and a hard ceiling of 12 physical attempts including retries. The technical Arena at **/arena** retains the three-mode controls and one-to-three-round selection.
 
 | Mode | Behavior | New external API calls |
 | --- | --- | --- |
@@ -65,6 +67,23 @@ Headless execution:
 
 The optional seed reproduces benchmark instances, not stochastic provider output. Omitting --fresh restores the last completed experiment's active team, including when later candidates were rolled back.
 
+
+## Real company workflow — verified October 17
+
+Captured mission [`mission-20261017-142256-b15161`](mission-evidence/mission-20261017-142256-b15161.json) analyzed public CORE commit `c016d732faaef495c7facce29b7595e3be2a6f19`. Research and Engineering produced three proposed priorities with **3/3 citation sets verified**. Five synthetic personas evaluated the proposal in separate real model calls. Growth prepared a private approval queue. Nothing was posted, purchased, executed in CORE or written to CORE.
+
+The Scientist proposed two citation-preflight policies. The selected candidate improved deterministic verification accuracy **4/6 → 6/6** on development and independently generated held-out fixtures, without regression; policy V1 was promoted and persists for future Research→Engineering handoffs. This proves better citation preflight on that bounded evaluator, **not** better real-world business outcomes or objectively superior product priorities. Mandatory final verification was strict throughout.
+
+The complete run used **9 physical requests, 15,791 reported tokens and $0.0012187 estimated token cost**. Browser testing exercised actual mission assignment, source-backed deliverable, five-person panel, draft approval boundaries and independent evolution evidence. Earlier partial and failed records were retained locally; unapproved social draft text is withheld from public evidence.
+
+**Important limitation:** exact quotations establish provenance, not semantic correctness. The model made absence claims that require maintainer review against files outside the eight excerpts. The UI labels recommendations as hypotheses; the next-run context now prioritizes implementation/test paths rather than historical data files. No unexecuted test or proposed capability is presented as completed work.
+
+Reproduce the archived evidence checks with **zero external requests**:
+
+    python3 scripts/verify_mission.py mission-evidence/mission-20261017-142256-b15161.json
+
+Private mission records and pending communications are stored under gitignored `company/`. Curated public exports retain real Research, Engineering, persona, usage and mutation evidence while withholding Growth text. See [integration audit](docs/INTEGRATION_AUDIT.md) for the five requested upstream reviews. None is installed or claimed as an operational integration.
+
 ## What actually evolves
 
 | Component | Operational effect |
@@ -82,7 +101,7 @@ Generated procedures are a tiny declarative language: copy, increment or decreme
 
 Remembered executable rules are development-verified; the accompanying natural-language rationale remains a model hypothesis and is labeled accordingly. The Observer also receives development-only scores, work counts and failures from prior competing designs, so it can avoid repeating inefficient approaches without seeing their held-out results or gate decisions.
 
-Architect, Executor, Observer and Scientist are logical stages using the real pinned model. Observer and Scientist share one request to conserve credits. Nemotron compiles procedures once; the local runtime then executes them against every benchmark instance. Local tool calls and deterministic verification are explicitly distinguished from remote model activity in the Arena. The fixed controller can review and commit but cannot acquire tools or write repairs.
+Architect, Executor, Observer and Scientist are logical stages using the original pinned Lightning model. New company missions use the verified same-price `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` endpoint; original Crusoe client defaults and experiment identities are preserved. Observer and Scientist share one request to conserve credits. Nemotron compiles procedures once; the local runtime then executes them against every benchmark instance. Local tool calls and deterministic verification are explicitly distinguished from remote model activity in the Arena. The fixed controller can review and commit but cannot acquire tools or write repairs.
 
 ## Evolution and independent evaluation
 
@@ -129,7 +148,7 @@ Subsequent genuine continuation [20261017-123736-61ea83](experiments/20261017-12
 
 The Arena connects the four accepted mutations across these actual histories, with direct links to their source experiments. Each experiment still shows all competing branches and rejected proposals. Scores from different sealed shards are never treated as identical-task comparisons.
 
-The current network-disabled suite contains **48 passing Python tests**, alongside **five passing deterministic procurement tests**. Chrome checks cover graph/inspector interaction, real tool traces, captured reasoning, 3D department interactions, mission creation, procurement recomputation, recorded organizational transformations, mobile layout and zero inference from read-only activity.
+The current network-disabled suite contains **59 passing Python tests**, alongside **five passing deterministic procurement tests**. Chrome checks cover graph/inspector interaction, real tool traces, captured reasoning, 3D department interactions, mission creation, procurement recomputation, recorded organizational transformations, mobile layout and zero inference from read-only activity.
 
 The new Living Company HQ also triggered genuine live experiment [20261017-133419-f6762d](experiments/20261017-133419-f6762d.json): two promotions improved development and fresh validation **0/6 → 4/6 → 6/6**, with no regressions. Crusoe HTTP 429 stopped the third round after the bounded retry. The original record contains **no sealed outcome** and is retained as such. Ten physical attempts, 14,168 reported tokens and $0.00480235 estimated usage plus retained failed-attempt reserves. Independent replay reproduced its 84 executions and two decisions.
 

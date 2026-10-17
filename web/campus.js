@@ -1,13 +1,15 @@
 import * as T from './vendor/three.module.js';
 
 export const DEPARTMENTS=[
- {id:'hq',name:'Genesis HQ',short:'HQ',icon:'✳',color:'#2caaa0',x:0,z:0,status:'FUNCTIONAL · SCOPED',role:'Architect',description:'The coordination heart of a growing AI organization.'},
- {id:'engineering',name:'Engineering',short:'Engineering',icon:'⌘',color:'#e89276',x:-9,z:0,status:'FUNCTIONAL · SANDBOXED',role:'Executor',description:'Bounded repair procedures, reproducible tests, and measurable technical outcomes.'},
- {id:'research',name:'Research',short:'Research',icon:'✧',color:'#a297ce',x:4,z:-9,status:'EXPERIMENTAL · INTERNAL EVIDENCE',role:'Observer',description:'Turning observations into traceable hypotheses and tested knowledge.'},
- {id:'operations',name:'Operations',short:'Operations',icon:'◈',color:'#62a9cb',x:9,z:2,status:'FUNCTIONAL · INCIDENT SIMULATOR',role:'Executor',description:'Diagnose incidents, coordinate response, and verify service contracts.'},
- {id:'economy',name:'Economy',short:'Economy',icon:'◇',color:'#d3b769',x:5,z:10,status:'PROTOTYPE · PLANNING SIMULATION',role:'Economic planner',description:'Accountable resource planning. Recommendations, never autonomous purchases.'},
- {id:'evolution',name:'Evolution Lab',short:'Evolution',icon:'⌬',color:'#9b88c9',x:-5,z:9,status:'FUNCTIONAL · VERSION N+1',role:'Scientist',description:'Where the organization experiments with better versions of itself.'},
- {id:'core',name:'CORE World',short:'CORE World',icon:'◎',color:'#79b78f',x:-7,z:-9,status:'FUTURE VISION',role:'Future connection',description:'A gateway to Creation Of Reborn Earth. A shared future for human and artificial intelligence.'}
+ {id:'hq',name:'CEO Office',short:'CEO Office',icon:'✳',color:'#386c62',x:0,z:0,status:'HUMAN CEO · BOUNDED AUTHORITY',role:'Architect',description:'Company objectives, real department assignments, approvals and authority.'},
+ {id:'engineering',name:'Engineering',short:'Engineering',icon:'⌘',color:'#9b8872',x:-9,z:0,status:'FUNCTIONAL · READ-ONLY PLANNING',role:'Executor',description:'Evidence-backed CORE priorities and bounded implementation proposals.'},
+ {id:'research',name:'Research',short:'Research',icon:'✧',color:'#7e8889',x:4,z:-9,status:'PUBLIC CORE EVIDENCE',role:'Observer',description:'Turning pinned public source into traceable findings and hypotheses.'},
+ {id:'operations',name:'Operations',short:'Operations',icon:'◈',color:'#5f827d',x:9,z:2,status:'FUNCTIONAL · VERIFICATION',role:'Executor',description:'Read-only workflow coordination and deterministic evidence verification.'},
+ {id:'economy',name:'Economy',short:'Economy',icon:'◇',color:'#a58d59',x:5,z:10,status:'BUDGETS · PLANNING SIMULATION',role:'Economic planner',description:'Accountable resource planning. Recommendations, never autonomous purchases.'},
+ {id:'evolution',name:'Evolution Lab',short:'Evolution',icon:'⌬',color:'#81828e',x:-5,z:9,status:'FUNCTIONAL · VERSION N+1',role:'Scientist',description:'Independently testing better ways for the organization to operate.'},
+ {id:'core',name:'CORE World',short:'CORE World',icon:'◎',color:'#698879',x:-7,z:-9,status:'FUTURE VISION',role:'Future connection',description:'A gateway to Creation Of Reborn Earth. A shared future for human and artificial intelligence.'},
+ {id:'growth',name:'Growth & PR',short:'Growth',icon:'↗',color:'#a2865b',x:12,z:-7,status:'DRAFTS · CEO APPROVAL',role:'Growth Director',description:'Grounded official-channel drafts. No personal accounts, publishing or invented audience metrics.'},
+ {id:'product',name:'Product Research',short:'Product Research',icon:'◫',color:'#6b8384',x:-13,z:5,status:'SYNTHETIC RESEARCH',role:'Synthetic User Research Lead',description:'Independent synthetic critiques of actual proposed CORE improvements. Not real user research.'}
 ];
 
 export function createCampus(container,{onDepartment,onAgent,onReady,onError}={}){
@@ -15,14 +17,14 @@ export function createCampus(container,{onDepartment,onAgent,onReady,onError}={}
  try{renderer=new T.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});}catch(error){onError?.(error);return null;}
  renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.setSize(innerWidth,innerHeight);
  renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;
- renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.25;
+ renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.03;
  container.appendChild(renderer.domElement);
- const scene=new T.Scene();scene.background=new T.Color('#e9f3ef');scene.fog=new T.Fog('#e9f3ef',65,135);
+ const scene=new T.Scene();scene.background=new T.Color('#d6ded6');scene.fog=new T.Fog('#d6ded6',65,135);
  const camera=new T.OrthographicCamera(-25,25,20,-20,.1,220);
  let azimuth=.76,elevation=.72,zoom=1,targetZoom=1;
  const focus=new T.Vector3(-1,0,0),desiredFocus=focus.clone();
- const ambient=new T.HemisphereLight('#f8ffff','#b3c7a0',2.8);scene.add(ambient);
- const sun=new T.DirectionalLight('#fff1d9',4);sun.position.set(-20,36,16);sun.castShadow=true;
+ const ambient=new T.HemisphereLight('#eef3ed','#899584',1.9);scene.add(ambient);
+ const sun=new T.DirectionalLight('#fff0dc',3);sun.position.set(-20,36,16);sun.castShadow=true;
  sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-30,right:30,top:30,bottom:-30,near:.5,far:100});sun.shadow.bias=-.0003;sun.shadow.normalBias=.035;scene.add(sun);
  const fill=new T.DirectionalLight('#b7e8f4',1.2);fill.position.set(20,12,-15);scene.add(fill);
  const materials=new Map();
@@ -31,8 +33,8 @@ export function createCampus(container,{onDepartment,onAgent,onReady,onError}={}
   if(!materials.has(key))materials.set(key,new T.MeshStandardMaterial({color,roughness:.65,metalness:.04,...options}));
   return materials.get(key);
  }
- const pearl=mat('#f9faf2'),cream=mat('#efece1'),glass=mat('#b6ddd8',{roughness:.12,metalness:.2,transparent:true,opacity:.65});
- const gold=mat('#dbc288',{metalness:.55,roughness:.32}),trunk=mat('#b9b19b');
+ const pearl=mat('#e8e8de'),cream=mat('#cfcec1'),glass=mat('#96afa6',{roughness:.2,metalness:.2,transparent:true,opacity:.72});
+ const gold=mat('#ae9565',{metalness:.55,roughness:.32}),trunk=mat('#8e8b79');
  function mesh(geometry,material,x=0,y=0,z=0,parent=scene){
   const object=new T.Mesh(geometry,material);object.position.set(x,y,z);object.castShadow=true;object.receiveShadow=true;parent.add(object);return object;
  }
@@ -44,11 +46,11 @@ export function createCampus(container,{onDepartment,onAgent,onReady,onError}={}
   const o=new T.Line(new T.BufferGeometry().setFromPoints(points),new T.LineBasicMaterial({color,transparent:true,opacity}));p.add(o);return o;
  }
  // Low-poly islands, planted roofs, gardens and light are procedural ambience.
- const water=mesh(new T.PlaneGeometry(280,280),mat('#c5e3dc',{roughness:.35,metalness:.1}),0,-1.05,0);water.rotation.x=-Math.PI/2;water.receiveShadow=true;water.castShadow=false;
+ const water=mesh(new T.PlaneGeometry(280,280),mat('#bdcdc4',{roughness:.42,metalness:.12}),0,-1.05,0);water.rotation.x=-Math.PI/2;water.receiveShadow=true;water.castShadow=false;
  cylinder(20.5,1.1,mat('#d6d9c5'),0,-.45,0,scene,20.2);
  cylinder(20.15,.15,mat('#e9ecd9'),0,.12,0);
  ring(20.2,.08,pearl,0,.19,0);
- const lawn=mat('#b8d3a8'),darkGreen=mat('#78b18a'),brightGreen=mat('#a0c697');
+ const lawn=mat('#a5af95'),darkGreen=mat('#4e6954'),brightGreen=mat('#778568');
  const islandTop=cylinder(18.9,.035,lawn,0,.22,0);islandTop.castShadow=false;
  cylinder(4.1,.09,mat('#e8eddf'),0,.26,0);
  ring(4.45,.32,mat('#f4f3e7'),0,.28,0);
@@ -64,7 +66,7 @@ export function createCampus(container,{onDepartment,onAgent,onReady,onError}={}
  const buildings=new Map(),hitObjects=[],labels=[];
  function makeLabel(d){
   const button=document.createElement('button');button.className='building-label';button.dataset.department=d.id;button.style.setProperty('--color',d.color);
-  button.innerHTML='<i></i>'+d.name+'<small>'+({'hq':'COORDINATE','engineering':'BUILD & VERIFY','research':'INVESTIGATE','operations':'RESTORE','economy':'PLAN RESOURCES','evolution':'EVOLVE & VALIDATE','core':'THE NEXT HORIZON'}[d.id])+'</small>';
+  button.innerHTML='<i></i>'+d.name+'<small>'+({'hq':'GOVERN & COORDINATE','engineering':'BUILD & VERIFY','research':'INVESTIGATE','operations':'RESTORE','economy':'PLAN RESOURCES','evolution':'EVOLVE & VALIDATE','core':'THE NEXT HORIZON','growth':'DRAFT & REVIEW','product':'SYNTHETIC CRITIQUE'}[d.id])+'</small>';
   button.addEventListener('pointerdown',event=>event.stopPropagation());button.onclick=()=>onDepartment?.(d.id);
   document.getElementById('labels').appendChild(button);labels.push({element:button,position:new T.Vector3(d.x,0,d.z),height:d.id==='hq'?6:4.1});
  }
@@ -126,6 +128,11 @@ export function createCampus(container,{onDepartment,onAgent,onReady,onError}={}
    for(let i=0;i<20;i++){const a=i*.6,y=.7+i*.13;sphere(.075,i%2?accent:gold,Math.cos(a)*.65,y,Math.sin(a)*.65,g);}
    const roof=cylinder(1.3,.13,accent,0,3.6,0,g);
    ring(2.4,.055,accent,0,4.1,0,g);
+  }else if(d.id==='growth'||d.id==='product'){
+   box(3.7,1.65,2.65,cream,0,1.15,0,g);box(3.75,.75,2.7,glass,0,1.65,0,g);
+   box(4.1,.18,3.05,pearl,0,2.15,0,g);box(2.8,.15,2.1,mat('#667d69'),0,2.32,0,g);
+   for(let i=-1;i<=1;i++)box(.13,2.05,.13,accent,i*1.25,1.3,1.4,g);
+   if(d.id==='product'){cylinder(.8,1,glass,0,2.9,0,g);cylinder(1,.12,pearl,0,3.45,0,g);}
   }else{
    cylinder(1.9,.35,pearl,0,.6,0,g);
    const portal=ring(1.7,.15,pearl,0,2.7,0,g);portal.rotation.x=0;portal.rotation.y=.2;
@@ -167,12 +174,12 @@ export function createCampus(container,{onDepartment,onAgent,onReady,onError}={}
  for(const dark of [false,true]){
   const plants=planted.filter(p=>p.dark===dark),leaves=new T.InstancedMesh(new T.SphereGeometry(1,12,10),dark?darkGreen:brightGreen,plants.length*2);
   plants.forEach((p,index)=>{
-   transform.position.set(p.x,.3+1.18*p.scale,p.z);transform.scale.set(.55*p.scale,.55*1.35*p.scale,.55*p.scale);transform.updateMatrix();leaves.setMatrixAt(index*2,transform.matrix);
-   transform.position.set(p.x+.25*p.scale,.3+1.3*p.scale,p.z+.12*p.scale);transform.scale.setScalar(.39*p.scale);transform.updateMatrix();leaves.setMatrixAt(index*2+1,transform.matrix);
+   transform.position.set(p.x,.3+1.35*p.scale,p.z);transform.scale.set(.43*p.scale,.8*p.scale,.43*p.scale);transform.updateMatrix();leaves.setMatrixAt(index*2,transform.matrix);
+   transform.position.set(p.x+.14*p.scale,.3+1.65*p.scale,p.z+.08*p.scale);transform.scale.set(.3*p.scale,.48*p.scale,.32*p.scale);transform.updateMatrix();leaves.setMatrixAt(index*2+1,transform.matrix);
   });leaves.castShadow=true;leaves.receiveShadow=true;scene.add(leaves);
  }
  for(let i=0;i<3;i++){const b=box(1,.06,2.7,mat('#8aaab1'),-14+i*1.1,.39,-3.9);b.rotation.x=.15;}
- const actors=new Map(),actorHits=[],organization=new T.Group(),workflowGroup=new T.Group();scene.add(organization,workflowGroup);
+ const actors=new Map(),actorHits=[],organization=new T.Group(),workflowGroup=new T.Group(),policyGroup=new T.Group();scene.add(organization,workflowGroup,policyGroup);
  const roleHomes={Architect:'hq',Executor:'operations',Observer:'research',Scientist:'evolution'};
  function actor(role,department,index=0,worker=false){
   const d=DEPARTMENTS.find(item=>item.id===department),g=new T.Group();
@@ -278,5 +285,17 @@ export function createCampus(container,{onDepartment,onAgent,onReady,onError}={}
   renderer.render(scene,camera);if(++frameCount===2)onReady?.();
  }
  requestAnimationFrame(frame);
- return {configure,showEvent,selectDepartment,actors,renderer,zoomBy:delta=>{targetZoom=T.MathUtils.clamp(targetZoom+delta,.65,1.8);},reset:()=>{azimuth=.76;elevation=.72;targetZoom=1;desiredFocus.set(-1,0,0);lastSelection=null;labels.forEach(l=>l.element.classList.remove('active'));},destroy:()=>{stopped=true;renderer.dispose();}};
+ let policyHash='';
+ return {configure,showEvent,selectDepartment,actors,renderer,applyPolicy:(policy,version,promoted=false)=>{
+  const hash=JSON.stringify(policy);if(hash!==policyHash){clearGroup(policyGroup);policyHash=hash;
+   ['known_sources','line_bounds','exact_quotes'].forEach((key,index)=>{
+    const enabled=policy[key];cylinder(.16,enabled?.8:.18,enabled?gold:cream,-7+index*.6,enabled?.8:.49,11.1,policyGroup);
+    if(enabled)ring(.23,.025,gold,-7+index*.6,1.25,11.1,policyGroup);
+   });
+  }
+  if(promoted){generationPulse=performance.now();promoRing.position.set(-5,.6,9);promoRing.visible=true;}
+ },ensureAgent:(name,department)=>{
+  if(!actors.has(name)){const entry=actor(name,'hq',actors.size%4);entry.home=department;entry.company=true;}
+  return actors.get(name);
+ },zoomBy:delta=>{targetZoom=T.MathUtils.clamp(targetZoom+delta,.65,1.8);},reset:()=>{azimuth=.76;elevation=.72;targetZoom=1;desiredFocus.set(-1,0,0);lastSelection=null;labels.forEach(l=>l.element.classList.remove('active'));},destroy:()=>{stopped=true;renderer.dispose();}};
 }

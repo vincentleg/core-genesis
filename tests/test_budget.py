@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from core_genesis.budget import BudgetError, RequestBudget, ROOT
+from core_genesis.budget import BudgetError, RequestBudget, ROOT, MISSION_MODEL
 from core_genesis.crusoe import DEFAULT_MODEL, CrusoeError
 
 
@@ -78,6 +78,41 @@ class BudgetTests(unittest.TestCase):
         with self.assertRaises(BudgetError):
             self.ask(cycle=2)
         self.assertEqual(self.client.calls, 2)
+
+    def test_provider_error_diagnostics_redact_credentials_and_whitelist_rate_headers(self):
+        class Failed(IsolatedTransport):
+            _api_key = "unit-secret-never-log"
+            last_headers = {"X-Ratelimit-Limit-Requests": "30", "X-Ratelimit-Remaining-Requests": "0", "Authorization": "not-stored"}
+            def chat(self, *args, **kwargs):
+                self.calls += 1
+                self.last_status = 400
+                raise CrusoeError(400, json.dumps({"error": {"message": "Rejected unit-secret-never-log"}}))
+        client = Failed()
+        with self.assertRaises(CrusoeError):
+            self.ask(client)
+        entry = self.budget.run_snapshot("unit-test")["entries"][0]
+        self.assertNotIn(client._api_key, json.dumps(entry))
+        self.assertEqual(entry["rate_limits"]["x-ratelimit-limit-requests"], "30")
+        self.assertNotIn("Authorization", entry["rate_limits"])
+
+    def test_alternate_nemotron_requires_independently_verified_prices(self):
+        client = IsolatedTransport()
+        client.model = MISSION_MODEL
+        with self.assertRaises(BudgetError):
+            self.ask(client)
+        self.assertEqual(client.calls, 0)
+        price = json.loads(self.price.read_text())
+        price["model"] = MISSION_MODEL
+        alternative = self.price.with_name("mission-pricing.json")
+        alternative.write_text(json.dumps(price))
+        self.ask(client)
+        entry = self.budget.run_snapshot("unit-test")["entries"][0]
+        self.assertEqual(entry["model"], MISSION_MODEL)
+        self.assertEqual(entry["pricing_snapshot"]["model"], MISSION_MODEL)
+        client.model = "unverified-model"
+        with self.assertRaises(BudgetError):
+            self.ask(client)
+        self.assertEqual(client.calls, 1)
 
     def test_provider_cooldown_is_respected_without_background_retry(self):
         client = IsolatedTransport(fail_once=True)

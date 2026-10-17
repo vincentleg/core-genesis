@@ -226,3 +226,6 @@ budget/*.tmp
 # Local hosting metadata and dependencies never enter the public source.
 .vercel/
 node_modules/
+
+# Private local operating records may include unapproved communication drafts.
+company/

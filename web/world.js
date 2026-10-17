@@ -1,10 +1,12 @@
 import {createCampus,DEPARTMENTS} from './campus.js';
 import {planProcurement} from './economy.js';
+import {mountCompany} from './company-ui.js';
 const $=id=>document.getElementById(id);
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pretty=value=>esc(JSON.stringify(value,null,2));
 let record=null,verified=null,continuation=null,frames=[],cursor=-1,playing=false,timer=null,currentEvent=null,currentNode=null;
 let campus=null,capabilities={live:false},selectedDepartment=null,live=false,livePoll=null,lastLiveEvent=0,seenLive=new Set();
+let companyControl=null;
 let procurement=planProcurement(),procurementHistory=[],mission=null;
 try{mission=JSON.parse(localStorage.getItem('genesis-mission')||'null');}catch{}
 try{
@@ -36,6 +38,7 @@ function showDepartment(id){
  selectedDepartment=id;campus?.selectDepartment(id);
  document.querySelectorAll('[data-dock]').forEach(b=>b.classList.toggle('active',b.dataset.dock===id));
  if(id==='hq')return showHQ();
+ if(['growth','product'].includes(id)||companyControl?.state.mission.id&&['research','engineering','operations'].includes(id))return companyControl.department(id);
  if(id==='economy')return showEconomy();
  if(id==='evolution')return showEvolution();
  let markup=title(id);
@@ -50,6 +53,7 @@ function showDepartment(id){
  context(markup);
 }
 function showHQ(){
+ if(companyControl)return companyControl.office();
  let markup=title('hq')+'<p>Create a scoped company mission. HQ builds a transparent coordination plan locally; live Nemotron reasoning starts only through a separate explicit action.</p><label for="mission-objective">What should the company accomplish?</label><textarea id="mission-objective" maxlength="600">Improve incident response while preserving service contracts and unrelated configuration.</textarea><button class="primary" data-action="create-mission">Create company mission <span>↗</span></button>';
  if(mission)markup+=renderMission();
  else markup+='<h3>Today’s operational scope</h3><p>Software incident diagnosis and configuration remediation, measured on deterministic development, regression and unseen validation tasks.</p><button class="secondary" data-action="story">Inspect the genuine incident mission ↗</button>';
@@ -99,9 +103,14 @@ function showEvolution(){
  }
  if(verified)markup+='<h3>Latest independently verified team</h3><p><b>'+verified.sealed_comparison.active.passed+'/'+verified.sealed_comparison.active.total+' on a new sealed shard.</b> Its restored starting team also passed 6/6; the later candidates were rejected for failing to improve executed work.</p><button class="secondary" data-action="latest">Inspect latest continuation evidence ↗</button>';
  markup+='<p class="fine">All source experiments remain available. Different sealed shards are not treated as identical-task comparisons.</p>';context(markup);
+ if(companyControl?.state.mission.evolution)$('context-content').insertAdjacentHTML('beforeend','<button class="secondary" data-company="evolution">Real CORE mission · verified workflow improvement ↗</button>');
 }
 function showAgent(actor){
  const latest=actor.lastAction;
+ if(actor.company){
+  const missionState=companyControl?.state.mission;
+  return context('<span class="context-icon">◈</span><span class="capability">'+(missionState.status==='running'?'LIVE COMPANY ACTIVITY':'RECORDED COMPANY ACTIVITY')+'</span><h2>'+esc(actor.role)+'</h2><p>'+esc(actor.role.startsWith('Synthetic')?'Synthetic persona, not a real user. Its feedback is a model hypothesis.':'A named department actor driven by actual mission events.')+'</p><h3>Mission</h3><p>'+esc(missionState.objective||'No mission')+'</p><h3>Current state</h3><p>'+esc(missionState.departments?.[actor.home]?.state||'idle')+' · Configuration V'+esc(missionState.configuration?.version||0)+'</p><h3>Last recorded activity</h3><p>'+esc(latest?.message||'No event dispatched')+'</p><button class="secondary" data-company="audit">Inspect actual handoffs and audit ↗</button>');
+ }
  context('<span class="context-icon" style="color:#6ea698">◈</span><span class="capability">'+(actor.worker?'CONFIGURED WORKER':'LOGICAL AGENT ROLE')+'</span><h2>'+esc(actor.role)+'</h2><p>'+(actor.worker?esc(actor.specialty)+' specialist. '+esc(actor.instructions):'A real logical role in the bounded agent organization. Movement follows recorded workflow events; idle bobbing is decorative.')+'</p><h3>Current mission</h3><p>'+esc(live?mission?.objective:record?.objective||'Evidence not loaded')+'</p><h3>Latest recorded action</h3><p>'+esc(latest&&typeof latest==='object'?latest.message:latest||'No event dispatched to this agent in the current playback.')+'</p>'+(actor.tools?'<h3>Actual granted tools</h3><p>'+actor.tools.map(esc).join(' · ')+'</p>':'')+'<button class="secondary" data-action="event-evidence">Inspect available evidence ↗</button>');
 }
 function evidence(title,markup){$('evidence-title').textContent=title;$('evidence-content').innerHTML=markup;$('evidence-modal').showModal();}
@@ -209,6 +218,7 @@ async function pollLive(){
 }
 function ready(){$('loading').classList.add('hidden');}
 campus=createCampus($('world'),{onDepartment:showDepartment,onAgent:showAgent,onReady:ready,onError:()=>{$('loading').innerHTML='<h2>WebGL is unavailable.</h2><p>The company remains accessible through the department buttons.</p><button id="fallback-enter" class="primary">Explore company evidence</button>';setTimeout(()=>{$('fallback-enter').onclick=ready;},0);}});
+companyControl=mountCompany({campus:()=>campus,openContext:context,showEvidence:evidence,escape:esc,capabilities:()=>capabilities});
 const dock=$('department-dock');dock.innerHTML=DEPARTMENTS.map(d=>'<button data-dock="'+d.id+'" style="--color:'+d.color+'"><span class="dock-icon">'+d.icon+'</span>'+d.short+'</button>').join('');
 document.addEventListener('click',event=>{
  const dept=event.target.closest('[data-dock]');if(dept)showDepartment(dept.dataset.dock);
@@ -231,7 +241,8 @@ $('zoom-in').onclick=()=>campus?.zoomBy(.15);$('zoom-out').onclick=()=>campus?.z
 addEventListener('keydown',event=>{if(event.key==='Escape')$('context').classList.add('hidden');});
 Promise.all([fetch('./evidence/story.json').then(r=>r.json()),fetch('./evidence/verified.json').then(r=>r.json()),fetch('./evidence/continuation.json').then(r=>r.json()),fetch('./capabilities.json').then(r=>r.json())]).then(([story,last,previous,caps])=>{
  record=story;verified=last;continuation=previous;capabilities=caps;frames=buildFrames(record);organization(getNode('g0'));
+ if(caps.company)companyControl.refresh();
  $('playback-detail').textContent=record.id+' · '+frames.length+' authentic milestones · zero new inference';
  $('step-count').textContent='0 / '+frames.length;
- window.genesis={get record(){return record;},get node(){return currentNode;},get frames(){return frames;},get procurement(){return procurement;},get mission(){return mission;},get campus(){return campus;}};
+ window.genesis={get record(){return record;},get node(){return currentNode;},get frames(){return frames;},get procurement(){return procurement;},get mission(){return mission;},get campus(){return campus;},company:companyControl};
 }).catch(error=>{$('playback-detail').textContent='Evidence could not load. No results are inferred.';console.error('Evidence load failed',error);});
