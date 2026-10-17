@@ -4,13 +4,14 @@ from pathlib import Path
 
 from .suites import manifest
 from .team import validate_team, validate_program, execute, fingerprint, compare, aggregate
+from .assembly import assemble_design
 
 ROOT = Path(__file__).resolve().parent.parent
 
 
 def replay_v2(state):
     for name, expected in state["source_hashes"].items():
-        if name not in {"team.py", "suites.py", "benchmark.py"} or hashlib.sha256((ROOT / "core_genesis" / name).read_bytes()).hexdigest() != expected:
+        if name not in {"team.py", "suites.py", "benchmark.py", "assembly.py"} or hashlib.sha256((ROOT / "core_genesis" / name).read_bytes()).hexdigest() != expected:
             raise ValueError("Evaluator source fingerprint differs: use the source revision that produced this record")
     suites, suite_manifest = manifest(int(state["suite_manifest"]["seed"]), state["requested_generations"])
     if suite_manifest != state["suite_manifest"]:
@@ -23,14 +24,22 @@ def replay_v2(state):
             if any(record["node_id"] == node["id"] for record in state["runs"]):
                 raise ValueError("Invalid candidate was executed")
             try:
-                if node["invalid_phase"] == "configuration":
+                if node["invalid_phase"] == "design":
+                    assemble_design(nodes[node["parent_id"]]["team"], node["design"], node["team"]["name"])
+                elif node["invalid_phase"] == "configuration":
                     validate_team(node["team"], program_required=False)
                 else:
-                    validate_program(node["rejected_program"], node["team"])
+                    program = validate_program(node["rejected_program"], node["team"])
+                    if node["generation"] > 0 and any(rule["operation"] == "literal" for rules in program.values() for rule in rules):
+                        raise ValueError("Literal fixture answer rejected by mutation policy")
             except ValueError:
                 continue
             raise ValueError("Recorded invalid candidate is actually valid")
         team = validate_team(node["team"])
+        if node.get("design"):
+            assembled, _, _ = assemble_design(nodes[node["parent_id"]]["team"], node["design"], node["team"]["name"])
+            if {k: v for k, v in assembled.items() if k != "program"} != {k: v for k, v in team.items() if k != "program"}:
+                raise ValueError("Typed team assembly differs from the recorded configuration")
         if fingerprint(team) != node["team_sha256"]:
             raise ValueError("Team fingerprint mismatch")
         if node["parent_id"] is not None and (node["parent_id"] not in nodes or nodes[node["parent_id"]]["generation"] >= node["generation"]):

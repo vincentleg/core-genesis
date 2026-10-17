@@ -10,7 +10,8 @@ from .crusoe import CrusoeClient
 from .engine import Engine, ROOT, parse_json
 from .suites import manifest, VERSION
 from .team import CONTROL, OWNERSHIP, TOOLS, ACTIONS, OPERATIONS, REFERENCES, validate_team, assemble_team, normalize_program, aggregate, compare, mutation_diff, fingerprint, execute
-from .schemas import program_schema, mutation_schema
+from .schemas import program_schema, design_schema
+from .assembly import assemble_design
 
 DEFAULT_OBJECTIVE = "Restore service availability while respecting latency, retry, connection-capacity and readiness contracts. Preserve unrelated worker settings."
 CRITERIA = [
@@ -73,7 +74,7 @@ class EvolutionEngine(Engine):
                     "concurrency": 1, "project_cap_usd": "2.00", "automatic_retries": 1,
                     "max_output_tokens": 1800, "max_input_bytes": 24000, "max_generations": 3,
                     "max_candidates_per_generation": 2, "max_agents": 4, "max_workflow_steps": 24, "max_program_rules": 12},
-                "source_hashes": {name: hashlib.sha256((ROOT / "core_genesis" / name).read_bytes()).hexdigest() for name in ("team.py", "suites.py", "benchmark.py")}})
+                "source_hashes": {name: hashlib.sha256((ROOT / "core_genesis" / name).read_bytes()).hexdigest() for name in ("team.py", "suites.py", "benchmark.py", "assembly.py")}})
             self.save()
         return True
 
@@ -135,26 +136,42 @@ class EvolutionEngine(Engine):
                 "development_evidence": brief(development),
                 "development_fixtures": [case.context(TOOLS) for case in self.suites["development"]],
                 "development_memory": parent.get("memory_earned", parent["memory_snapshot"]),
+                "family_coverage": {kind: {"passed": sum(r["passed"] for r in development if r["family"] == kind),
+                    "total": sum(r["family"] == kind for r in development),
+                    "capable_workers": [a["id"] for a in parent["team"]["agents"] if a["specialty"] in {"general", kind}]} for kind in ("latency", "capacity", "routing")},
                 "prior_proposal_errors": [{"reason": node["invalid_reason"], "phase": node["invalid_phase"]} for node in self.state["nodes"] if node.get("status") == "invalid"][-4:]}
 
     def propose(self, parent, generation, development):
         response, metrics = self.reason("Observer + Scientist", json.dumps({
-            "task": "FIRST identify an actual weakness from development evidence. THEN propose TWO competing structured team mutations. Every mutation must be GENERAL, never hardcode incident answers. At full correctness optimize executed workflow work. Keep names/reasons/instructions SHORT. Return {observation:{weakness,lesson},mutations:[{name,reason,changes:{...team_fields...}},{name,reason,changes:{...team_fields...}}]}. changes replaces selected top-level fields; unspecified fields inherit parent. Allowed changes: instructions, agents with specialization/tools, workflow, review_policy, memory_policy, cache_evidence. Do not include programs; Executor compiles next. If changing agent IDs also change workflow. Use explicit {agent,action} steps.",
+            "task": "FIRST Observer diagnoses development failures and missing family coverage. THEN Scientist proposes TWO competing complete team designs. Preserve working capabilities and ADD coverage for unsolved families, rather than replacing one narrow specialist with another. Candidate A can specialize; candidate B should explore an alternative full-coverage composition or coordination. At full correctness remove genuinely unnecessary inspections/reviews/dispatches. Return {observation:{weakness,lesson},mutations:[{name,reason,design:{...}},{name,reason,design:{...}}]}. All design fields are required by the output grammar. Designs select typed assembly operators, not raw workflow IDs. Executor later compiles GENERAL reference rules; fixture-specific literals are prohibited for mutations.",
             **self.synthesis_context(parent, development),
-            "allowed": {"specialties": list(OWNERSHIP), "tools": sorted(TOOLS), "actions": sorted(ACTIONS), "review_policy": ["schema", "contract", "protected_fields"], "memory_policy": ["none", "inherit_verified"]},
-            "bounds": "1–4 workers with UNIQUE IDs, e.g. latency, capacity, routing; never give two specialists the same executor ID. The fixed controller is NOT a worker and may review/commit only. Use agent controller for commit/review if generic executor is removed. Every specialist needs its own apply_rules step. 1–24 steps. Every tool step must be granted to its worker. Retrieve evidence before references. Specialized workers own only their field family. General owns all fields. Review always runs at commit. recall_memory retrieves development-verified rules; requires the tool and inherit_verified policy."}), response_format=mutation_schema())
+            "operators": {"workers": "1–4 unique specialties; general owns all families, or combine latency/capacity/routing. Every worker specifies tools and instructions; IDs are derived automatically.",
+                "coordination": {"shared_evidence": "Retrieve each selected tool once, share evidence, then dispatch every repair worker", "specialist_pipeline": "Each worker retrieves its own tools then applies its rules", "memory_first": "Recall development-verified rules first, then gather unique tools and dispatch workers"},
+                "extra_review": "Optional separate controller review. Commit ALWAYS independently reviews, even when false.",
+                "procedure_source": {"compile": "Nemotron compiles new general reference rules", "reuse_memory": "No compiler request; use ONLY inherited development-verified rules, with automatic memory recall capability"}},
+            "bounds": "Never change worker counts in incidents. General can repair all families; latency/capacity/routing workers only their own. All contracts need reference-based rules, not hardcoded values. Only choose reuse_memory when the bank actually contains useful verified rules. Each design must explicitly supply instructions, workers, coordination, review_policy, memory_policy, cache_evidence, extra_review, procedure_source."}), response_format=design_schema())
         observation, mutations = response.get("observation"), response.get("mutations")
         if not isinstance(observation, dict) or not isinstance(observation.get("weakness"), str) or not isinstance(mutations, list) or len(mutations) != 2:
             raise ValueError("Observer/Scientist must provide an observation and two mutations")
         self.event("Observer", observation["weakness"], generation=generation, request_id=metrics["request_id"], analysis=observation)
         nodes = []
         for index, mutation in enumerate(mutations):
-            if not isinstance(mutation, dict) or not isinstance(mutation.get("changes"), dict) or set(mutation["changes"]) - TEAM_FIELDS:
-                raise ValueError("Mutation must change only permitted team configuration fields")
-            raw = {**copy.deepcopy(parent["team"]), **mutation["changes"], "name": mutation.get("name", "Candidate")}
+            if not isinstance(mutation, dict):
+                raise ValueError("Mutation must be a structured object")
+            design = mutation.get("design")
+            if design is None:
+                if not isinstance(mutation.get("changes"), dict) or set(mutation["changes"]) - TEAM_FIELDS:
+                    raise ValueError("Mutation must change only permitted team configuration fields")
+                raw = {**copy.deepcopy(parent["team"]), **mutation["changes"], "name": mutation.get("name", "Candidate")}
+            else:
+                raw = {**copy.deepcopy(parent["team"]), "name": mutation.get("name", "Candidate")}
             invalid_reason = None
+            procedure_source = "compile"
             try:
-                team, configuration_notes = assemble_team(raw)
+                if design is not None:
+                    team, configuration_notes, procedure_source = assemble_design(parent["team"], design, raw["name"])
+                else:
+                    team, configuration_notes = assemble_team(raw)
             except ValueError as exc:
                 team = raw
                 team["program"] = {}
@@ -164,14 +181,29 @@ class EvolutionEngine(Engine):
             node["observation"] = observation
             node["synthesis_request_id"] = metrics["request_id"]
             node["configuration_normalizations"] = configuration_notes
+            node["design"] = design
+            node["procedure_source"] = procedure_source
             if invalid_reason:
-                node.update(status="invalid", invalid_reason=invalid_reason, invalid_phase="configuration")
+                node.update(status="invalid", invalid_reason=invalid_reason, invalid_phase="design" if design is not None else "configuration")
                 self.event("Verifier", "Candidate configuration rejected: " + invalid_reason, node_id=node["id"], generation=generation)
             else:
                 nodes.append(node)
         return nodes
 
     def compile(self, nodes, development, initial=False):
+        ordered_ids = [node["id"] for node in nodes]
+        reused = []
+        for node in nodes:
+            if node.get("procedure_source") == "reuse_memory":
+                node["team"]["program"] = {}
+                node["team_sha256"] = fingerprint(node["team"])
+                node["changes"] = mutation_diff(self.node(node["parent_id"])["team"], node["team"])
+                node.update(status="compiled", procedure_origin="development_verified_memory")
+                self.event("Executor", "Reused verified memory procedure; compiler request avoided", node_id=node["id"])
+                reused.append(node)
+        nodes = [node for node in nodes if node not in reused]
+        if not nodes:
+            return reused
         teams = [{"node_id": node["id"], "team": {key: value for key, value in node["team"].items() if key != "program"}} for node in nodes]
         context = [case.context(["read_logs"] if initial else TOOLS) for case in self.suites["development"]]
         if initial:
@@ -187,7 +219,7 @@ class EvolutionEngine(Engine):
                         "examples": [{"target": "timeout_ms", "operation": "increment", "source": "contract.upstream_p99_ms"},
                                      {"target": "retries", "operation": "copy", "source": "contract.max_retries"},
                                      {"target": "retries", "operation": "literal", "value": 0}]},
-            "constraints": "At most 12 rules/team; literal only int 0..100000 or short string; increment/decrement only integer. Independent final verification cannot be disabled."}), response_format=program_schema(nodes))
+            "constraints": "At most 12 rules/team. Initial control alone may use literal symptom guesses (integers for numeric fields, strings only health_path). Every mutation MUST use reference-based rules with source; no instance-specific literals. increment/decrement only integers. Independent final verification cannot be disabled."}), response_format=program_schema(nodes, allow_literals=initial))
         programs = answer.get("programs")
         if not isinstance(programs, list) or len(programs) != len(nodes):
             raise ValueError("Executor must compile every proposed team")
@@ -197,19 +229,23 @@ class EvolutionEngine(Engine):
         valid = []
         for node in nodes:
             try:
-                node["team"]["program"], node["program_normalizations"] = normalize_program(indexed[node["id"]], node["team"])
+                program, node["program_normalizations"] = normalize_program(indexed[node["id"]], node["team"])
+                if not initial and any(rule["operation"] == "literal" for rules in program.values() for rule in rules):
+                    raise ValueError("Mutation procedures must reference evidence, not literal fixture answers")
+                node["team"]["program"] = program
             except ValueError as exc:
                 node.update(status="invalid", invalid_reason=str(exc), invalid_phase="program", rejected_program=indexed[node["id"]])
                 self.event("Verifier", "Candidate program rejected: " + str(exc), node_id=node["id"])
                 continue
             node["team_sha256"] = fingerprint(node["team"])
             node["compilation_request_id"] = metrics["request_id"]
+            node["procedure_origin"] = "nemotron_compiler"
             if node["parent_id"]:
                 node["changes"] = mutation_diff(self.node(node["parent_id"])["team"], node["team"])
             node["status"] = "compiled"
             self.event("Executor", "Bounded repair procedure compiled", node_id=node["id"], rules=sum(map(len, node["team"]["program"].values())), request_id=metrics["request_id"])
             valid.append(node)
-        return valid
+        return sorted(valid + reused, key=lambda node: ordered_ids.index(node["id"]))
 
     def learn(self, node, development):
         lessons = list(copy.deepcopy(node["memory_snapshot"]))

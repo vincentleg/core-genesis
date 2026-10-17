@@ -774,6 +774,121 @@
         "prompt_tokens_details": null
       },
       "charge_usd": "0.0001133000"
+    },
+    {
+      "id": "4d1e92f03c854847b7329733ea70e452",
+      "run_id": "20261017-122119-47be7c",
+      "cycle": 0,
+      "role": "Architect",
+      "time": 1792264879.051002,
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 2576,
+      "max_output_tokens": 350,
+      "reserved_usd": "0.0001988000",
+      "status": "complete",
+      "output_schema_sha256": null,
+      "latency_s": 1.189,
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 317,
+        "total_tokens": 446,
+        "completion_tokens": 129,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0000416500"
+    },
+    {
+      "id": "c02ccb10df0f4eed9a9e3bcbbcd3d781",
+      "run_id": "20261017-122119-47be7c",
+      "cycle": 0,
+      "role": "Executor",
+      "time": 1792264880.27459,
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 8170,
+      "max_output_tokens": 1800,
+      "reserved_usd": "0.0007685000",
+      "status": "complete",
+      "output_schema_sha256": "d0bcaeda4de3ed2a26db1d906b7b41033add1a74bf718537be3fcf22440ec4ff",
+      "latency_s": 1.103,
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 1174,
+        "total_tokens": 1356,
+        "completion_tokens": 182,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0000951000"
+    },
+    {
+      "id": "119d6a49d55645d6a7713a86e41742ec",
+      "run_id": "20261017-122119-47be7c",
+      "cycle": 0,
+      "role": "Observer + Scientist",
+      "time": 1792264881.417351,
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 12052,
+      "max_output_tokens": 1800,
+      "reserved_usd": "0.0009626000",
+      "status": "complete",
+      "output_schema_sha256": "0e27ac5e24206f5c2a52364a5efdc3e5343fb7eece321a606c0b3c88f5b295fb",
+      "latency_s": 3.604,
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 2266,
+        "total_tokens": 3024,
+        "completion_tokens": 758,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0002649000"
+    },
+    {
+      "id": "e9f23d2465194920a29cc48fb5969a3a",
+      "run_id": "20261017-122119-47be7c",
+      "cycle": 0,
+      "role": "Observer + Scientist",
+      "time": 1792264885.302189,
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 12052,
+      "max_output_tokens": 1800,
+      "reserved_usd": "0.0009626000",
+      "status": "complete",
+      "output_schema_sha256": "0e27ac5e24206f5c2a52364a5efdc3e5343fb7eece321a606c0b3c88f5b295fb",
+      "latency_s": 4.175,
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 2266,
+        "total_tokens": 2944,
+        "completion_tokens": 678,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0002489000"
+    },
+    {
+      "id": "96f66563c9f54f1b97b22a313e21e397",
+      "run_id": "20261017-122119-47be7c",
+      "cycle": 0,
+      "role": "Observer + Scientist",
+      "time": 1792264889.954485,
+      "model": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+      "retry": 0,
+      "input_token_bound": 12119,
+      "max_output_tokens": 1800,
+      "reserved_usd": "0.0009659500",
+      "status": "complete",
+      "output_schema_sha256": "0e27ac5e24206f5c2a52364a5efdc3e5343fb7eece321a606c0b3c88f5b295fb",
+      "latency_s": 5.288,
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 2281,
+        "total_tokens": 3238,
+        "completion_tokens": 957,
+        "prompt_tokens_details": null
+      },
+      "charge_usd": "0.0003054500"
     }
   ]
 }

@@ -9,6 +9,8 @@ from core_genesis.crusoe import DEFAULT_MODEL
 from core_genesis.evolution import EvolutionEngine
 from core_genesis.suites import generate, manifest, family
 from core_genesis.team import CONTROL, execute, validate_team, validate_program, compare, aggregate, normalize_program, assemble_team
+from core_genesis.team import OWNERSHIP
+from core_genesis.assembly import assemble_design
 
 
 RULES = [
@@ -29,6 +31,19 @@ def reference_team():
 
 
 class RuntimeTests(unittest.TestCase):
+    def test_typed_assembly_preserves_full_coverage_and_changes_executed_coordination(self):
+        workers = [{"specialty": kind, "tools": ["inspect_config", "inspect_contract"], "instructions": "Own " + kind} for kind in ("latency", "capacity", "routing")]
+        design = {"workers": workers, "coordination": "specialist_pipeline", "extra_review": True}
+        pipeline, _, _ = assemble_design(CONTROL, design, "Pipeline")
+        pipeline["program"] = {agent["id"]: [rule for rule in RULES if rule["target"] in OWNERSHIP[agent["specialty"]]] for agent in pipeline["agents"]}
+        design["coordination"] = "shared_evidence"
+        shared, _, _ = assemble_design(CONTROL, design, "Shared")
+        shared["program"] = pipeline["program"]
+        for case in generate(1, "test"):
+            before, after = execute(pipeline, case), execute(shared, case)
+            self.assertTrue(before["passed"] and after["passed"])
+            self.assertLess(after["metrics"]["tool_calls"], before["metrics"]["tool_calls"])
+
     def test_fixed_controller_keeps_specialist_workflows_valid_without_new_authority(self):
         raw = reference_team()
         raw["agents"] = [{"id": "latency", "specialty": "latency", "tools": ["inspect_config", "inspect_contract"], "instructions": "Latency only"}]
@@ -177,6 +192,43 @@ class GenerationTransport:
 
 
 class EvolutionTests(unittest.TestCase):
+    def test_operator_search_and_memory_reuse_avoid_a_compiler_request(self):
+        class OperatorTransport(GenerationTransport):
+            def chat(self, messages, **kwargs):
+                system, prompt = messages[0]["content"], json.loads(messages[1]["content"])
+                self.prompts.append((system, prompt))
+                if "Architect" in system:
+                    answer = {"approach": "Use development evidence", "success_criteria": ["No regressions"]}
+                elif "Scientist" in system:
+                    self.generation += 1
+                    kinds = ["latency", "capacity", "routing"]
+                    def design(specialties, style, extra, source="compile"):
+                        return {"instructions": "Respect every contract", "workers": [{"specialty": kind, "tools": ["inspect_contract"] if source == "reuse_memory" else ["read_logs", "inspect_config", "inspect_contract"], "instructions": "Own " + kind} for kind in specialties],
+                                "coordination": style, "review_policy": "schema", "memory_policy": "inherit_verified" if source == "reuse_memory" else "none",
+                                "cache_evidence": False, "extra_review": extra, "procedure_source": source}
+                    if self.generation == 1:
+                        designs = [design(kinds, "specialist_pipeline", True), design(kinds, "shared_evidence", True)]
+                    elif self.generation == 2:
+                        designs = [design(kinds, "shared_evidence", False), design(["general"], "shared_evidence", False)]
+                    else:
+                        designs = [design(["general"], "memory_first", False, "reuse_memory")] * 2
+                    answer = {"observation": {"weakness": "Unit-test coverage/efficiency", "lesson": "Reference contracts and reuse verified rules"},
+                              "mutations": [{"name": "Operator candidate " + str(i), "reason": "Unit-test operator selection", "design": d} for i, d in enumerate(designs)]}
+                else:
+                    answer = {"programs": [{"node_id": item["node_id"], "program": {agent["id"]: ([] if item["node_id"] == "g0" else [r for r in RULES if r["target"] in OWNERSHIP[agent["specialty"]]]) for agent in item["team"]["agents"]}} for item in prompt["teams"]]}
+                return {"model": self.model, "usage": {"prompt_tokens": 5, "completion_tokens": 5, "total_tokens": 10}, "choices": [{"message": {"content": json.dumps(answer)}}]}
+        with tempfile.TemporaryDirectory() as directory:
+            engine = EvolutionEngine(directory, OperatorTransport(), fresh=True, budget=RequestBudget(Path(directory) / ".budget", history=directory))
+            engine.start(seed=123)
+            engine.run()
+            self.assertEqual(engine.state["status"], "complete", engine.state.get("error_detail"))
+            self.assertEqual(engine.state["inference_calls"], 7)
+            self.assertEqual([d["action"] for d in engine.state["decisions"]], ["promote"] * 3)
+            self.assertEqual(engine.node("g3a")["procedure_origin"], "development_verified_memory")
+            self.assertGreater(engine.node("g3a")["metrics"]["sealed"]["memory_hits"], 0)
+            from core_genesis.replay import replay_v2
+            self.assertEqual(replay_v2(engine.snapshot())["verified_decisions"], 3)
+
     def test_three_real_rounds_lineage_memory_and_eight_request_schedule(self):
         with tempfile.TemporaryDirectory() as directory:
             budget = RequestBudget(Path(directory) / ".budget", history=directory)

@@ -278,7 +278,7 @@ def execute(team, case, memory=()):
     return {"case_id": case.id, "title": case.title, "family": family(case), "split": case.split, "passed": outcome["passed"],
             "patch": committed, "verification": outcome, "trace": trace,
             "metrics": {"tool_calls": executed_tools, "rule_steps": rule_steps, "workflow_steps": len(trace),
-                        "work_units": executed_tools + rule_steps + sum(t["action"] in {"review", "commit"} for t in trace),
+                        "work_units": executed_tools + rule_steps + sum(t["action"] in {"apply_rules", "review", "commit"} for t in trace),
                         "memory_hits": memory_hits, "latency_s": round(time.perf_counter() - start, 6)},
             "provenance": "Executed by the bounded local team interpreter; model-generated program, no per-incident inference or simulated API response"}
 
