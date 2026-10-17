@@ -4,6 +4,8 @@
 
 **▶ Watch GENESIS run (one click, verified mission replay): https://core-genesis-living.vercel.app** (append `?run` to autoplay)
 
+**One-minute demo video (68 s, recorded from the live site with `scripts/record_demo.cjs`):** https://core-genesis-living.vercel.app/genesis-demo.webm · also in this repo at [`video/genesis-demo.webm`](video/genesis-demo.webm)
+
 ## Final hackathon sprint (Version N+1 track) — what is real
 
 | Claim | Evidence |

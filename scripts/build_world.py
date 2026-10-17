@@ -18,6 +18,8 @@ def build():
     for name in ("world.html", "world.css", "world.js", "campus.js", "economy.js", "company-ui.js", "company.css", "testing-ui.js", "genesis-run.js", "genesis.css"):
         shutil.copyfile(ROOT / "web" / name, out / ("index.html" if name == "world.html" else name))
     shutil.copytree(ROOT / "web/vendor", out / "vendor", dirs_exist_ok=True)
+    if (ROOT / "video/genesis-demo.webm").exists():
+        shutil.copyfile(ROOT / "video/genesis-demo.webm", out / "genesis-demo.webm")
     evidence = out / "evidence"
     evidence.mkdir(exist_ok=True)
     records = []
