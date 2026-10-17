@@ -1,7 +1,7 @@
 {
  "target": "https://core-genesis-living.vercel.app/",
  "mode": "ACTUAL BROWSER EXECUTION (Playwright Chrome); deterministic scenarios, not human users",
- "finished_at": "2026-10-17T22:34:40.172Z",
+ "finished_at": "2026-10-17T22:43:59.153Z",
  "passed": 4,
  "total": 4,
  "results": [
@@ -30,7 +30,7 @@
    "console_errors": [],
    "failed_requests": [],
    "failure": null,
-   "latency_ms": 8901,
+   "latency_ms": 9514,
    "screenshot": "genesis-hero.png"
   },
   {
@@ -86,7 +86,7 @@
    "console_errors": [],
    "failed_requests": [],
    "failure": null,
-   "latency_ms": 10951,
+   "latency_ms": 11497,
    "screenshot": "genesis-replay.png"
   },
   {
@@ -114,7 +114,7 @@
    "console_errors": [],
    "failed_requests": [],
    "failure": null,
-   "latency_ms": 9033,
+   "latency_ms": 13296,
    "screenshot": "genesis-lab.png"
   },
   {
@@ -138,7 +138,7 @@
    "console_errors": [],
    "failed_requests": [],
    "failure": null,
-   "latency_ms": 6469,
+   "latency_ms": 6170,
    "screenshot": "genesis-mobile.png"
   }
  ]
