@@ -1,0 +1,11 @@
+*
+!vercel.json
+!scripts
+scripts/*
+!scripts/build_hq_public.py
+!public
+public/*
+!public/hq.html
+!public/hq.css
+!public/hq.js
+!public/hq-status.json

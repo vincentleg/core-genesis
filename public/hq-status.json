@@ -4,9 +4,6 @@
   "source": {
     "requested_ref": "v9.2/earth-first",
     "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
-    "checkout_branch": "v9.2/earth-first",
-    "checkout_dirty": false,
-    "retrieved_at": "2026-10-18T01:45:58.367446+00:00",
     "environment": "local_development",
     "file_count": 568
   },
@@ -18,413 +15,80 @@
   },
   "sessions": [
     {
-      "mode": "scripted",
-      "model": null,
-      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
-      "requested": 1,
-      "completed": 1,
-      "successes": 0,
-      "passed": false,
-      "runtime_ms": 32397,
-      "model_calls": 0,
-      "cost_usd": 0,
-      "sessions": [
-        {
-          "id": 1,
-          "passed": false,
-          "status": null,
-          "task_completion": {
-            "attempted": 6,
-            "succeeded": 3
-          }
-        }
-      ],
-      "run": "20261018T014740Z-cc61a8"
-    },
-    {
-      "mode": "scripted",
-      "model": null,
-      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
-      "requested": 1,
-      "completed": 1,
-      "successes": 1,
+      "run": "20261018T054429Z-792b60",
+      "mode": "local-agent",
+      "model": "qwen3:8b",
       "passed": true,
-      "runtime_ms": 22536,
-      "model_calls": 0,
-      "cost_usd": 0,
-      "sessions": [
-        {
-          "id": 1,
-          "passed": true,
-          "status": null,
-          "task_completion": {
-            "attempted": 8,
-            "succeeded": 8
-          }
-        }
-      ],
-      "run": "20261018T014921Z-50067f"
-    },
-    {
-      "mode": "local-agent",
-      "model": "qwen3:8b",
-      "commit": null,
-      "requested": null,
-      "completed": 0,
-      "successes": null,
-      "passed": false,
-      "runtime_ms": null,
-      "model_calls": 10,
-      "cost_usd": null,
-      "sessions": [],
-      "run": "20261018T014949Z-6b1503",
-      "model_calls_attempted": 10,
-      "partial_actions": 10,
-      "error": "Harness time limit exceeded; partial artifacts retained"
-    },
-    {
-      "mode": "local-agent",
-      "model": "qwen3:8b",
-      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
-      "requested": 1,
       "completed": 1,
-      "successes": 0,
-      "passed": false,
-      "runtime_ms": 34819,
+      "runtime_ms": 104435,
       "model_calls": 2,
       "cost_usd": 0,
       "sessions": [
         {
-          "id": 1,
-          "passed": false,
-          "status": null,
-          "task_completion": {
-            "attempted": 2,
-            "succeeded": 1
-          }
-        }
-      ],
-      "run": "20261018T015442Z-b09b6f"
-    },
-    {
-      "mode": "local-agent",
-      "model": "qwen3:8b",
-      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
-      "requested": 1,
-      "completed": 1,
-      "successes": 1,
-      "passed": true,
-      "runtime_ms": 88843,
-      "model_calls": 5,
-      "cost_usd": 0,
-      "sessions": [
-        {
-          "id": 1,
-          "passed": true,
-          "status": null,
           "task_completion": {
             "attempted": 6,
             "succeeded": 6
           }
         }
-      ],
-      "run": "20261018T015606Z-a96878"
+      ]
     },
     {
-      "mode": "scripted_product_preflight",
-      "model": null,
-      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
-      "requested": 1,
+      "run": "20261018T055033Z-148397",
+      "mode": "local-agent",
+      "model": "qwen3:8b",
+      "passed": true,
       "completed": 1,
-      "successes": 0,
-      "passed": false,
-      "runtime_ms": 20277,
-      "model_calls": 0,
+      "runtime_ms": 84384,
+      "model_calls": 2,
       "cost_usd": 0,
       "sessions": [
         {
-          "id": 1,
-          "passed": false,
-          "status": "completed_with_failure",
           "task_completion": {
-            "attempted": 2,
-            "succeeded": 1
-          }
-        }
-      ],
-      "run": "20261018T020240Z-8137b3"
-    },
-    {
-      "mode": "scripted_product_preflight",
-      "model": null,
-      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
-      "requested": 1,
-      "completed": 1,
-      "successes": 0,
-      "passed": false,
-      "runtime_ms": 34544,
-      "model_calls": 0,
-      "cost_usd": 0,
-      "sessions": [
-        {
-          "id": 1,
-          "passed": false,
-          "status": "completed_with_failure",
-          "task_completion": {
-            "attempted": 2,
-            "succeeded": 1
-          }
-        }
-      ],
-      "run": "20261018T020403Z-c32cb3"
-    },
-    {
-      "mode": "scripted_product_preflight",
-      "model": null,
-      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
-      "requested": 1,
-      "completed": 1,
-      "successes": 0,
-      "passed": false,
-      "runtime_ms": 33937,
-      "model_calls": 0,
-      "cost_usd": 0,
-      "sessions": [
-        {
-          "id": 1,
-          "passed": false,
-          "status": "completed_with_failure",
-          "task_completion": {
-            "attempted": 2,
-            "succeeded": 1
-          }
-        }
-      ],
-      "run": "20261018T020513Z-99bde4"
-    },
-    {
-      "mode": "scripted_product_preflight",
-      "model": null,
-      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
-      "requested": 1,
-      "completed": 1,
-      "successes": 0,
-      "passed": false,
-      "runtime_ms": 34393,
-      "model_calls": 0,
-      "cost_usd": 0,
-      "sessions": [
-        {
-          "id": 1,
-          "passed": false,
-          "status": "completed_with_failure",
-          "task_completion": {
-            "attempted": 2,
-            "succeeded": 1
-          }
-        }
-      ],
-      "run": "20261018T020707Z-9be69f"
-    },
-    {
-      "mode": "scripted_product_preflight",
-      "model": null,
-      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
-      "requested": 1,
-      "completed": 1,
-      "successes": 0,
-      "passed": false,
-      "runtime_ms": 15631,
-      "model_calls": 0,
-      "cost_usd": 0,
-      "sessions": [
-        {
-          "id": 1,
-          "passed": false,
-          "status": "completed_with_failure",
-          "task_completion": {
-            "attempted": 2,
-            "succeeded": 1
-          }
-        }
-      ],
-      "run": "20261018T020837Z-14fac3"
-    },
-    {
-      "mode": "scripted_product_preflight",
-      "model": null,
-      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
-      "requested": 1,
-      "completed": 1,
-      "successes": 0,
-      "passed": false,
-      "runtime_ms": 11829,
-      "model_calls": 0,
-      "cost_usd": 0,
-      "sessions": [
-        {
-          "id": 1,
-          "passed": false,
-          "status": "completed_with_failure",
-          "task_completion": {
-            "attempted": 5,
+            "attempted": 4,
             "succeeded": 4
           }
         }
-      ],
-      "run": "20261018T021013Z-7667ca"
+      ]
     },
     {
-      "mode": "scripted_product_preflight",
-      "model": null,
-      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
-      "requested": 1,
-      "completed": 1,
-      "successes": 1,
+      "run": "20261018T055208Z-72aad0",
+      "mode": "local-agent",
+      "model": "qwen3:8b",
       "passed": true,
-      "runtime_ms": 18475,
-      "model_calls": 0,
+      "completed": 1,
+      "runtime_ms": 65099,
+      "model_calls": 2,
       "cost_usd": 0,
       "sessions": [
         {
-          "id": 1,
-          "passed": true,
-          "status": "completed",
           "task_completion": {
-            "attempted": 9,
-            "succeeded": 9
+            "attempted": 7,
+            "succeeded": 7
           }
         }
-      ],
-      "run": "20261018T021120Z-7c5ee8"
+      ]
     },
     {
+      "run": "20261018T055324Z-ca1e22",
       "mode": "local-agent",
       "model": "qwen3:8b",
-      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
-      "requested": 10,
-      "completed": 4,
-      "successes": 0,
-      "passed": false,
-      "runtime_ms": 253387,
-      "model_calls": 7,
+      "passed": true,
+      "completed": 1,
+      "runtime_ms": 48287,
+      "model_calls": 2,
       "cost_usd": 0,
       "sessions": [
         {
-          "id": 1,
-          "passed": false,
-          "status": "completed_with_failure",
-          "task_completion": {
-            "attempted": 5,
-            "succeeded": 5
-          }
-        },
-        {
-          "id": 2,
-          "passed": false,
-          "status": "completed_with_failure",
-          "task_completion": {
-            "attempted": 6,
-            "succeeded": 6
-          }
-        },
-        {
-          "id": 3,
-          "passed": false,
-          "status": "completed_with_failure",
-          "task_completion": {
-            "attempted": 5,
-            "succeeded": 5
-          }
-        },
-        {
-          "id": 4,
-          "passed": false,
-          "status": "completed_with_failure",
-          "task_completion": {
-            "attempted": 1,
-            "succeeded": 1
-          }
-        }
-      ],
-      "run": "20261018T021206Z-d6b035"
-    },
-    {
-      "mode": "local-agent",
-      "model": "qwen3:8b",
-      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
-      "requested": 10,
-      "completed": 6,
-      "successes": 6,
-      "passed": false,
-      "runtime_ms": 344523,
-      "model_calls": 12,
-      "cost_usd": 0,
-      "sessions": [
-        {
-          "id": 5,
-          "passed": true,
-          "status": "completed",
-          "task_completion": {
-            "attempted": 5,
-            "succeeded": 5
-          }
-        },
-        {
-          "id": 6,
-          "passed": true,
-          "status": "completed",
-          "task_completion": {
-            "attempted": 2,
-            "succeeded": 2
-          }
-        },
-        {
-          "id": 7,
-          "passed": true,
-          "status": "completed",
-          "task_completion": {
-            "attempted": 5,
-            "succeeded": 5
-          }
-        },
-        {
-          "id": 8,
-          "passed": true,
-          "status": "completed",
-          "task_completion": {
-            "attempted": 6,
-            "succeeded": 6
-          }
-        },
-        {
-          "id": 9,
-          "passed": true,
-          "status": "completed",
-          "task_completion": {
-            "attempted": 6,
-            "succeeded": 6
-          }
-        },
-        {
-          "id": 10,
-          "passed": true,
-          "status": "completed",
           "task_completion": {
             "attempted": 2,
             "succeeded": 2
           }
         }
-      ],
-      "run": "20261018T021740Z-1e1b47"
+      ]
     }
   ],
   "local_model": {
-    "status": "available",
-    "models": [
-      "qwen3:8b"
-    ],
-    "inference_calls": 0
+    "status": "local infrastructure only; not hosted here"
   },
   "pilot": {
     "planned_sessions": 10,
@@ -449,6 +113,6 @@
     "verified_participants": 0,
     "status": "No participation independently verified. Import support implemented; no recruitment."
   },
-  "authority": "No CORE writes, merges, pushes or deployments. Changes require human review.",
+  "authority": "CORE inspection and testing were read-only. This hosted interface is static, with no administrative controls, model inference or browser automation. HQ development is paused.",
   "historical_evidence": "Campus replay and synthetic campaigns describe the hackathon and separate Local Solutions prototype, not CORE V9.2 testing."
 }
