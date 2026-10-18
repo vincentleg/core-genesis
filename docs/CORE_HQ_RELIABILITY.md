@@ -1,5 +1,7 @@
 # CORE HQ focused reliability follow-up
 
+This is the checkpoint at `8f8527b`, before the combined smoke and second pilot. Those pending checks have since run; see [actual later results](CORE_HQ_SECOND_PILOT.md). Historical validation limits below describe that checkpoint.
+
 The ten-attempt pilot is preserved by local commit `0d27d7d`. This pass did not rerun it or modify CORE. Target remains `v9.2/earth-first`, commit `da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5`. Public production is a separate, older version with unverified SHA.
 
 ## Three evaluation timeouts

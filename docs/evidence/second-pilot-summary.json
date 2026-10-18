@@ -1,0 +1,407 @@
+{
+  "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
+  "requested": 10,
+  "attempted": 10,
+  "completed": 10,
+  "incomplete": 0,
+  "unstarted": 0,
+  "successes": 9,
+  "browser_task_successes": 9,
+  "evaluation_successes": 9,
+  "runtime_ms": 508516,
+  "total_budget_ms": 891126,
+  "model_calls": 19,
+  "model_calls_completed": 19,
+  "prompt_tokens": 32488,
+  "completion_tokens": 2621,
+  "usage_unknown_attempts": 0,
+  "cost_usd": 0,
+  "human_participants": 0,
+  "run": "20261018T024131Z-fd4185",
+  "smoke": "20261018T023931Z-2d06fc",
+  "earth_diagnostic": "20261018T024005Z-d0b6ce",
+  "baseline_sha256": "6072e585469b3739fda5bc11769dd6537aaf01fd04ee7c971ed7274b2eef13ba",
+  "capture_manifest_sha256": {
+    "20261018T024131Z-fd4185": "a09269860a693138096582a73bee4f0a8963875e14eaf47b6bedc7a84f554267",
+    "20261018T023931Z-2d06fc": "54e8cc36ff9d4030164dce19a10170e20ff5ac46fe6016b18f8b4aba789a7018",
+    "20261018T024005Z-d0b6ce": "46e7c1fdf80752a1301fd26f881bf71dfdc8bc4f3356ec4f5b69022a73f4f104",
+    "20261018T025047Z-f20e8d": "cdcff93f22f0a64d154f1719eebb4fe7bedf356041bf34d62ea4ccc7559a9f52",
+    "20261018T025157Z-905732": "4a9bea4179b06ebb1fc316907e67d637e6b4e579a1c1ba1b5d66b1982745d260"
+  },
+  "screenshot_count": 44,
+  "trace_count": 10,
+  "screenshot_errors": 1,
+  "task_passes": {
+    "earth_navigation": 1,
+    "location": 9,
+    "dialogue": 4,
+    "contribution": 3
+  },
+  "action_successes": 44,
+  "action_attempts": 45,
+  "page_error_count": 0,
+  "console_error_count": 13,
+  "http_error_count": 13,
+  "sessions": [
+    {
+      "id": 1,
+      "persona": "First-time visitor",
+      "entry": "room",
+      "assigned_task": "dialogue",
+      "tasks": {
+        "location": true,
+        "dialogue": true
+      },
+      "stages": {
+        "browser": "passed",
+        "planning": "passed",
+        "evaluation": "passed",
+        "evaluation_observation": "passed"
+      },
+      "status": "completed",
+      "passed": true,
+      "browser_tasks_passed": true,
+      "failure_stage": null,
+      "failure": null,
+      "runtime_ms": 31382,
+      "model": {
+        "name": "qwen3:8b",
+        "calls_attempted": 2,
+        "calls_completed": 2,
+        "prompt_tokens": 3417,
+        "completion_tokens": 278,
+        "usage_missing_count_calls": 0,
+        "cost_usd": 0,
+        "usage_unknown_attempts": 0,
+        "token_usage_complete": true
+      }
+    },
+    {
+      "id": 2,
+      "persona": "Nontechnical user",
+      "entry": "room",
+      "assigned_task": "contribution",
+      "tasks": {
+        "location": true,
+        "contribution": true
+      },
+      "stages": {
+        "browser": "passed",
+        "planning": "passed",
+        "evaluation": "passed",
+        "evaluation_observation": "passed"
+      },
+      "status": "completed",
+      "passed": true,
+      "browser_tasks_passed": true,
+      "failure_stage": null,
+      "failure": null,
+      "runtime_ms": 55720,
+      "model": {
+        "name": "qwen3:8b",
+        "calls_attempted": 2,
+        "calls_completed": 2,
+        "prompt_tokens": 3530,
+        "completion_tokens": 279,
+        "usage_missing_count_calls": 0,
+        "cost_usd": 0,
+        "usage_unknown_attempts": 0,
+        "token_usage_complete": true
+      }
+    },
+    {
+      "id": 3,
+      "persona": "Scientific researcher",
+      "entry": "room",
+      "assigned_task": "dialogue",
+      "tasks": {
+        "location": true,
+        "dialogue": true
+      },
+      "stages": {
+        "browser": "passed",
+        "planning": "passed",
+        "evaluation": "passed",
+        "evaluation_observation": "passed"
+      },
+      "status": "completed",
+      "passed": true,
+      "browser_tasks_passed": true,
+      "failure_stage": null,
+      "failure": null,
+      "runtime_ms": 54596,
+      "model": {
+        "name": "qwen3:8b",
+        "calls_attempted": 2,
+        "calls_completed": 2,
+        "prompt_tokens": 3419,
+        "completion_tokens": 262,
+        "usage_missing_count_calls": 0,
+        "cost_usd": 0,
+        "usage_unknown_attempts": 0,
+        "token_usage_complete": true
+      }
+    },
+    {
+      "id": 4,
+      "persona": "Environmental researcher",
+      "entry": "earth",
+      "assigned_task": "location",
+      "tasks": {
+        "earth_navigation": true
+      },
+      "stages": {
+        "browser": "failed",
+        "planning": "passed",
+        "evaluation": "not_started"
+      },
+      "status": "completed_with_failure",
+      "passed": false,
+      "browser_tasks_passed": null,
+      "failure_stage": "browser",
+      "failure": "locator.click: Error: strict mode violation: locator('#ea-panel-body button[data-mission=\"mission.sf.housing-resilience\"]') resolved to 2 elements:\n    1) <button type=\"button\" class=\"cv-mbtn\" data-mission=\"mission.sf.housing-resilience\">\u2026</button> aka getByRole('button', { name: 'Evidence-backed active' }).first()\n    2) <button type=\"button\" class=\"cv-mbtn\" data-mission=\"mission.sf.housing-resilience\">\u2026</button> aka getByRole('button', { name: 'Evidence-backed active' }).nth(4)\n\nCall log:\n\u001b[2m  - waiting for locator('#ea-panel-body button[data-mission=\"mission.sf.housing-resilience\"]')\u001b[22m\n",
+      "runtime_ms": 32876,
+      "model": {
+        "name": "qwen3:8b",
+        "calls_attempted": 1,
+        "calls_completed": 1,
+        "prompt_tokens": 1368,
+        "completion_tokens": 106,
+        "usage_missing_count_calls": 0,
+        "cost_usd": 0,
+        "usage_unknown_attempts": 0,
+        "token_usage_complete": true
+      }
+    },
+    {
+      "id": 5,
+      "persona": "Student",
+      "entry": "room",
+      "assigned_task": "dialogue",
+      "tasks": {
+        "location": true,
+        "dialogue": true
+      },
+      "stages": {
+        "browser": "passed",
+        "planning": "passed",
+        "evaluation": "passed",
+        "evaluation_observation": "passed"
+      },
+      "status": "completed",
+      "passed": true,
+      "browser_tasks_passed": true,
+      "failure_stage": null,
+      "failure": null,
+      "runtime_ms": 55815,
+      "model": {
+        "name": "qwen3:8b",
+        "calls_attempted": 2,
+        "calls_completed": 2,
+        "prompt_tokens": 3415,
+        "completion_tokens": 265,
+        "usage_missing_count_calls": 0,
+        "cost_usd": 0,
+        "usage_unknown_attempts": 0,
+        "token_usage_complete": true
+      }
+    },
+    {
+      "id": 6,
+      "persona": "Urban planner",
+      "entry": "room",
+      "assigned_task": "location",
+      "tasks": {
+        "location": true
+      },
+      "stages": {
+        "browser": "passed",
+        "planning": "passed",
+        "evaluation": "passed",
+        "evaluation_observation": "passed"
+      },
+      "status": "completed",
+      "passed": true,
+      "browser_tasks_passed": true,
+      "failure_stage": null,
+      "failure": null,
+      "runtime_ms": 56469,
+      "model": {
+        "name": "qwen3:8b",
+        "calls_attempted": 2,
+        "calls_completed": 2,
+        "prompt_tokens": 3447,
+        "completion_tokens": 333,
+        "usage_missing_count_calls": 0,
+        "cost_usd": 0,
+        "usage_unknown_attempts": 0,
+        "token_usage_complete": true
+      }
+    },
+    {
+      "id": 7,
+      "persona": "Skeptical investor",
+      "entry": "room",
+      "assigned_task": "dialogue",
+      "tasks": {
+        "location": true,
+        "dialogue": true
+      },
+      "stages": {
+        "browser": "passed",
+        "planning": "passed",
+        "evaluation": "passed",
+        "evaluation_observation": "passed"
+      },
+      "status": "completed",
+      "passed": true,
+      "browser_tasks_passed": true,
+      "failure_stage": null,
+      "failure": null,
+      "runtime_ms": 58882,
+      "model": {
+        "name": "qwen3:8b",
+        "calls_attempted": 2,
+        "calls_completed": 2,
+        "prompt_tokens": 3419,
+        "completion_tokens": 308,
+        "usage_missing_count_calls": 0,
+        "cost_usd": 0,
+        "usage_unknown_attempts": 0,
+        "token_usage_complete": true
+      }
+    },
+    {
+      "id": 8,
+      "persona": "Accessibility-focused user",
+      "entry": "room",
+      "assigned_task": "contribution",
+      "tasks": {
+        "location": true,
+        "contribution": true
+      },
+      "stages": {
+        "browser": "passed",
+        "planning": "passed",
+        "evaluation": "passed",
+        "evaluation_observation": "passed"
+      },
+      "status": "completed",
+      "passed": true,
+      "browser_tasks_passed": true,
+      "failure_stage": null,
+      "failure": null,
+      "runtime_ms": 52487,
+      "model": {
+        "name": "qwen3:8b",
+        "calls_attempted": 2,
+        "calls_completed": 2,
+        "prompt_tokens": 3510,
+        "completion_tokens": 233,
+        "usage_missing_count_calls": 0,
+        "cost_usd": 0,
+        "usage_unknown_attempts": 0,
+        "token_usage_complete": true
+      }
+    },
+    {
+      "id": 9,
+      "persona": "Community contributor",
+      "entry": "room",
+      "assigned_task": "contribution",
+      "tasks": {
+        "location": true,
+        "contribution": true
+      },
+      "stages": {
+        "browser": "passed",
+        "planning": "passed",
+        "evaluation": "passed",
+        "evaluation_observation": "passed"
+      },
+      "status": "completed",
+      "passed": true,
+      "browser_tasks_passed": true,
+      "failure_stage": null,
+      "failure": null,
+      "runtime_ms": 53633,
+      "model": {
+        "name": "qwen3:8b",
+        "calls_attempted": 2,
+        "calls_completed": 2,
+        "prompt_tokens": 3512,
+        "completion_tokens": 239,
+        "usage_missing_count_calls": 0,
+        "cost_usd": 0,
+        "usage_unknown_attempts": 0,
+        "token_usage_complete": true
+      }
+    },
+    {
+      "id": 10,
+      "persona": "Technical power user",
+      "entry": "room",
+      "assigned_task": "location",
+      "tasks": {
+        "location": true
+      },
+      "stages": {
+        "browser": "passed",
+        "planning": "passed",
+        "evaluation": "passed",
+        "evaluation_observation": "passed"
+      },
+      "status": "completed",
+      "passed": true,
+      "browser_tasks_passed": true,
+      "failure_stage": null,
+      "failure": null,
+      "runtime_ms": 55548,
+      "model": {
+        "name": "qwen3:8b",
+        "calls_attempted": 2,
+        "calls_completed": 2,
+        "prompt_tokens": 3451,
+        "completion_tokens": 318,
+        "usage_missing_count_calls": 0,
+        "cost_usd": 0,
+        "usage_unknown_attempts": 0,
+        "token_usage_complete": true
+      }
+    }
+  ],
+  "wall_elapsed_ms": 518593,
+  "executed_harness_sha256": {
+    "scripts/core_product_browser.cjs": "97789c76210a8a256cdcb592c6ff3dd6fdaf3f6aca86bf51ffdab1301e2754d7",
+    "scripts/core_local_inference.cjs": "8b0841057057ae02ca35f13c63f7b616682903aecc1941358bf9e7098e155978",
+    "scripts/core_map_network.cjs": "36745675cc2ba0399eb2d7ffdc852af832d4e5c914bb2da64b32f191886439bc"
+  },
+  "post_pilot_earth_checks": [
+    {
+      "run": "20261018T025047Z-f20e8d",
+      "kind": "scripted_zero_inference",
+      "passed": false,
+      "failure": "locator.click: Timeout 2500ms exceeded.",
+      "runtime_ms": 26371,
+      "matching_controls": null,
+      "actions_attempted": 2,
+      "actions_passed": 1,
+      "trace_retained": true,
+      "initial_ready": true,
+      "initial_civ_ready": true
+    },
+    {
+      "run": "20261018T025157Z-905732",
+      "kind": "scripted_zero_inference",
+      "passed": true,
+      "failure": "",
+      "runtime_ms": 35188,
+      "matching_controls": 2,
+      "actions_attempted": 4,
+      "actions_passed": 4,
+      "trace_retained": true,
+      "initial_ready": true,
+      "initial_civ_ready": true
+    }
+  ]
+}

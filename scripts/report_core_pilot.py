@@ -18,6 +18,9 @@ run,pilot=pilots[-1] if pilots else (None,None)
 # Combine immutable continuation captures; count only actual executed AI task sessions.
 if pilot:
     pilot_root=pilot.get('resume_root') or run.name
+    baseline=ROOT/'docs/evidence/product-pilot-summary.json'
+    if baseline.exists() and json.loads(baseline.read_text()).get('pilot_root')!=pilot_root:
+        p.error('Historical report is frozen; use compare_core_pilots.py for a later pilot')
     segments=[]
     for config_file in (ROOT/'company/core-browser').glob('*/config.json'):
         c=json.loads(config_file.read_text())

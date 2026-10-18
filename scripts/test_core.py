@@ -70,9 +70,14 @@ def run_bounded(command, out, budget_seconds):
 def main():
     launched = time.monotonic()
     p = argparse.ArgumentParser()
+    p.add_argument('--smoke-run',help='Verified successful combined smoke capture prerequisite')
     p.add_argument('--resume', help='Continue only unrun personas of an existing pilot within its original deadline')
-    p.add_argument('--entry', choices=['earth','room'], default='earth', help='Explicit product entry; no silent fallback')
-    p.add_argument('--suite', choices=['navigation','product','pilot','earth-diagnostic'], default='navigation')
+    p.add_argument('--entry', choices=['earth','room','mixed'], default='earth', help='Explicit product entry; no silent fallback')
+    p.add_argument('--suite', choices=['navigation','product','pilot','smoke','earth-diagnostic'], default='navigation')
+    p.add_argument('--verify-earth-mission',action='store_true',help='Diagnostic only: enter Earth, open catalog and the previously observed housing mission')
+    p.add_argument('--map-network',choices=['blocked','public-assets'],default='blocked',help='Permit only named public CORE map assets; never model APIs')
+    p.add_argument('--verify-timeout-recovery',action='store_true',help='Smoke only: interrupt first evaluation after actual streamed content, then retry')
+    p.add_argument('--time-budget-seconds',type=int,default=1800)
     p.add_argument('--repo')
     p.add_argument('--ref')
     p.add_argument('--mode', choices=['scripted','local-agent'], default='scripted')
@@ -97,6 +102,11 @@ def main():
     if a.suite == 'navigation' and a.entry != 'earth': p.error('Explicit room entry requires the product or pilot suite')
     if not 1 <= a.sessions <= 10: p.error('One to ten sessions only')
     if a.mode == 'local-agent' and not a.model: p.error('--model required; no automatic model selection or download')
+    if not 30<=a.time_budget_seconds<=1800: p.error('Time budget must be 30–1800 seconds')
+    if a.entry=='mixed' and a.suite!='pilot': p.error('Mixed entry requires pilot suite')
+    if a.suite=='smoke' and (a.sessions!=1 or a.mode!='local-agent'): p.error('Smoke requires one local-agent session')
+    if a.verify_earth_mission and a.suite!='earth-diagnostic': p.error('Earth mission regression requires diagnostic suite')
+    if a.verify_timeout_recovery and a.suite!='smoke': p.error('Timeout probe requires smoke suite')
     snapshot = inspect_core(a.repo, a.ref)
     if a.suite == 'pilot' and (a.mode != 'local-agent' or not a.execute_pilot): p.error('Pilot requires local-agent mode and --execute-pilot')
     if a.suite in {'product','earth-diagnostic'} and a.sessions != 1: p.error('Product preflight is one session')
@@ -106,14 +116,22 @@ def main():
         for file in (ROOT/'company/core-browser').glob('*/summary.json'):
             record = json.loads(file.read_text())
             if a.suite == 'pilot':
-                if record.get('suite') == 'product' and record.get('entry','earth') == a.entry and record.get('passed') and record.get('commit') == snapshot['commit']: prior.append(record)
+                if record.get('suite') == 'product' and record.get('entry','earth') == ('room' if a.entry=='mixed' else a.entry) and record.get('passed') and record.get('commit') == snapshot['commit']: prior.append(record)
                 continue
             if record.get('mode') == a.mode and record.get('completed') == 1 and record.get('passed') and record.get('commit') == snapshot['commit'] and record.get('model') == a.model:
                 prior.append(record)
         if not prior: p.error('A successful single session in this mode is required before the pilot')
+    smoke_hash = None
+    if a.smoke_run:
+        if not re.fullmatch(r'[0-9]{8}T[0-9]{6}Z-[a-f0-9]{6}',a.smoke_run): p.error('Invalid smoke capture ID')
+        smoke_dir=ROOT/'company/core-browser'/a.smoke_run
+        smoke=json.loads((smoke_dir/'summary.json').read_text())
+        smoke_hash=hashlib.sha256((smoke_dir/'summary.json').read_bytes()).hexdigest()
+        hashes=json.loads((smoke_dir/'checksums.json').read_text())
+        if hashes.get('summary.json')!=smoke_hash or smoke.get('suite')!='smoke' or not smoke.get('passed') or smoke.get('commit')!=snapshot['commit'] or smoke.get('model')!=a.model or smoke.get('browser_task_successes')!=1 or smoke.get('evaluation_successes')!=1: p.error('Successful combined smoke on same target/model required')
     resume_root = None
     start_index = 0
-    total_budget_ms = max(1000,1800000-int((time.monotonic()-launched)*1000))
+    total_budget_ms = max(1000,a.time_budget_seconds*1000-int((time.monotonic()-launched)*1000))
     if a.resume:
         if a.suite != 'pilot' or not re.fullmatch(r'[0-9]{8}T[0-9]{6}Z-[a-f0-9]{6}', a.resume): p.error('Resume requires an existing pilot run ID')
         original = ROOT/'company/core-browser'/a.resume/'config.json'
@@ -133,6 +151,7 @@ def main():
         if sorted(ids)!=list(range(1,len(ids)+1)) or len(ids)>=a.sessions: p.error('Prior persona IDs must be unique and contiguous; never rerun a persona')
         resume_root=a.resume
         start_index=len(ids)
+    if a.suite=='pilot' and not a.resume and not a.smoke_run: p.error('New pilots require --smoke-run with a verified combined smoke')
     run = dt.datetime.now(dt.timezone.utc).strftime('%Y%m%dT%H%M%SZ-') + uuid.uuid4().hex[:6]
     out = ROOT/'company/core-browser'/run
     out.mkdir(parents=True)
@@ -143,12 +162,12 @@ def main():
     server = ThreadingHTTPServer(('127.0.0.1',0), handler(snapshot['local_path'], snapshot['commit'], set(snapshot['structure'])))
     threading.Thread(target=server.serve_forever, daemon=True).start()
     config = {'base': 'http://127.0.0.1:'+str(server.server_port), 'commit': snapshot['commit'], 'output': str(out),
-              'suite':a.suite,'entry':a.entry,'resume_root':resume_root,'start_index':start_index,'total_budget_ms':total_budget_ms,'mode':a.mode,'model':a.model,'sessions':a.sessions,'max_steps':12,'max_model_calls':12,
-              'external_network':'blocked','environment':'local_immutable_commit','max_cost_usd':0}
+              'suite':a.suite,'entry':a.entry,'smoke_run':a.smoke_run,'smoke_summary_sha256':smoke_hash,'resume_root':resume_root,'start_index':start_index,'total_budget_ms':total_budget_ms,'mode':a.mode,'model':a.model,'sessions':a.sessions,'max_steps':12,'max_model_calls':12,
+              'external_network':a.map_network,'verify_earth_mission':a.verify_earth_mission,'verify_timeout_recovery':a.verify_timeout_recovery,'environment':'local_immutable_commit','max_cost_usd':0}
     (out/'config.json').write_text(json.dumps(config, indent=2))
     try:
         runner = {'navigation':'core_browser.cjs','earth-diagnostic':'diagnose_core_earth.cjs'}.get(a.suite,'core_product_browser.cjs')
-        returncode = run_bounded(['node',str(ROOT/'scripts'/runner),str(out/'config.json')], out, min(1800,config['total_budget_ms']/1000) if a.suite == 'pilot' else 240*a.sessions)
+        returncode = run_bounded(['node',str(ROOT/'scripts'/runner),str(out/'config.json')], out, min(1800,config['total_budget_ms']/1000) if a.suite in {'pilot','smoke'} else min(a.time_budget_seconds,240*a.sessions))
         if a.suite == 'earth-diagnostic':
             (out/'summary.json').write_text(json.dumps({'suite':'earth-diagnostic','commit':snapshot['commit'],'completed':0,'pilot_sessions':0,'model_calls':0,'note':'See diagnostic.json; this is not a product pass or an AI session'}))
     finally:

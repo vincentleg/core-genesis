@@ -48,6 +48,20 @@ class ProductGateTests(unittest.TestCase):
                 self.assertIn('Original pilot budget exhausted',err.getvalue())
                 server.assert_not_called()
 
+    def test_failed_or_mismatched_smoke_cannot_authorize_mixed_pilot(self):
+        for invalid in ('failed','wrong_model','checksum'):
+            with self.subTest(invalid=invalid),tempfile.TemporaryDirectory() as directory:
+                root=Path(directory);base=root/'company/core-browser';prior=base/'preflight';prior.mkdir(parents=True)
+                (prior/'summary.json').write_text(json.dumps({'suite':'product','entry':'room','passed':True,'commit':'a'*40}))
+                smoke=base/'20261018T000000Z-aaaaaa';smoke.mkdir()
+                record={'suite':'smoke','passed':invalid!='failed','commit':'a'*40,'model':'different' if invalid=='wrong_model' else 'fixture','browser_task_successes':1,'evaluation_successes':1}
+                file=smoke/'summary.json';file.write_text(json.dumps(record))
+                (smoke/'checksums.json').write_text(json.dumps({'summary.json':'incorrect' if invalid=='checksum' else hashlib.sha256(file.read_bytes()).hexdigest()}))
+                argv=['test_core.py','--suite','pilot','--entry','mixed','--mode','local-agent','--model','fixture','--sessions','10','--execute-pilot','--smoke-run',smoke.name]
+                with patch.object(test_core,'ROOT',root),patch.object(test_core,'inspect_core',return_value={'commit':'a'*40}),patch.object(test_core,'ThreadingHTTPServer') as server,patch('sys.argv',argv),contextlib.redirect_stderr(io.StringIO()):
+                    with self.assertRaises(SystemExit):test_core.main()
+                    server.assert_not_called()
+
     def test_product_runner_rejects_production_before_browser_or_inference(self):
         with tempfile.TemporaryDirectory() as directory:
             config=Path(directory)/'fixture.json'

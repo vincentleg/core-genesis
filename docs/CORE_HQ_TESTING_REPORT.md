@@ -1,5 +1,7 @@
 # CORE HQ — product testing report
 
+This report preserves the **original** ten-attempt pilot. Later results are separate: [second pilot and reliability comparison](CORE_HQ_SECOND_PILOT.md). Its nine end-to-end passes do not change this pilot’s historical six.
+
 CORE: `v9.2/earth-first` at `da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5`. CORE HQ pilot preservation commit: `0d27d7d` (foundation `5dc8a4e`). No CORE changes, push, deployment, external disclosure or paid APIs.
 
 ## Actual scope and results
