@@ -62,6 +62,12 @@ class ProductGateTests(unittest.TestCase):
                     with self.assertRaises(SystemExit):test_core.main()
                     server.assert_not_called()
 
+    def test_journey_cannot_launch_multiple_or_unknown_cases(self):
+        for args in [['--scenario','my-core','--variant','empty','--sessions','2'],['--scenario','unknown','--variant','empty']]:
+            with self.subTest(args=args),patch('sys.argv',['test_core.py','--suite','journey']+args),patch.object(test_core,'inspect_core') as inspect,contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit):test_core.main()
+                inspect.assert_not_called()
+
     def test_product_runner_rejects_production_before_browser_or_inference(self):
         with tempfile.TemporaryDirectory() as directory:
             config=Path(directory)/'fixture.json'

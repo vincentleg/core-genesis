@@ -1,0 +1,163 @@
+{
+  "core_commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
+  "new_ai_sessions_attempted": 1,
+  "new_ai_sessions_passed": 0,
+  "scripted_targeted_checks": 3,
+  "scripted_checks_passed": 3,
+  "prepared_campaign_sessions": 30,
+  "campaign_sessions_executed": 0,
+  "human_participants": 0,
+  "paid_api_cost_usd": 0,
+  "captures": [
+    {
+      "run": "20261018T052643Z-af7767",
+      "suite": "earth-agent",
+      "scenario": null,
+      "passed": false,
+      "stages": {
+        "browser": "failed",
+        "planning": "passed",
+        "evaluation": "not_started"
+      },
+      "failure_category": "hq_harness_defect",
+      "actions_attempted": 3,
+      "actions_passed": 2,
+      "runtime_ms": 49038,
+      "model": {
+        "name": "qwen3:8b",
+        "calls_attempted": 1,
+        "calls_completed": 1,
+        "prompt_tokens": 1396,
+        "completion_tokens": 125,
+        "usage_missing_count_calls": 0,
+        "cost_usd": 0,
+        "usage_unknown_attempts": 0,
+        "token_usage_complete": true
+      },
+      "tasks": {
+        "earth_navigation": true
+      },
+      "earth_before": {
+        "ready": true,
+        "civReady": true,
+        "zoom": 15.4,
+        "imageryLoaded": true
+      },
+      "screenshots": 1,
+      "traces": 1,
+      "screenshot_errors": 2,
+      "capture_manifest_sha256": "1a76bbbf5a8e0ba13d67bdfe0308216fbf1e31ef18c79c5bda6353a75a181d0f",
+      "classification_note": "Manual triage of original saved evidence; original reports unchanged"
+    },
+    {
+      "run": "20261018T053115Z-a9b6c8",
+      "suite": "journey",
+      "scenario": "bilingual:roundtrip",
+      "passed": true,
+      "stages": {
+        "browser": "passed",
+        "planning": "not_required",
+        "evaluation": "not_required"
+      },
+      "failure_category": null,
+      "actions_attempted": 3,
+      "actions_passed": 3,
+      "runtime_ms": 8926,
+      "model": {
+        "name": null,
+        "calls_attempted": 0,
+        "calls_completed": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "usage_missing_count_calls": 0,
+        "cost_usd": 0,
+        "usage_unknown_attempts": 0,
+        "token_usage_complete": true
+      },
+      "tasks": {
+        "bilingual:roundtrip": true
+      },
+      "earth_before": null,
+      "screenshots": 1,
+      "traces": 1,
+      "screenshot_errors": 2,
+      "capture_manifest_sha256": "8579494acfac4d378d8bc722178db0f9295b720a73c8458941cfc4110b069250",
+      "classification_note": "Manual triage of original saved evidence; original reports unchanged"
+    },
+    {
+      "run": "20261018T053229Z-a71e90",
+      "suite": "journey",
+      "scenario": "my-core:contribution",
+      "passed": true,
+      "stages": {
+        "browser": "passed",
+        "planning": "not_required",
+        "evaluation": "not_required"
+      },
+      "failure_category": null,
+      "actions_attempted": 7,
+      "actions_passed": 7,
+      "runtime_ms": 18741,
+      "model": {
+        "name": null,
+        "calls_attempted": 0,
+        "calls_completed": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "usage_missing_count_calls": 0,
+        "cost_usd": 0,
+        "usage_unknown_attempts": 0,
+        "token_usage_complete": true
+      },
+      "tasks": {
+        "contribution": true,
+        "my-core:contribution": true
+      },
+      "earth_before": null,
+      "screenshots": 6,
+      "traces": 1,
+      "screenshot_errors": 1,
+      "capture_manifest_sha256": "d844e6a80d0e3bfc0def222eed9ecb236b755c7d8e712b4effd5e7bd91297243",
+      "classification_note": "Manual triage of original saved evidence; original reports unchanged"
+    },
+    {
+      "run": "20261018T053231Z-ecfe2a",
+      "suite": "journey",
+      "scenario": "keyboard:skip",
+      "passed": true,
+      "stages": {
+        "browser": "passed",
+        "planning": "not_required",
+        "evaluation": "not_required"
+      },
+      "failure_category": null,
+      "actions_attempted": 2,
+      "actions_passed": 2,
+      "runtime_ms": 8458,
+      "model": {
+        "name": null,
+        "calls_attempted": 0,
+        "calls_completed": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "usage_missing_count_calls": 0,
+        "cost_usd": 0,
+        "usage_unknown_attempts": 0,
+        "token_usage_complete": true
+      },
+      "tasks": {
+        "keyboard:skip": true
+      },
+      "earth_before": null,
+      "screenshots": 0,
+      "traces": 1,
+      "screenshot_errors": 2,
+      "capture_manifest_sha256": "7c62d3fb339c27bf99c7ec746cc1543f26ad19dd8413207dd14ba382566ff810",
+      "classification_note": "Manual triage of original saved evidence; original reports unchanged"
+    }
+  ],
+  "historical_pilot_hashes_unchanged": true,
+  "new_variants_other_than_three_scripted_checks": "implemented_unvalidated",
+  "ai_earth_selector_verification": "not_reached",
+  "ai_globe_interaction": "attempted_not_completed"
+}

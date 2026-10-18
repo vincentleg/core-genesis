@@ -73,7 +73,9 @@ def main():
     p.add_argument('--smoke-run',help='Verified successful combined smoke capture prerequisite')
     p.add_argument('--resume', help='Continue only unrun personas of an existing pilot within its original deadline')
     p.add_argument('--entry', choices=['earth','room','mixed'], default='earth', help='Explicit product entry; no silent fallback')
-    p.add_argument('--suite', choices=['navigation','product','pilot','smoke','earth-diagnostic'], default='navigation')
+    p.add_argument('--suite', choices=['navigation','product','pilot','smoke','earth-agent','journey','earth-diagnostic'], default='navigation')
+    p.add_argument('--scenario',help='One named browser journey; no campaign execution')
+    p.add_argument('--variant',help='One explicit journey variant')
     p.add_argument('--verify-earth-mission',action='store_true',help='Diagnostic only: enter Earth, open catalog and the previously observed housing mission')
     p.add_argument('--map-network',choices=['blocked','public-assets'],default='blocked',help='Permit only named public CORE map assets; never model APIs')
     p.add_argument('--verify-timeout-recovery',action='store_true',help='Smoke only: interrupt first evaluation after actual streamed content, then retry')
@@ -104,9 +106,17 @@ def main():
     if a.mode == 'local-agent' and not a.model: p.error('--model required; no automatic model selection or download')
     if not 30<=a.time_budget_seconds<=1800: p.error('Time budget must be 30–1800 seconds')
     if a.entry=='mixed' and a.suite!='pilot': p.error('Mixed entry requires pilot suite')
+    if a.suite=='earth-agent' and (a.sessions!=1 or a.mode!='local-agent' or a.entry!='earth' or a.map_network!='public-assets'): p.error('Earth agent requires one local-agent Earth session with explicit public map assets')
     if a.suite=='smoke' and (a.sessions!=1 or a.mode!='local-agent'): p.error('Smoke requires one local-agent session')
     if a.verify_earth_mission and a.suite!='earth-diagnostic': p.error('Earth mission regression requires diagnostic suite')
     if a.verify_timeout_recovery and a.suite!='smoke': p.error('Timeout probe requires smoke suite')
+    if a.suite=='journey':
+        definitions=json.loads((ROOT/'testing/core-v92-journeys.json').read_text())['journeys']
+        match=next((v for v in definitions if v['scenario']==a.scenario and v['variant']==a.variant),None)
+        if a.sessions!=1 or not match: p.error('Journey requires exactly one known scenario/variant; campaigns cannot execute here')
+        if match['requires_map_assets'] and a.map_network!='public-assets': p.error('This journey requires explicit public map assets')
+        a.entry=match['entry']
+    elif a.scenario or a.variant: p.error('Scenario/variant requires journey suite')
     snapshot = inspect_core(a.repo, a.ref)
     if a.suite == 'pilot' and (a.mode != 'local-agent' or not a.execute_pilot): p.error('Pilot requires local-agent mode and --execute-pilot')
     if a.suite in {'product','earth-diagnostic'} and a.sessions != 1: p.error('Product preflight is one session')
@@ -162,12 +172,13 @@ def main():
     server = ThreadingHTTPServer(('127.0.0.1',0), handler(snapshot['local_path'], snapshot['commit'], set(snapshot['structure'])))
     threading.Thread(target=server.serve_forever, daemon=True).start()
     config = {'base': 'http://127.0.0.1:'+str(server.server_port), 'commit': snapshot['commit'], 'output': str(out),
-              'suite':a.suite,'entry':a.entry,'smoke_run':a.smoke_run,'smoke_summary_sha256':smoke_hash,'resume_root':resume_root,'start_index':start_index,'total_budget_ms':total_budget_ms,'mode':a.mode,'model':a.model,'sessions':a.sessions,'max_steps':12,'max_model_calls':12,
+              'suite':a.suite,'entry':a.entry,'scenario':a.scenario,'variant':a.variant,'smoke_run':a.smoke_run,'smoke_summary_sha256':smoke_hash,'resume_root':resume_root,'start_index':start_index,'total_budget_ms':total_budget_ms,'mode':a.mode,'model':a.model,'sessions':a.sessions,'max_steps':12,'max_model_calls':12,
               'external_network':a.map_network,'verify_earth_mission':a.verify_earth_mission,'verify_timeout_recovery':a.verify_timeout_recovery,'environment':'local_immutable_commit','max_cost_usd':0}
+    config['harness_sha256']={str(file.relative_to(ROOT)):hashlib.sha256(file.read_bytes()).hexdigest() for file in [Path(__file__).resolve(),ROOT/'testing/core-v92-journeys.json',*sorted((ROOT/'scripts').glob('core_*.cjs'))]}
     (out/'config.json').write_text(json.dumps(config, indent=2))
     try:
         runner = {'navigation':'core_browser.cjs','earth-diagnostic':'diagnose_core_earth.cjs'}.get(a.suite,'core_product_browser.cjs')
-        returncode = run_bounded(['node',str(ROOT/'scripts'/runner),str(out/'config.json')], out, min(1800,config['total_budget_ms']/1000) if a.suite in {'pilot','smoke'} else min(a.time_budget_seconds,240*a.sessions))
+        returncode = run_bounded(['node',str(ROOT/'scripts'/runner),str(out/'config.json')], out, min(1800,config['total_budget_ms']/1000) if a.suite in {'pilot','smoke','earth-agent','journey'} else min(a.time_budget_seconds,240*a.sessions))
         if a.suite == 'earth-diagnostic':
             (out/'summary.json').write_text(json.dumps({'suite':'earth-diagnostic','commit':snapshot['commit'],'completed':0,'pilot_sessions':0,'model_calls':0,'note':'See diagnostic.json; this is not a product pass or an AI session'}))
     finally:

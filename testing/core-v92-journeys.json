@@ -1,0 +1,506 @@
+{
+  "version": 1,
+  "human_participants": 0,
+  "ux_evaluation": "heuristic_requires_human_validation",
+  "journeys": [
+    {
+      "id": "first-look:status",
+      "scenario": "first-look",
+      "variant": "status",
+      "persona": "First-time visitor",
+      "route": "world.html?quality=low",
+      "entry": "earth",
+      "objective": "Open What works today and inspect current versus future capabilities",
+      "success_criteria": [
+        "status disclosure visible",
+        "working and future sections present"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    },
+    {
+      "id": "first-look:create",
+      "scenario": "first-look",
+      "variant": "create",
+      "persona": "First-time visitor",
+      "route": "world.html?quality=low",
+      "entry": "earth",
+      "objective": "Follow Create from the landing interface",
+      "success_criteria": [
+        "real Create navigation",
+        "dialogue interface renders"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    },
+    {
+      "id": "first-look:me",
+      "scenario": "first-look",
+      "variant": "me",
+      "persona": "First-time visitor",
+      "route": "world.html?quality=low",
+      "entry": "earth",
+      "objective": "Find My CORE from the landing interface",
+      "success_criteria": [
+        "real My CORE navigation",
+        "local-only status visible"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    },
+    {
+      "id": "earth-exploration:zoom-in",
+      "scenario": "earth-exploration",
+      "variant": "zoom-in",
+      "persona": "Earth explorer",
+      "route": "world.html?quality=low",
+      "entry": "earth",
+      "objective": "Zoom in using a real map control",
+      "success_criteria": [
+        "actual imagery source loaded",
+        "camera zoom increases"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": true
+    },
+    {
+      "id": "earth-exploration:zoom-out",
+      "scenario": "earth-exploration",
+      "variant": "zoom-out",
+      "persona": "Earth explorer",
+      "route": "world.html?quality=low",
+      "entry": "earth",
+      "objective": "Zoom out using a real map control",
+      "success_criteria": [
+        "actual imagery source loaded",
+        "camera zoom decreases"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": true
+    },
+    {
+      "id": "earth-exploration:layers",
+      "scenario": "earth-exploration",
+      "variant": "layers",
+      "persona": "Earth explorer",
+      "route": "world.html?quality=low",
+      "entry": "earth",
+      "objective": "Switch real Earth to CORE World and back",
+      "success_criteria": [
+        "radio states change after clicks",
+        "map remains initialized"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": true
+    },
+    {
+      "id": "problem-discovery:mission",
+      "scenario": "problem-discovery",
+      "variant": "mission",
+      "persona": "Environmental researcher",
+      "route": "world.html?quality=low",
+      "entry": "earth",
+      "objective": "Open a source-backed mission from the live catalog",
+      "success_criteria": [
+        "observed mission selected",
+        "dated findings and source links visible"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": true
+    },
+    {
+      "id": "problem-discovery:search",
+      "scenario": "problem-discovery",
+      "variant": "search",
+      "persona": "Environmental researcher",
+      "route": "world.html?quality=low",
+      "entry": "earth",
+      "objective": "Find San Francisco using actual place search",
+      "success_criteria": [
+        "actual search submitted",
+        "camera center or zoom changes"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": true
+    },
+    {
+      "id": "problem-discovery:recorded",
+      "scenario": "problem-discovery",
+      "variant": "recorded",
+      "persona": "Environmental researcher",
+      "route": "world.html?quality=low",
+      "entry": "earth",
+      "objective": "Use the no-3D skip link to discover a recorded mission",
+      "success_criteria": [
+        "actual keyboard skip link activated",
+        "observed mission opened",
+        "dated problem findings rendered"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": true
+    },
+    {
+      "id": "agent-dialogue:consult",
+      "scenario": "agent-dialogue",
+      "variant": "consult",
+      "persona": "Scientific researcher",
+      "route": "dialogue.html#mission=mission.sf.housing-resilience",
+      "entry": "room",
+      "objective": "Consult an agent and ask an evidence question",
+      "success_criteria": [
+        "new real turns",
+        "cited deterministic engine identified"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    },
+    {
+      "id": "agent-dialogue:log",
+      "scenario": "agent-dialogue",
+      "variant": "log",
+      "persona": "Scientific researcher",
+      "route": "dialogue.html#mission=mission.sf.housing-resilience",
+      "entry": "room",
+      "objective": "Inspect the real engine activity log then ask about source dates",
+      "success_criteria": [
+        "actual log tab renders",
+        "new reply after a date question"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    },
+    {
+      "id": "agent-dialogue:causal",
+      "scenario": "agent-dialogue",
+      "variant": "causal",
+      "persona": "Scientific researcher",
+      "route": "dialogue.html#mission=mission.sf.housing-resilience",
+      "entry": "room",
+      "objective": "Ask a housing policy causal question and inspect uncertainty",
+      "success_criteria": [
+        "actual causal policy question submitted",
+        "answer retains hypotheses or causal uncertainty"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    },
+    {
+      "id": "contribution:consented",
+      "scenario": "contribution",
+      "variant": "consented",
+      "persona": "Community contributor",
+      "route": "dialogue.html#mission=mission.sf.housing-resilience",
+      "entry": "room",
+      "objective": "Submit a labelled synthetic observation with explicit consent",
+      "success_criteria": [
+        "consent gate rejects first",
+        "browser queue persists after reload",
+        "independent context isolated"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    },
+    {
+      "id": "contribution:question",
+      "scenario": "contribution",
+      "variant": "question",
+      "persona": "Community contributor",
+      "route": "dialogue.html#mission=mission.sf.housing-resilience",
+      "entry": "room",
+      "objective": "Submit a labelled synthetic research question",
+      "success_criteria": [
+        "question type selected",
+        "consented local acknowledgement",
+        "independent context isolated"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    },
+    {
+      "id": "contribution:required",
+      "scenario": "contribution",
+      "variant": "required",
+      "persona": "Community contributor",
+      "route": "dialogue.html#mission=mission.sf.housing-resilience",
+      "entry": "room",
+      "objective": "Attempt empty submission without filling required fields",
+      "success_criteria": [
+        "native required-field validation",
+        "no stored contribution"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    },
+    {
+      "id": "my-core:empty",
+      "scenario": "my-core",
+      "variant": "empty",
+      "persona": "Returning local user",
+      "route": "me.html",
+      "entry": "room",
+      "objective": "Inspect My CORE in an empty context",
+      "success_criteria": [
+        "no contribution or vault claimed",
+        "local-only and zero impact disclosures"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    },
+    {
+      "id": "my-core:contribution",
+      "scenario": "my-core",
+      "variant": "contribution",
+      "persona": "Returning local user",
+      "route": "me.html",
+      "entry": "room",
+      "objective": "Submit via the real room then find the item in My CORE",
+      "success_criteria": [
+        "actual local fixture visible in My CORE",
+        "same item visible after reload"
+      ],
+      "implementation_status": "scripted_validated_ai_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false,
+      "validation": {
+        "kind": "scripted_targeted_check",
+        "capture": "20261018T053229Z-a71e90",
+        "not_campaign_execution": true
+      }
+    },
+    {
+      "id": "my-core:follow",
+      "scenario": "my-core",
+      "variant": "follow",
+      "persona": "Returning local user",
+      "route": "me.html",
+      "entry": "earth",
+      "objective": "Follow an actual mission and recover it in My CORE",
+      "success_criteria": [
+        "real Follow click",
+        "followed mission rendered after navigation/reload"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": true
+    },
+    {
+      "id": "bilingual:roundtrip",
+      "scenario": "bilingual",
+      "variant": "roundtrip",
+      "persona": "French/English user",
+      "route": "me.html",
+      "entry": "room",
+      "objective": "Switch English to French and back in My CORE",
+      "success_criteria": [
+        "French heading and html lang",
+        "English restored by control"
+      ],
+      "implementation_status": "scripted_validated_ai_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false,
+      "validation": {
+        "kind": "scripted_targeted_check",
+        "capture": "20261018T053115Z-a9b6c8",
+        "not_campaign_execution": true
+      }
+    },
+    {
+      "id": "bilingual:room-fr",
+      "scenario": "bilingual",
+      "variant": "room-fr",
+      "persona": "French/English user",
+      "route": "me.html",
+      "entry": "room",
+      "objective": "Switch to French and ask a French question in a real room",
+      "success_criteria": [
+        "French UI",
+        "actual question and reply"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    },
+    {
+      "id": "bilingual:persist",
+      "scenario": "bilingual",
+      "variant": "persist",
+      "persona": "French/English user",
+      "route": "me.html",
+      "entry": "room",
+      "objective": "Choose French and navigate/reload another page",
+      "success_criteria": [
+        "French preference survives navigation",
+        "French survives reload"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    },
+    {
+      "id": "keyboard:skip",
+      "scenario": "keyboard",
+      "variant": "skip",
+      "persona": "Keyboard-focused user",
+      "route": "me.html",
+      "entry": "room",
+      "objective": "Use Tab and Enter on the skip link",
+      "success_criteria": [
+        "actual keyboard input",
+        "focus reaches main content"
+      ],
+      "implementation_status": "scripted_validated_ai_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false,
+      "validation": {
+        "kind": "scripted_targeted_check",
+        "capture": "20261018T053231Z-ecfe2a",
+        "not_campaign_execution": true
+      }
+    },
+    {
+      "id": "keyboard:form",
+      "scenario": "keyboard",
+      "variant": "form",
+      "persona": "Keyboard-focused user",
+      "route": "me.html",
+      "entry": "room",
+      "objective": "Use Tab and Space in the contribution consent flow",
+      "success_criteria": [
+        "title to text tab order",
+        "Space toggles consent",
+        "local submission acknowledged"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    },
+    {
+      "id": "keyboard:language",
+      "scenario": "keyboard",
+      "variant": "language",
+      "persona": "Keyboard-focused user",
+      "route": "me.html",
+      "entry": "room",
+      "objective": "Operate the language selector with keyboard arrows",
+      "success_criteria": [
+        "keyboard choice changes document language",
+        "preference survives reload"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    },
+    {
+      "id": "error-handling:unsupported",
+      "scenario": "error-handling",
+      "variant": "unsupported",
+      "persona": "Technical power user",
+      "route": "dialogue.html#mission=mission.sf.housing-resilience",
+      "entry": "room",
+      "objective": "Test refusal of an impossible question",
+      "success_criteria": [
+        "new response",
+        "no invented Mars population"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    },
+    {
+      "id": "error-handling:invalid-profile",
+      "scenario": "error-handling",
+      "variant": "invalid-profile",
+      "persona": "Technical power user",
+      "route": "dialogue.html#mission=mission.sf.housing-resilience",
+      "entry": "room",
+      "objective": "Attempt an invalid local pseudonym",
+      "success_criteria": [
+        "visible validation feedback",
+        "no profile created"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    },
+    {
+      "id": "error-handling:locked-vault",
+      "scenario": "error-handling",
+      "variant": "locked-vault",
+      "persona": "Technical power user",
+      "route": "dialogue.html#mission=mission.sf.housing-resilience",
+      "entry": "room",
+      "objective": "Attempt Keep private without an unlocked vault",
+      "success_criteria": [
+        "visible vault-required feedback",
+        "no submission or vault created"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    },
+    {
+      "id": "investor:progress",
+      "scenario": "investor",
+      "variant": "progress",
+      "persona": "Skeptical investor",
+      "route": "me.html",
+      "entry": "room",
+      "objective": "Navigate through More to Progress and inspect impact",
+      "success_criteria": [
+        "real navigation",
+        "zero verified impact and methodology displayed"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    },
+    {
+      "id": "investor:manifesto",
+      "scenario": "investor",
+      "variant": "manifesto",
+      "persona": "Skeptical investor",
+      "route": "me.html",
+      "entry": "room",
+      "objective": "Follow the actual manifesto link from the Earth landing",
+      "success_criteria": [
+        "actual manifesto page renders",
+        "aspiration separated from evidence"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    },
+    {
+      "id": "investor:scope",
+      "scenario": "investor",
+      "variant": "scope",
+      "persona": "Skeptical investor",
+      "route": "me.html",
+      "entry": "room",
+      "objective": "Inspect landing disclosures and My CORE impact",
+      "success_criteria": [
+        "current scope disclosure opened",
+        "My CORE impact and local-only status displayed"
+      ],
+      "implementation_status": "implemented_unvalidated",
+      "max_runtime_ms": 180000,
+      "requires_map_assets": false
+    }
+  ]
+}
