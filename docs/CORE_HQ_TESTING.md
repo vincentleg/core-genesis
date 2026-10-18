@@ -1,5 +1,7 @@
 # CORE HQ browser testing
 
+Current execution results are in [the product testing report](CORE_HQ_TESTING_REPORT.md). The initial navigation/pilot-preparation sections below describe the earlier baseline; the expanded product coverage section records the subsequent work. The product pilot has executed, with nine completed sessions, one incomplete attempt and six end-to-end passes.
+
 ## Framework decision
 
 Selected: the existing **Playwright 1.64.1** browser library (Apache-2.0), with a bounded local-model decision adapter. No new dependency was required. Playwright is a browser automation framework, not an autonomous reasoning model. The adapter requests decisions from a local Ollama model and executes constrained actions; it does not claim to be the upstream Playwright planner/generator/healer agents.
@@ -58,3 +60,18 @@ The successful AI agent selected controls from rendered accessibility observatio
 There were zero page JavaScript exceptions in the successful session. External map requests were deliberately blocked. The optional `/.core-local/civ/state.json` request returned 404 because the immutable static runtime does not serve untracked local backend state. This is an environment limitation, not an established production defect. No live agent dialogue or first-time human comprehension was evaluated. Model notes describe actions, not a validated usability study.
 
 A rough linear ten-session estimate from the successful session is ~15 minutes and ~85,160 local model tokens; this excludes startup variation, mobile differences and failed-session overhead. It is not a measured pilot. No paid API charges are expected with the local-only adapter; hardware/electricity costs are unmeasured. The ten-session pilot was prepared but not executed.
+
+## Expanded product coverage (explicit entry paths)
+
+`--suite product --entry room` tests the real CORE team conversation page at `dialogue.html#mission=mission.sf.housing-resilience`; it does not pretend the Earth entry succeeded. The first successful product preflight is `20261018T021120Z-7c5ee8`, nine actions, ~18.5 seconds, zero inference. It checks rendered dated San Francisco findings against actual committed data deliveries, a registry-agent consultation, a question/answer exchange, refusal of an unsupported question, consent enforcement, local mission-queue submission, reload persistence and isolation. The contribution is a labelled synthetic fixture inside an unauthenticated disposable local context. It is not public, a real community submission, or an encrypted-vault test.
+
+`--suite pilot --entry room --mode local-agent --model qwen3:8b --sessions 10 --execute-pilot` requires a successful product preflight for the same commit and entry. Ten distinct named personas vary objectives; the current direct room remains the same housing/resilience mission. The local model reads real rendered accessibility observations, selects a task tool and provides the question/fixture text. Browser actions within that tool are deterministic and recorded. A second local call evaluates what the interface actually displayed; quoted UX concerns are checked against the observation before being labelled grounded hypotheses. No AI interpretation becomes a verified human finding.
+
+The product runner reserves twelve seconds for evidence cleanup within a three-minute session deadline. It aborts model work and closes the page when that deadline approaches, writes partial results, and stops new sessions before the thirty-minute global budget expires. The Python watchdog uses the remaining total budget. Failed tasks do not erase successful actions or stop independent personas; safety/inference infrastructure failures stop execution. Reports distinguish requested, attempted, completed, incomplete and unstarted sessions. Reported token totals exclude unknown usage for interrupted calls.
+
+[CORE issues](CORE_HQ_PRODUCT_ISSUES.md) records the offline Earth startup failure without patching CORE. [Investor report](CORE_HQ_TESTING_REPORT.md) is generated from actual captures.
+
+
+The first product pilot is complete: root `20261018T021206Z-d6b035`, continuation `20261018T021740Z-1e1b47`. A `--resume <original-run-id>` continuation may execute only remaining contiguous persona IDs, retain the same commit/entry/model and requested count, verify the original config checksum and use the original timestamp-based deadline. Touching a file cannot reset the thirty-minute budget. The completed ten-persona plan rejects any further resume; no persona was rerun.
+
+The original segment used a forty-second inference cap and overlong evaluation context; three evaluations timed out. The remaining six used focused rendered observations and a ninety-second cap within each session deadline. One environmental-researcher attempt was interrupted after planning before its task. The aggregate explicitly marks it incomplete, preserving the original finalized process report unchanged. All nine completed task sessions retained traces. The interrupted trace and two initial screenshots could not be finalized; capture errors are retained. A post-pilot `handleSIGTERM:false` launch setting lets the controller own graceful shutdown in future runs; no extra browser session was run to claim this signal-handling fix verified.

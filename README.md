@@ -40,7 +40,23 @@ python3 scripts/review_core_session.py company/core-browser/<run>/session-01
 npx --no-install playwright show-trace company/core-browser/<run>/session-01/trace.zip
 ```
 
-A pilot stops on the first failed session. Each session is bounded to 12 model calls and 12 decisions; the process has a runtime limit. Cost ceiling: **$0 paid inference**. Ten sessions are prepared; hundreds are not authorized. See [browser design, limitations and research](docs/CORE_HQ_TESTING.md).
+The legacy navigation pilot stops on the first failed session; the product pilot below records independent persona failures separately. Each session is bounded to 12 model calls and 12 decisions; the process has a runtime limit. Cost ceiling: **$0 paid inference**. The first ten-persona product pilot has now executed: nine completed, one incomplete and six end-to-end passes; see the report below. Hundreds are not authorized. See [browser design, limitations and research](docs/CORE_HQ_TESTING.md).
+
+## Product interactions and the bounded persona pilot
+
+```sh
+# Explicit direct-room entry: real CORE dialogue, cited data and browser-local contribution:
+python3 scripts/test_core.py --suite product --entry room
+# Requires a successful critical preflight for the same entry and commit:
+python3 scripts/test_core.py --suite pilot --entry room --mode local-agent --model qwen3:8b --sessions 10 --execute-pilot
+python3 scripts/report_core_pilot.py
+```
+
+Earth and direct-room entries are separate targets. Earth initialization currently fails in the recorded offline environment; no fallback is silent, no CORE function is forced and no map/data mocks are supplied. The direct-room critical preflight passed nine actual browser actions, including a cited answer, an unsupported-question refusal, a consent gate, a synthetic browser-local mission contribution, reload persistence and independent-context isolation. This local mission queue is distinct from the encrypted private vault.
+
+The product pilot uses ten named **AI personas**, separate contexts and varied objectives. Each local model observes the rendered interface, chooses a high-level real browser task and supplies its question or contribution text; Playwright executes that task through actual controls, and a second model call evaluates the observed interface. It is a bounded tool controller, not unrestricted browsing. The current explicit room target is the San Francisco housing/resilience mission; varied personas do not imply ten geographic areas.
+
+Maximum: three minutes per session and thirty minutes total, including reserved cleanup time. Task failures are recorded and independent sessions continue; unavailable inference, safety failures or budget exhaustion stop execution. Each completed report remains distinct from a passing task. Actual human participants remain zero. See [testing report](docs/CORE_HQ_TESTING_REPORT.md) and [CORE issues](docs/CORE_HQ_PRODUCT_ISSUES.md).
 
 ## Human testing
 

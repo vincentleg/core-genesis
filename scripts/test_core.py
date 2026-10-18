@@ -4,10 +4,12 @@ import hashlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import mimetypes
+import re
 from pathlib import Path, PurePosixPath
 import subprocess
 import sys
 import threading
+import time
 from urllib.parse import unquote, urlsplit
 import uuid
 import datetime as dt
@@ -35,7 +37,11 @@ def handler(repo, sha, paths):
     return Handler
 
 def main():
+    launched = time.monotonic()
     p = argparse.ArgumentParser()
+    p.add_argument('--resume', help='Continue only unrun personas of an existing pilot within its original deadline')
+    p.add_argument('--entry', choices=['earth','room'], default='earth', help='Explicit product entry; no silent fallback')
+    p.add_argument('--suite', choices=['navigation','product','pilot'], default='navigation')
     p.add_argument('--repo')
     p.add_argument('--ref')
     p.add_argument('--mode', choices=['scripted','local-agent'], default='scripted')
@@ -57,17 +63,45 @@ def main():
         target.write_text(json.dumps(check,indent=2))
         print(json.dumps(check))
         return 0 if check['status']=='available' else 1
+    if a.suite == 'navigation' and a.entry != 'earth': p.error('Explicit room entry requires the product or pilot suite')
     if not 1 <= a.sessions <= 10: p.error('One to ten sessions only')
     if a.mode == 'local-agent' and not a.model: p.error('--model required; no automatic model selection or download')
     snapshot = inspect_core(a.repo, a.ref)
-    if a.sessions > 1:
+    if a.suite == 'pilot' and (a.mode != 'local-agent' or not a.execute_pilot): p.error('Pilot requires local-agent mode and --execute-pilot')
+    if a.suite == 'product' and a.sessions != 1: p.error('Product preflight is one session')
+    if a.sessions > 1 or a.suite == 'pilot':
         if not a.execute_pilot: p.error('Multi-session runs require --execute-pilot')
         prior = []
         for file in (ROOT/'company/core-browser').glob('*/summary.json'):
             record = json.loads(file.read_text())
+            if a.suite == 'pilot':
+                if record.get('suite') == 'product' and record.get('entry','earth') == a.entry and record.get('passed') and record.get('commit') == snapshot['commit']: prior.append(record)
+                continue
             if record.get('mode') == a.mode and record.get('completed') == 1 and record.get('passed') and record.get('commit') == snapshot['commit'] and record.get('model') == a.model:
                 prior.append(record)
         if not prior: p.error('A successful single session in this mode is required before the pilot')
+    resume_root = None
+    start_index = 0
+    total_budget_ms = max(1000,1800000-int((time.monotonic()-launched)*1000))
+    if a.resume:
+        if a.suite != 'pilot' or not re.fullmatch(r'[0-9]{8}T[0-9]{6}Z-[a-f0-9]{6}', a.resume): p.error('Resume requires an existing pilot run ID')
+        original = ROOT/'company/core-browser'/a.resume/'config.json'
+        prior_config = json.loads(original.read_text())
+        if any(prior_config.get(k) != v for k,v in [('suite','pilot'),('entry',a.entry),('model',a.model),('commit',snapshot['commit']),('sessions',a.sessions)]): p.error('Resume must retain target, entry, model and ten-session plan')
+        hashes = json.loads((original.parent/'checksums.json').read_text())
+        if hashes.get('config.json') != hashlib.sha256(original.read_bytes()).hexdigest(): p.error('Original pilot config checksum mismatch')
+        captured = dt.datetime.strptime(a.resume.split('-')[0], '%Y%m%dT%H%M%SZ').replace(tzinfo=dt.timezone.utc).timestamp()
+        deadline = captured + prior_config['total_budget_ms']/1000
+        total_budget_ms = int((deadline-time.time())*1000)
+        if total_budget_ms < 15000: p.error('Original pilot budget exhausted')
+        ids=[]
+        for config_file in (ROOT/'company/core-browser').glob('*/config.json'):
+            capture_config=json.loads(config_file.read_text())
+            if config_file.parent.name==a.resume or capture_config.get('resume_root')==a.resume:
+                ids.extend(json.loads(f.read_text())['id'] for f in config_file.parent.glob('session-*/report.json'))
+        if sorted(ids)!=list(range(1,len(ids)+1)) or len(ids)>=a.sessions: p.error('Prior persona IDs must be unique and contiguous; never rerun a persona')
+        resume_root=a.resume
+        start_index=len(ids)
     run = dt.datetime.now(dt.timezone.utc).strftime('%Y%m%dT%H%M%SZ-') + uuid.uuid4().hex[:6]
     out = ROOT/'company/core-browser'/run
     out.mkdir(parents=True)
@@ -78,11 +112,12 @@ def main():
     server = ThreadingHTTPServer(('127.0.0.1',0), handler(snapshot['local_path'], snapshot['commit'], set(snapshot['structure'])))
     threading.Thread(target=server.serve_forever, daemon=True).start()
     config = {'base': 'http://127.0.0.1:'+str(server.server_port), 'commit': snapshot['commit'], 'output': str(out),
-              'mode':a.mode,'model':a.model,'sessions':a.sessions,'max_steps':12,'max_model_calls':12,
+              'suite':a.suite,'entry':a.entry,'resume_root':resume_root,'start_index':start_index,'total_budget_ms':total_budget_ms,'mode':a.mode,'model':a.model,'sessions':a.sessions,'max_steps':12,'max_model_calls':12,
               'external_network':'blocked','environment':'local_immutable_commit','max_cost_usd':0}
     (out/'config.json').write_text(json.dumps(config, indent=2))
     try:
-        result = subprocess.run(['node',str(ROOT/'scripts/core_browser.cjs'),str(out/'config.json')], cwd=ROOT, timeout=240*a.sessions)
+        runner = 'core_browser.cjs' if a.suite == 'navigation' else 'core_product_browser.cjs'
+        result = subprocess.run(['node',str(ROOT/'scripts'/runner),str(out/'config.json')], cwd=ROOT, timeout=min(1800,config['total_budget_ms']/1000) if a.suite == 'pilot' else 240*a.sessions)
         if not (out/'summary.json').exists():
             (out/'summary.json').write_text(json.dumps({'passed':False,'completed':0,'mode':a.mode,'error':'Browser process ended without summary','returncode':result.returncode}))
     except subprocess.TimeoutExpired:

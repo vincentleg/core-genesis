@@ -32,15 +32,11 @@
         {
           "id": 1,
           "passed": false,
+          "status": null,
           "task_completion": {
             "attempted": 6,
             "succeeded": 3
-          },
-          "coverage": [
-            "entry",
-            "status",
-            "explore"
-          ]
+          }
         }
       ],
       "run": "20261018T014740Z-cc61a8"
@@ -60,19 +56,11 @@
         {
           "id": 1,
           "passed": true,
+          "status": null,
           "task_completion": {
             "attempted": 8,
             "succeeded": 8
-          },
-          "coverage": [
-            "entry",
-            "status",
-            "explore",
-            "navigation",
-            "agents_layer",
-            "problems",
-            "contribution_ui"
-          ]
+          }
         }
       ],
       "run": "20261018T014921Z-50067f"
@@ -88,7 +76,7 @@
       "runtime_ms": null,
       "model_calls": 10,
       "cost_usd": null,
-      "sessions": null,
+      "sessions": [],
       "run": "20261018T014949Z-6b1503",
       "model_calls_attempted": 10,
       "partial_actions": 10,
@@ -109,12 +97,11 @@
         {
           "id": 1,
           "passed": false,
+          "status": null,
           "task_completion": {
             "attempted": 2,
             "succeeded": 1
-          },
-          "coverage": [],
-          "failure": "Repeated unchanged control: Skip to problems and missions (no 3D needed)"
+          }
         }
       ],
       "run": "20261018T015442Z-b09b6f"
@@ -134,21 +121,302 @@
         {
           "id": 1,
           "passed": true,
+          "status": null,
           "task_completion": {
             "attempted": 6,
             "succeeded": 6
-          },
-          "coverage": [
-            "earth_explore",
-            "agents_layer",
-            "problems",
-            "contribution_ui",
-            "entry",
-            "model_directed_actions"
-          ]
+          }
         }
       ],
       "run": "20261018T015606Z-a96878"
+    },
+    {
+      "mode": "scripted_product_preflight",
+      "model": null,
+      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
+      "requested": 1,
+      "completed": 1,
+      "successes": 0,
+      "passed": false,
+      "runtime_ms": 20277,
+      "model_calls": 0,
+      "cost_usd": 0,
+      "sessions": [
+        {
+          "id": 1,
+          "passed": false,
+          "status": "completed_with_failure",
+          "task_completion": {
+            "attempted": 2,
+            "succeeded": 1
+          }
+        }
+      ],
+      "run": "20261018T020240Z-8137b3"
+    },
+    {
+      "mode": "scripted_product_preflight",
+      "model": null,
+      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
+      "requested": 1,
+      "completed": 1,
+      "successes": 0,
+      "passed": false,
+      "runtime_ms": 34544,
+      "model_calls": 0,
+      "cost_usd": 0,
+      "sessions": [
+        {
+          "id": 1,
+          "passed": false,
+          "status": "completed_with_failure",
+          "task_completion": {
+            "attempted": 2,
+            "succeeded": 1
+          }
+        }
+      ],
+      "run": "20261018T020403Z-c32cb3"
+    },
+    {
+      "mode": "scripted_product_preflight",
+      "model": null,
+      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
+      "requested": 1,
+      "completed": 1,
+      "successes": 0,
+      "passed": false,
+      "runtime_ms": 33937,
+      "model_calls": 0,
+      "cost_usd": 0,
+      "sessions": [
+        {
+          "id": 1,
+          "passed": false,
+          "status": "completed_with_failure",
+          "task_completion": {
+            "attempted": 2,
+            "succeeded": 1
+          }
+        }
+      ],
+      "run": "20261018T020513Z-99bde4"
+    },
+    {
+      "mode": "scripted_product_preflight",
+      "model": null,
+      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
+      "requested": 1,
+      "completed": 1,
+      "successes": 0,
+      "passed": false,
+      "runtime_ms": 34393,
+      "model_calls": 0,
+      "cost_usd": 0,
+      "sessions": [
+        {
+          "id": 1,
+          "passed": false,
+          "status": "completed_with_failure",
+          "task_completion": {
+            "attempted": 2,
+            "succeeded": 1
+          }
+        }
+      ],
+      "run": "20261018T020707Z-9be69f"
+    },
+    {
+      "mode": "scripted_product_preflight",
+      "model": null,
+      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
+      "requested": 1,
+      "completed": 1,
+      "successes": 0,
+      "passed": false,
+      "runtime_ms": 15631,
+      "model_calls": 0,
+      "cost_usd": 0,
+      "sessions": [
+        {
+          "id": 1,
+          "passed": false,
+          "status": "completed_with_failure",
+          "task_completion": {
+            "attempted": 2,
+            "succeeded": 1
+          }
+        }
+      ],
+      "run": "20261018T020837Z-14fac3"
+    },
+    {
+      "mode": "scripted_product_preflight",
+      "model": null,
+      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
+      "requested": 1,
+      "completed": 1,
+      "successes": 0,
+      "passed": false,
+      "runtime_ms": 11829,
+      "model_calls": 0,
+      "cost_usd": 0,
+      "sessions": [
+        {
+          "id": 1,
+          "passed": false,
+          "status": "completed_with_failure",
+          "task_completion": {
+            "attempted": 5,
+            "succeeded": 4
+          }
+        }
+      ],
+      "run": "20261018T021013Z-7667ca"
+    },
+    {
+      "mode": "scripted_product_preflight",
+      "model": null,
+      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
+      "requested": 1,
+      "completed": 1,
+      "successes": 1,
+      "passed": true,
+      "runtime_ms": 18475,
+      "model_calls": 0,
+      "cost_usd": 0,
+      "sessions": [
+        {
+          "id": 1,
+          "passed": true,
+          "status": "completed",
+          "task_completion": {
+            "attempted": 9,
+            "succeeded": 9
+          }
+        }
+      ],
+      "run": "20261018T021120Z-7c5ee8"
+    },
+    {
+      "mode": "local-agent",
+      "model": "qwen3:8b",
+      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
+      "requested": 10,
+      "completed": 4,
+      "successes": 0,
+      "passed": false,
+      "runtime_ms": 253387,
+      "model_calls": 7,
+      "cost_usd": 0,
+      "sessions": [
+        {
+          "id": 1,
+          "passed": false,
+          "status": "completed_with_failure",
+          "task_completion": {
+            "attempted": 5,
+            "succeeded": 5
+          }
+        },
+        {
+          "id": 2,
+          "passed": false,
+          "status": "completed_with_failure",
+          "task_completion": {
+            "attempted": 6,
+            "succeeded": 6
+          }
+        },
+        {
+          "id": 3,
+          "passed": false,
+          "status": "completed_with_failure",
+          "task_completion": {
+            "attempted": 5,
+            "succeeded": 5
+          }
+        },
+        {
+          "id": 4,
+          "passed": false,
+          "status": "completed_with_failure",
+          "task_completion": {
+            "attempted": 1,
+            "succeeded": 1
+          }
+        }
+      ],
+      "run": "20261018T021206Z-d6b035"
+    },
+    {
+      "mode": "local-agent",
+      "model": "qwen3:8b",
+      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
+      "requested": 10,
+      "completed": 6,
+      "successes": 6,
+      "passed": false,
+      "runtime_ms": 344523,
+      "model_calls": 12,
+      "cost_usd": 0,
+      "sessions": [
+        {
+          "id": 5,
+          "passed": true,
+          "status": "completed",
+          "task_completion": {
+            "attempted": 5,
+            "succeeded": 5
+          }
+        },
+        {
+          "id": 6,
+          "passed": true,
+          "status": "completed",
+          "task_completion": {
+            "attempted": 2,
+            "succeeded": 2
+          }
+        },
+        {
+          "id": 7,
+          "passed": true,
+          "status": "completed",
+          "task_completion": {
+            "attempted": 5,
+            "succeeded": 5
+          }
+        },
+        {
+          "id": 8,
+          "passed": true,
+          "status": "completed",
+          "task_completion": {
+            "attempted": 6,
+            "succeeded": 6
+          }
+        },
+        {
+          "id": 9,
+          "passed": true,
+          "status": "completed",
+          "task_completion": {
+            "attempted": 6,
+            "succeeded": 6
+          }
+        },
+        {
+          "id": 10,
+          "passed": true,
+          "status": "completed",
+          "task_completion": {
+            "attempted": 2,
+            "succeeded": 2
+          }
+        }
+      ],
+      "run": "20261018T021740Z-1e1b47"
     }
   ],
   "local_model": {
@@ -160,9 +428,22 @@
   },
   "pilot": {
     "planned_sessions": 10,
-    "status": "prepared_not_executed",
+    "status": "executed_with_limitations",
     "concurrency": 1,
-    "paid_inference_allowed": false
+    "paid_inference_allowed": false,
+    "attempted": 10,
+    "completed": 9,
+    "incomplete": 1,
+    "successes": 6,
+    "wall_elapsed_ms": 688609,
+    "model_calls": 19,
+    "model_calls_completed": 16,
+    "prompt_tokens": 29211,
+    "completion_tokens": 2276,
+    "evaluations_completed": 6,
+    "screenshots": 41,
+    "finalized_traces": 9,
+    "scale_ready": false
   },
   "human_testing": {
     "verified_participants": 0,

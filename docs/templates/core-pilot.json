@@ -1,13 +1,40 @@
 {
-  "status": "prepared_not_executed",
+  "status": "template_not_started",
   "sessions": 10,
   "concurrency": 1,
   "mode": "local-agent",
   "ref": "v9.2/earth-first",
-  "requirements": ["successful single local-agent session on the same commit and model", "already installed local model", "zero paid calls", "external network blocked", "isolated browser context per session"],
-  "stop_on_first_failure": true,
-  "max_model_calls_per_session": 12,
+  "requirements": [
+    "successful product preflight on the same commit and entry",
+    "already installed local model",
+    "zero paid calls",
+    "external network blocked",
+    "isolated browser context per session"
+  ],
+  "stop_on_first_failure": false,
+  "max_model_calls_per_session": 2,
   "max_cost_usd": 0,
-  "long_term_sessions": [400, 1000],
-  "scaling_authorized": false
+  "long_term_sessions": [
+    400,
+    1000
+  ],
+  "scaling_authorized": false,
+  "suite": "pilot",
+  "entry": "room",
+  "per_session_budget_seconds": 180,
+  "total_budget_seconds": 1800,
+  "personas": [
+    "First-time visitor",
+    "Nontechnical user",
+    "Scientific researcher",
+    "Environmental researcher",
+    "Student",
+    "Urban planner",
+    "Skeptical investor",
+    "Accessibility-focused user",
+    "Community contributor",
+    "Technical power user"
+  ],
+  "stop_on_safety_or_inference_infrastructure_failure": true,
+  "actual_results": "docs/CORE_HQ_TESTING_REPORT.md"
 }
