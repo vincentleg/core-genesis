@@ -1,0 +1,53 @@
+{
+  "summary": {
+    "mode": "local-agent",
+    "model": "qwen3:8b",
+    "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
+    "requested": 1,
+    "completed": 1,
+    "successes": 1,
+    "passed": true,
+    "runtime_ms": 88843,
+    "model_calls": 5,
+    "cost_usd": 0,
+    "human_participants": 0,
+    "sessions": [
+      {
+        "id": 1,
+        "passed": true,
+        "task_completion": {
+          "attempted": 6,
+          "succeeded": 6
+        },
+        "coverage": [
+          "earth_explore",
+          "agents_layer",
+          "problems",
+          "contribution_ui",
+          "entry",
+          "model_directed_actions"
+        ]
+      }
+    ]
+  },
+  "private_evidence_directory": "company/core-browser/20261018T015606Z-a96878",
+  "capture_sha256": {
+    "summary.json": "49890d687d2ee54839c087d1b876cba3c706db1a80592b91ee0d7d43c6a32b9d",
+    "provenance.json": "eb3bb887ca80844d9772bcc236642291b22af1f981bc670c6c34af7df5d59fd1",
+    "config.json": "7d1991b93ebe24feb8c21f7b16d1e14a4f24d692bc50772cf1462b9c8731ced8",
+    "session-01/decision-3.json": "a4cfcc93e28c7e66dec5b98cd1b17cfd8dc9b445fa237b766cbfd3861718c0b7",
+    "session-01/report.json": "128c3d45b2edd52cd50628d9d7686a6f578cd6473845d80768b27d364282ab14",
+    "session-01/decision-2.json": "635217fb7bcecd78e720e14084b5ea7eb4c2c8f17afb14b89f95bfceb6882e0c",
+    "session-01/01.png": "db223f86efea1cf551de661a285ca2f4e5ac8014ae684116cf84ed3aa1666b9e",
+    "session-01/03.png": "28c25b212e32b4905d49bde1dec3c30da997bd3567cd313738d698384a89d935",
+    "session-01/02.png": "6b6ed43d2502997750fc761c64d138af132fe69b73932d9660adbafbeee4d5e1",
+    "session-01/06.png": "aa44aa8e03242d1170ccca2854aadc55c74e9f3dea577e63d95feccf3dcd6acc",
+    "session-01/decision-4.json": "6fbfa7591f08cfc657e362f90f0ac44572c9074a1bc2740afb8a8aea2a493e76",
+    "session-01/05.png": "ce7acd592b01047eb6861526fa008661324f96bd1e900ac0b7a242f8b72623a2",
+    "session-01/trace.zip": "4c77290b64dcbd4d83652b0325f4ff5f1edc104e7714e3db2e0ea0d68ec5ed3d",
+    "session-01/04.png": "aa44aa8e03242d1170ccca2854aadc55c74e9f3dea577e63d95feccf3dcd6acc",
+    "session-01/decision-1.json": "b51b29d468cca750aa9987afcce57d347eb590315da26b7f5803ebd9f3e01d88",
+    "session-01/decision-0.json": "e743d4a04f39e1a0450f794384a7f1fcd26305ee2e2d29a59fb28984e9ed5735"
+  },
+  "privacy": "Screenshots, trace, prompts and source bodies stay local in ignored company/ storage."
+}

@@ -1,0 +1,60 @@
+# CORE HQ browser testing
+
+## Framework decision
+
+Selected: the existing **Playwright 1.64.1** browser library (Apache-2.0), with a bounded local-model decision adapter. No new dependency was required. Playwright is a browser automation framework, not an autonomous reasoning model. The adapter requests decisions from a local Ollama model and executes constrained actions; it does not claim to be the upstream Playwright planner/generator/healer agents.
+
+Official sources checked October 17, 2026:
+
+| Option | Compatibility and evidence | Cost and decision |
+| --- | --- | --- |
+| [Playwright](https://github.com/microsoft/playwright) and its [agent tooling](https://playwright.dev/docs/test-agents) | Already used in HQ; real Chrome, isolated contexts, DOM/accessibility observations, screenshots. [Tracing](https://playwright.dev/docs/api/class-tracing) captures operations/network; our report separately records task assertions. Exact dependency already pinned. | Reuse selected. Browser execution has no API fee. Existing installation works; this is not a comparative stability benchmark. |
+| [Browser Use](https://github.com/browser-use/browser-use) | Purpose-built open-source browser agents; Python Agent and local-model support. Would add a second runtime/browser lifecycle alongside existing Playwright recording. | Consider for broader exploration after pilot. Cloud services and remote model defaults require cost/privacy review. Local execution is possible; not installed or claimed tested here. |
+
+This deliberately small integration reuses the existing browser framework instead of adopting a second browser stack before one real session is verified. Model-directed decisions and scripted regression checks remain separate modes and counts.
+
+## Executable limits
+
+`inspect_core.py`: local Git object reads only; fixed default branch; explicit refs; no fetch/checkout or fallback. Full eligible `src/`, `test/`, `schemas/`, entry files and selected architecture documentation, with a 2 MB per-file limit. Source selection and omissions are explicit. Git tree inventory includes files whose bodies were not inspected. Local dirty status is recorded but working-tree edits are excluded.
+
+`test_core.py`: immutable local static server. No production testing mode exists. Server uses only tracked static-file paths at the selected SHA. Every response includes `X-CORE-Commit`. No POST handler, backend startup, source execution, build command or CORE mutation. Repository JavaScript executes only inside the isolated browser.
+
+`core_browser.cjs`: real Chrome/Chromium; isolated, unauthenticated contexts; blocked external requests and non-GET/HEAD requests; no downloads or service workers. Scripted mode verifies bounded visible UI behaviors. Local-agent mode sends the rendered accessibility snapshot and visible controls to **127.0.0.1:11434 only**, never to Crusoe or a cloud provider. Existing Ollama models only; no downloads. Controls are reobserved after each step; generated shell/JavaScript is never executed. Mutation-like controls are rejected. Each model call records observed state, decision, notes and token counts. Model notes remain AI-generated evaluations, not human testimony or proven UX findings.
+
+Actions have an 8-second timeout; local inference has a 35-second timeout; 12 decisions/model calls maximum; no automatic retries; 170-second decision-loop runtime bound plus a 240-second-per-requested-session process watchdog; serial sessions; stop on failure. Pilot requires explicit command flag plus a successful single-session gate for the same mode, model and commit. Screenshots and traces are retained even after failure when capture succeeds; capture failures are recorded.
+
+## Evidence and interpretation
+
+Private `company/core-browser/<run>/` contains provenance, config, session reports, PNG screenshots, trace ZIPs, model decisions, summary and SHA-256 manifest. The first sandbox-denied attempt may contain only provenance; it is not a browser session. A report's `task_completion` counts executed actions, not human task comprehension. `features` refers to verified checks only. Keyboard input establishes that input was sent, not that map coordinates changed unless an assertion verifies movement.
+
+Offline requests to external tiles are expected to be blocked. These are retained as errors/limitations, not silently discarded. Optional missing local backend state can generate a 404; do not classify it as a production regression without reproduction. Live map imagery, real-location data delivery, live CORE AI dialogue and contribution submission require additional task-specific checks. A navigation session cannot establish that all of CORE works.
+
+Workflow: read → browser test → evidence → local review record → proposed investigation → verify a reviewed change → human approval. `review_core_session.py` creates evidence-linked findings from failed actions/page errors and leaves verification unexecuted. It does not edit CORE, resolve causes automatically or label suggestions as verified improvements.
+
+## Ten-session pilot
+
+[Machine-readable preparation](templates/core-pilot.json). Do not run hundreds. First establish one model-directed session. Then use ten independent browser contexts, alternating desktop/mobile, at the same commit. Current pilot varies viewport, not ten independent human personas or ten parallel model agents. A fuller task matrix (location, recorded agent dialogue, contribution, accessibility and first-time comprehension) is future work. Record completion, coverage, errors, timing and local token counts; do not manufacture costs or participant counts. Paid API cost is zero in the current adapter; electricity/hardware costs are not measured.
+
+A remote-model adapter is not implemented. If required later, obtain separate approval for cost ceiling, endpoint and page-data disclosure; route approved Crusoe calls through the existing `RequestBudget`. No API key or remote source transmission is required for the local adapter.
+
+## Human research
+
+`ingest_human_testing.py` accepts mapped platform exports, not provider credentials. Unique pseudonymous participant rows, actual tasks, evidence and documented consent are required for nonempty studies. Completion rates are computed from performed task rows; duplicate participants/tasks and count mismatches fail. Keep unconsented records outside ingestion. Evidence references and consent authenticity require human review. There is no recruitment, platform account connection, payment or assertion of real participants without an import.
+
+## Verified initial execution
+
+Local CORE branch `v9.2/earth-first`, commit `da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5`. Source inventory: 568 tracked files; 190 full eligible file bodies read. CORE remained clean and was not changed.
+
+| Run (private company/core-browser directory) | Actual result |
+| --- | --- |
+| `20261018T014740Z-cc61a8` | Initial scripted session: 3/6 actions succeeded. Unclosed panel and ambiguous harness selector; retained. |
+| `20261018T014921Z-50067f` | Corrected scripted session: 8/8 actions succeeded, zero model calls, ~22.5 s. Keyboard input sent; coordinate movement not asserted. |
+| `20261018T014949Z-6b1503` | First local AI attempt hit the 240 s process timeout while reopening a panel. Partial action screenshots/decisions/usage retained; no finalized trace or successful completion claimed. Ten calls attempted; last in-flight call has no reported token usage. |
+| `20261018T015442Z-b09b6f` | Local AI attempt ended with an offscreen skip-link failure and repeated-action stop. Two calls; finalized trace retained. |
+| `20261018T015606Z-a96878` | Local AI session completed: 6/6 actions, 5 genuine model decisions, 4 UI milestones verified, 6 screenshots, decision logs and 12.9 MB trace. ~88.8 s process runtime (~86.5 s browser session), 8,397 prompt / 119 output tokens, $0 paid API cost. |
+
+The successful AI agent selected controls from rendered accessibility observations. It entered Earth, selected CORE World, opened Problems & missions, closed the panel and opened Contribute. No contribution was submitted. Screenshots were captured immediately after actions, so some frames may precede a panel animation; the trace and visibility assertions also record the DOM state. Future captures disable finite screenshot animations for clarity.
+
+There were zero page JavaScript exceptions in the successful session. External map requests were deliberately blocked. The optional `/.core-local/civ/state.json` request returned 404 because the immutable static runtime does not serve untracked local backend state. This is an environment limitation, not an established production defect. No live agent dialogue or first-time human comprehension was evaluated. Model notes describe actions, not a validated usability study.
+
+A rough linear ten-session estimate from the successful session is ~15 minutes and ~85,160 local model tokens; this excludes startup variation, mobile differences and failed-session overhead. It is not a measured pilot. No paid API charges are expected with the local-only adapter; hardware/electricity costs are unmeasured. The ten-session pilot was prepared but not executed.

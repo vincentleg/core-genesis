@@ -1,6 +1,6 @@
 # CORE Local Solutions — First Brick
 
-A working, isolated Python standard-library prototype built inside CORE GENESIS. The original CORE repository was inspected read-only and was not modified.
+A working, isolated Python standard-library prototype built inside CORE HQ. The original CORE repository was inspected read-only and was not modified.
 
 Run from this directory:
 

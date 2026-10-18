@@ -1,6 +1,7 @@
 """Local-only Arena server. No dependencies, shell execution, or public mutations."""
 import argparse
 import json
+import os
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse
@@ -87,6 +88,9 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
                     return self.send(200, json.loads(file.read_text())) if file.suffix == '.json' else self.send(200, file.read_bytes(), 'text/plain; charset=utf-8')
                 except (ValueError, OSError) as exc:
                     return self.send(404, {'error': str(exc)})
+            if path in {"/hq-status.json", "/api/hq/status"}:
+                from .hq_status import hq_status
+                return self.send(200, hq_status())
             if path == "/api/company":
                 return self.send(200, {"mission": company.snapshot(), "governance": company.governance()})
             if path == "/api/company/history":
@@ -102,7 +106,7 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
                     return self.send(200, file.read_bytes(), "text/markdown; charset=utf-8") if suffix == ".md" else self.send(200, json.loads(file.read_text()))
                 return self.send(404, {"error": "Mission not found"})
             if path == "/capabilities.json":
-                return self.send(200, {"live": True, "company": True, "mode": "local_budgeted_live", "note": "Inference requires an explicit user action; existing budget limits apply."})
+                return self.send(200, {"live": True, "company": True, "paid_inference_enabled": os.environ.get("CORE_HQ_ALLOW_PAID_INFERENCE") == "approved", "mode": "local_read_only", "note": "Paid inference disabled by default. Use CORE HQ status and the local CORE browser harness."})
             if path in {"/evidence/story.json", "/evidence/continuation.json", "/evidence/verified.json", "/evidence/manifest.json", "/evidence/company-mission.json"}:
                 file = ROOT / "public" / path.lstrip("/")
                 if file.is_file():
@@ -134,7 +138,10 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
                 if file.is_file():
                     return self.send(200, json.loads(file.read_text()))
                 return self.send(404, {"error": "Unknown experiment"})
-            assets = {"/": ("world.html", "text/html; charset=utf-8"), "/arena": ("arena.html", "text/html; charset=utf-8"),
+            assets = {"/hq.html": ("hq.html", "text/html; charset=utf-8"),
+                      "/hq.js": ("hq.js", "text/javascript; charset=utf-8"), "/hq.css": ("hq.css", "text/css; charset=utf-8"),
+                      "/genesis-run.js": ("genesis-run.js", "text/javascript; charset=utf-8"), "/genesis.css": ("genesis.css", "text/css; charset=utf-8"),
+                      "/": ("world.html", "text/html; charset=utf-8"), "/arena": ("arena.html", "text/html; charset=utf-8"),
                       "/world.js": ("world.js", "text/javascript; charset=utf-8"), "/world.css": ("world.css", "text/css; charset=utf-8"),
                       "/campus.js": ("campus.js", "text/javascript; charset=utf-8"), "/economy.js": ("economy.js", "text/javascript; charset=utf-8"),
                       "/company-ui.js": ("company-ui.js", "text/javascript; charset=utf-8"),
@@ -169,6 +176,8 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
                 return self.send(403, {"error": "Same origin required"})
             if self.headers.get("X-Genesis-Action") not in {"evolve", "local-test", "mission", "ceo", "testing"}:
                 return self.send(403, {"error": "Explicit action header required"})
+            if self.path in {'/api/evolve', '/api/company/mission', '/api/company/testing/batch'} and os.environ.get('CORE_HQ_ALLOW_PAID_INFERENCE') != 'approved':
+                return self.send(403, {'error': 'Paid inference disabled; explicit founder approval required. The CORE HQ local browser harness uses no paid APIs.'})
             if self.path in {'/api/company/testing/browser', '/api/company/testing/audience', '/api/company/testing/batch'}:
                 if self.headers.get('X-Genesis-Action') != 'testing':
                     return self.send(403, {'error': 'Explicit testing action required'})
@@ -262,7 +271,7 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
             pass
 
     server = ThreadingHTTPServer((host, port), Handler)
-    print("CORE GENESIS · Living Company → http://%s:%s · Technical Arena /arena" % (host, port), flush=True)
+    print("CORE HQ · Living Company → http://%s:%s · Technical Arena /arena" % (host, port), flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
@@ -272,7 +281,7 @@ def serve(host="127.0.0.1", port=8080, fresh=False):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="CORE GENESIS local Evolution Arena")
+    parser = argparse.ArgumentParser(description="CORE HQ local Evolution Arena")
     parser.add_argument("--port", type=int, default=8080)
     parser.add_argument("--host", choices=["127.0.0.1", "0.0.0.0"], default="127.0.0.1")
     parser.add_argument("--fresh", action="store_true", help="Run reproducible baseline experiments instead of continuing the last verified team")

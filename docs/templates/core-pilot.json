@@ -1,0 +1,13 @@
+{
+  "status": "prepared_not_executed",
+  "sessions": 10,
+  "concurrency": 1,
+  "mode": "local-agent",
+  "ref": "v9.2/earth-first",
+  "requirements": ["successful single local-agent session on the same commit and model", "already installed local model", "zero paid calls", "external network blocked", "isolated browser context per session"],
+  "stop_on_first_failure": true,
+  "max_model_calls_per_session": 12,
+  "max_cost_usd": 0,
+  "long_term_sessions": [400, 1000],
+  "scaling_authorized": false
+}

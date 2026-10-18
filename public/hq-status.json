@@ -1,0 +1,173 @@
+{
+  "brand": "CORE HQ",
+  "core_access": "read_only",
+  "source": {
+    "requested_ref": "v9.2/earth-first",
+    "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
+    "checkout_branch": "v9.2/earth-first",
+    "checkout_dirty": false,
+    "retrieved_at": "2026-10-18T01:45:58.367446+00:00",
+    "environment": "local_development",
+    "file_count": 568
+  },
+  "complete_source_files_read": 190,
+  "production": {
+    "url": "https://creationofrebornearth.com",
+    "commit": null,
+    "status": "Older production per founder; V9.2 not deployed. Not inspected by this operation."
+  },
+  "sessions": [
+    {
+      "mode": "scripted",
+      "model": null,
+      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
+      "requested": 1,
+      "completed": 1,
+      "successes": 0,
+      "passed": false,
+      "runtime_ms": 32397,
+      "model_calls": 0,
+      "cost_usd": 0,
+      "sessions": [
+        {
+          "id": 1,
+          "passed": false,
+          "task_completion": {
+            "attempted": 6,
+            "succeeded": 3
+          },
+          "coverage": [
+            "entry",
+            "status",
+            "explore"
+          ]
+        }
+      ],
+      "run": "20261018T014740Z-cc61a8"
+    },
+    {
+      "mode": "scripted",
+      "model": null,
+      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
+      "requested": 1,
+      "completed": 1,
+      "successes": 1,
+      "passed": true,
+      "runtime_ms": 22536,
+      "model_calls": 0,
+      "cost_usd": 0,
+      "sessions": [
+        {
+          "id": 1,
+          "passed": true,
+          "task_completion": {
+            "attempted": 8,
+            "succeeded": 8
+          },
+          "coverage": [
+            "entry",
+            "status",
+            "explore",
+            "navigation",
+            "agents_layer",
+            "problems",
+            "contribution_ui"
+          ]
+        }
+      ],
+      "run": "20261018T014921Z-50067f"
+    },
+    {
+      "mode": "local-agent",
+      "model": "qwen3:8b",
+      "commit": null,
+      "requested": null,
+      "completed": 0,
+      "successes": null,
+      "passed": false,
+      "runtime_ms": null,
+      "model_calls": 10,
+      "cost_usd": null,
+      "sessions": null,
+      "run": "20261018T014949Z-6b1503",
+      "model_calls_attempted": 10,
+      "partial_actions": 10,
+      "error": "Harness time limit exceeded; partial artifacts retained"
+    },
+    {
+      "mode": "local-agent",
+      "model": "qwen3:8b",
+      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
+      "requested": 1,
+      "completed": 1,
+      "successes": 0,
+      "passed": false,
+      "runtime_ms": 34819,
+      "model_calls": 2,
+      "cost_usd": 0,
+      "sessions": [
+        {
+          "id": 1,
+          "passed": false,
+          "task_completion": {
+            "attempted": 2,
+            "succeeded": 1
+          },
+          "coverage": [],
+          "failure": "Repeated unchanged control: Skip to problems and missions (no 3D needed)"
+        }
+      ],
+      "run": "20261018T015442Z-b09b6f"
+    },
+    {
+      "mode": "local-agent",
+      "model": "qwen3:8b",
+      "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
+      "requested": 1,
+      "completed": 1,
+      "successes": 1,
+      "passed": true,
+      "runtime_ms": 88843,
+      "model_calls": 5,
+      "cost_usd": 0,
+      "sessions": [
+        {
+          "id": 1,
+          "passed": true,
+          "task_completion": {
+            "attempted": 6,
+            "succeeded": 6
+          },
+          "coverage": [
+            "earth_explore",
+            "agents_layer",
+            "problems",
+            "contribution_ui",
+            "entry",
+            "model_directed_actions"
+          ]
+        }
+      ],
+      "run": "20261018T015606Z-a96878"
+    }
+  ],
+  "local_model": {
+    "status": "available",
+    "models": [
+      "qwen3:8b"
+    ],
+    "inference_calls": 0
+  },
+  "pilot": {
+    "planned_sessions": 10,
+    "status": "prepared_not_executed",
+    "concurrency": 1,
+    "paid_inference_allowed": false
+  },
+  "human_testing": {
+    "verified_participants": 0,
+    "status": "No participation independently verified. Import support implemented; no recruitment."
+  },
+  "authority": "No CORE writes, merges, pushes or deployments. Changes require human review.",
+  "historical_evidence": "Campus replay and synthetic campaigns describe the hackathon and separate Local Solutions prototype, not CORE V9.2 testing."
+}

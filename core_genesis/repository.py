@@ -25,7 +25,7 @@ def read_public(url, limit, guard=lambda: None):
     guard()
     if not url.startswith((API + "/", API + "?", "https://raw.githubusercontent.com/" + REPO + "/")) and url != API:
         raise ValueError("Only the fixed public CORE repository may be retrieved")
-    request = urllib.request.Request(url, headers={"User-Agent": "CORE-GENESIS-read-only-research", "Accept": "application/vnd.github+json"})
+    request = urllib.request.Request(url, headers={"User-Agent": "CORE-HQ-read-only-research", "Accept": "application/vnd.github+json"})
     for attempt in range(2):
         guard()
         try:

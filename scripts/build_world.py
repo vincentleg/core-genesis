@@ -15,7 +15,7 @@ RECORDS = {"story": "20261017-123548-c377d6", "continuation": "20261017-123736-6
 def build():
     out = ROOT / "public"
     out.mkdir(exist_ok=True)
-    for name in ("world.html", "world.css", "world.js", "campus.js", "economy.js", "company-ui.js", "company.css", "testing-ui.js", "genesis-run.js", "genesis.css"):
+    for name in ("world.html", "world.css", "world.js", "campus.js", "economy.js", "company-ui.js", "company.css", "testing-ui.js", "genesis-run.js", "genesis.css", "hq.html", "hq.js", "hq.css"):
         shutil.copyfile(ROOT / "web" / name, out / ("index.html" if name == "world.html" else name))
     shutil.copytree(ROOT / "web/vendor", out / "vendor", dirs_exist_ok=True)
     if (ROOT / "video/genesis-demo.webm").exists():
@@ -61,9 +61,11 @@ def build():
         record = json.loads(prior.read_text())["mission"]
         (evidence / "prior-evolution.json").write_text(json.dumps({"mission_id": record["id"], "evolution": record["evolution"]}, separators=(",", ":")))
     (evidence / "product-testing.json").write_text(json.dumps(testing, separators=(",", ":")))
-    (out / "capabilities.json").write_text(json.dumps({"live": False, "mode": "public_static_replay", "note": "Public experience has no inference endpoint. Run the Python server locally for budget-controlled live evolution."}))
+    (out / "capabilities.json").write_text(json.dumps({"live": False, "mode": "public_static_replay", "note": "Historical campus replay. CORE HQ status records local CORE inspection and browser evidence. No inference endpoint in static output."}))
     (out / "vercel.json").write_text(json.dumps({"version": 2, "cleanUrls": True, "headers": [{"source": "/(.*)", "headers": [{"key": "X-Content-Type-Options", "value": "nosniff"}, {"key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'"}]}]}))
     (out / ".vercelignore").write_text(".vercel\n")
+    from core_genesis.hq_status import hq_status
+    (out / "hq-status.json").write_text(json.dumps(hq_status(), indent=2))
     try:
         secret = load_api_key().encode()
     except RuntimeError:

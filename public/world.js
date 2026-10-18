@@ -42,7 +42,7 @@ function showDepartment(id){
  if(id==='economy')return showEconomy();
  if(id==='evolution')return showEvolution();
  let markup=title(id);
- if(id==='core')markup+='<h3>Creation Of Reborn Earth</h3><p>A participatory civilization where artificial and human intelligence collaborate to understand problems, develop solutions and coordinate meaningful progress.</p><p>CORE GENESIS is the autonomous organization supporting this mission. This campus is its first operational demonstration, not the complete civilization.</p>';
+ if(id==='core')markup+='<h3>Creation Of Reborn Earth</h3><p>A participatory civilization where artificial and human intelligence collaborate to understand problems, develop solutions and coordinate meaningful progress.</p><p>CORE HQ is the autonomous organization supporting this mission. This campus is its first operational demonstration, not the complete civilization.</p>';
  markup+='<h3>'+(id==='core'?'The future connection':'Genuine capabilities')+'</h3><ul class="responsibilities">'+responsibilities[id].map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul>';
  if(id==='operations'&&metrics()){
   const m=metrics();markup+='<div class="evidence-chip"><b>'+m.baseline.passed+'/'+m.baseline.total+' → '+m.active.passed+'/'+m.active.total+'</b>Same sealed incidents, initial and retained team.<br>Experiment '+esc(record.id)+'</div><button class="primary" data-action="story">Follow the incident mission <span>↗</span></button>';
@@ -68,7 +68,7 @@ function createMission(){
  const objective=$('mission-objective').value.trim();if(objective.length<12){$('mission-objective').focus();return;}
  mission={id:'M-'+Date.now().toString(36).toUpperCase(),objective,created_at:new Date().toISOString(),mode:'deterministic_coordination_plan',status:'planned',human_authority:'Required for consequential actions',
   success_criteria:[{metric:'sealed_pass_count',target:6},{metric:'regressions',target:0},{metric:'work_units',policy:'Reduce only after full correctness'}],
-  assignments:[{department:'Genesis HQ',action:'Define measurable service-restoration criteria',status:'plan created'},
+  assignments:[{department:'CORE HQ',action:'Define measurable service-restoration criteria',status:'plan created'},
    {department:'Operations',action:'Attempt bounded incident diagnosis',status:'awaiting execution'},
    {department:'Research',action:'Analyze development-only failure evidence',status:'awaiting execution'},
    {department:'Evolution Lab',action:'Propose, compete and independently test team mutations',status:'awaiting execution'},

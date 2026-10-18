@@ -61,6 +61,8 @@ class CrusoeClient:
         return f"CrusoeClient(base_url={self.base_url!r}, model={self.model!r})"
 
     def _request(self, method: str, path: str, payload: Optional[dict] = None) -> Any:
+        if method != 'GET' and os.environ.get('CORE_HQ_ALLOW_PAID_INFERENCE') != 'approved':
+            raise RuntimeError('Paid inference disabled. Founder approval is required before setting CORE_HQ_ALLOW_PAID_INFERENCE=approved.')
         data = json.dumps(payload).encode() if payload is not None else None
         headers = {"Authorization": f"Bearer {self._api_key}", "Content-Type": "application/json"}
         for attempt in range(self.max_retries + 1):

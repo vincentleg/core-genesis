@@ -1,4 +1,4 @@
-// Real browser scenarios against the CORE GENESIS site (local build or public URL). Deterministic, no model calls.
+// Real browser scenarios against the CORE HQ site (local build or public URL). Deterministic, no model calls.
 const {chromium}=require('playwright'),fs=require('fs'),path=require('path');
 const BASE=process.argv[2]||'http://127.0.0.1:8090/',MANUAL=BASE+'?autoplay=0',OUT=path.resolve(__dirname,'../public/testing');
 (async()=>{
@@ -19,8 +19,8 @@ const BASE=process.argv[2]||'http://127.0.0.1:8090/',MANUAL=BASE+'?autoplay=0',O
  }
  const visible=(page,sel)=>page.locator(sel).first().waitFor({state:'visible',timeout:8000});
  await scenario('hero','First-visit comprehension tester',{width:1440,height:900},async(page,step)=>{
-  await step('hero headline and CORE/GENESIS distinction visible',async()=>{await visible(page,'.hero h1');const text=await page.locator('.hero').innerText();if(!/BUILDS CORE/i.test(text)||!/GENESIS/.test(text)||!/CORE/.test(text))throw new Error('hero copy missing');});
-  await step('WATCH GENESIS RUN primary action visible',()=>visible(page,'#run-genesis'));
+  await step('hero headline and CORE/CORE HQ distinction visible',async()=>{await visible(page,'.hero h1');const text=await page.locator('.hero').innerText();if(!/BUILDS CORE/i.test(text)||!/CORE HQ/.test(text)||!/CORE/.test(text))throw new Error('hero copy missing');});
+  await step('WATCH CORE HQ RUN primary action visible',()=>visible(page,'#run-genesis'));
   await step('eight named AI employees rendered on campus',async()=>{await page.waitForFunction(()=>document.querySelectorAll('.crew-tag').length===8,null,{timeout:10000});});
  });
  await scenario('replay','One-click replay tester',{width:1440,height:900},async(page,step)=>{

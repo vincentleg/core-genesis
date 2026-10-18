@@ -5,6 +5,8 @@ import json
 
 
 def public_company_record(mission, governance):
+    if (mission.get('snapshot') or {}).get('external_transmission_allowed') is False:
+        raise ValueError('Private local CORE snapshots cannot enter public evidence exports')
     result = copy.deepcopy(mission)
     growth = result.get("artifacts", {}).get("growth")
     if growth:
