@@ -1,3 +1,16 @@
+# CORE HQ FROZEN — deployed 2026-10-18
+
+- Implementation/deployment commit: `1ddd13f`; shutdown checkpoint remains `36f928c`.
+- Branch synchronized to GitHub: `feat/core-hq-real-core-testing`.
+- Live interface: https://core-genesis-living.vercel.app (existing project `core-genesis-living`).
+- Protected preview: https://core-genesis-living-3v385ev29-vincentleg.vercel.app.
+- Five static output files only. Deployment upload allowlist verified; no backend, admin controls, model inference, browser automation, raw reports, source bundles or private evidence. Existing historical campus/evidence files remain in the repository but are excluded from the deployed interface.
+- Hosted Chromium smoke passed: heading and all four current recorded session rows rendered. Preview checks: metrics 200; private evidence, historical report download and API paths 404. Production alias verified; anonymous browser access works. Existing Vercel protection settings retained; zero environment variables; Hobby plan unchanged.
+- Existing screenshots/traces/hackathon history preserved. No new AI sessions or campaigns. Historical metrics below remain historical. Documentation consolidation and scheduler edge-case verification are deferred, not completed.
+- **HQ is frozen. Move to CORE. Return only for a critical HQ deployment issue or explicit founder instruction.** The new master prompt authorizes CORE work, GitHub synchronization and preview/production deployment; earlier HQ-only restrictions below describe the previous phase.
+
+---
+
 # STOPPED — resumption snapshot (2026-10-18 UTC / October 17 Pacific)
 
 Work was stopped at the founder's usage-limit request. **Do not launch testing, inference or campaigns until work is explicitly resumed.** No testing or development was started during shutdown. Process inspection found no active HQ browser/campaign/inference jobs; the selected-session scheduler journal is finished, with zero running sessions.
