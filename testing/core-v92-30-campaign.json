@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "campaign_id": "core-v92-diverse-30",
-  "status": "prepared_not_executed",
+  "status": "prepared_definition",
   "execution_enabled": false,
-  "campaign_executor_implemented": false,
-  "actual_sessions": 0,
+  "campaign_executor_implemented": true,
+  "results_location": "company/core-campaigns; this definition is not a live result ledger",
   "human_participants": 0,
   "core_access": "read_only",
   "core_repo": "~/core",
@@ -73,13 +73,13 @@
     "resume_only_never_started_ids": true,
     "never_reset_original_deadline": true,
     "never_replay_an_attempt_to_improve_counts": true,
-    "checkpoint_helper": "pending_sessions; bookkeeping only"
+    "checkpoint_helper": "campaign_scheduler.Scheduler durable policy and checkpoints"
   },
   "execution_gates": [
     "Explicit human approval for executing this prepared campaign",
-    "Passing corrected AI Earth session (currently blocked by failed verification)",
+    "Passing corrected real AI Earth browser gate with verified capture hashes",
     "Review single-journey assertions and unvalidated variants",
-    "Implement campaign scheduler enforcing the 60-minute global deadline and four-call cap; existing single-session runner is capped separately",
+    "Explicit subset, invocation limit and fixed total/session budgets; full 30 not authorized by preparation",
     "Record browser/model versions and target commit before launch"
   ],
   "journey_catalog_sha256": "f4bbcf6215ec8cddcb374b949613dff10bc5356f11e6993c71712e83513631f4",
@@ -100,8 +100,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-01",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -147,8 +146,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-02",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -194,8 +192,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-03",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -241,8 +238,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": true,
       "session_id": "campaign-04",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -290,8 +286,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": true,
       "session_id": "campaign-05",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -339,8 +334,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": true,
       "session_id": "campaign-06",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -388,8 +382,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": true,
       "session_id": "campaign-07",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -437,8 +430,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": true,
       "session_id": "campaign-08",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -487,8 +479,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": true,
       "session_id": "campaign-09",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -536,8 +527,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-10",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -583,8 +573,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-11",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -630,8 +619,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-12",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -678,8 +666,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-13",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -726,8 +713,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-14",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -773,8 +759,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-15",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -820,8 +805,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-16",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -872,8 +856,7 @@
         "not_campaign_execution": true
       },
       "session_id": "campaign-17",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -919,8 +902,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": true,
       "session_id": "campaign-18",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -973,8 +955,7 @@
         "not_campaign_execution": true
       },
       "session_id": "campaign-19",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -1020,8 +1001,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-20",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "fr",
       "viewport": {
         "width": 1440,
@@ -1067,8 +1047,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-21",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -1119,8 +1098,7 @@
         "not_campaign_execution": true
       },
       "session_id": "campaign-22",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 390,
@@ -1167,8 +1145,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-23",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 390,
@@ -1214,8 +1191,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-24",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 390,
@@ -1261,8 +1237,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-25",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -1308,8 +1283,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-26",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -1355,8 +1329,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-27",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -1402,8 +1375,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-28",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -1449,8 +1421,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-29",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,
@@ -1496,8 +1467,7 @@
       "max_runtime_ms": 180000,
       "requires_map_assets": false,
       "session_id": "campaign-30",
-      "status": "unstarted",
-      "actual_attempts": 0,
+      "definition_only": true,
       "locale": "en",
       "viewport": {
         "width": 1440,

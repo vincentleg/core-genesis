@@ -7,4 +7,4 @@ if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--commit',required=True);a=p.parse_args()
     plan=prepare(a.commit);target=ROOT/'testing/core-v92-30-campaign.json'
     target.write_text(json.dumps(plan,indent=2)+'\n')
-    print(json.dumps({'artifact':str(target),'planned_sessions':len(plan['sessions']),'actual_sessions':0,'execution_enabled':False,'paid_api_cost_usd':0}))
+    print(json.dumps({'artifact':str(target),'planned_sessions':len(plan['sessions']),'sessions_launched_by_preparation':0,'execution_enabled':False,'paid_api_cost_usd':0}))

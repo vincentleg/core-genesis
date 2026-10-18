@@ -3,13 +3,13 @@ import unittest
 from core_genesis.browser_campaign import prepare,pending_sessions
 
 class CampaignTests(unittest.TestCase):
-    def test_prepared_plan_has_distinct_unstarted_journeys_and_no_executor(self):
+    def test_prepared_definition_has_distinct_journeys_and_no_automatic_execution(self):
         plan=prepare('a'*40)
         self.assertEqual(len(plan['sessions']),30)
         self.assertEqual(len({s['id'] for s in plan['sessions']}),30)
         self.assertEqual(len({s['scenario'] for s in plan['sessions']}),10)
-        self.assertTrue(all(s['status']=='unstarted' and s['actual_attempts']==0 for s in plan['sessions']))
-        self.assertFalse(plan['execution_enabled']);self.assertFalse(plan['campaign_executor_implemented'])
+        self.assertTrue(all(s['definition_only'] and 'status' not in s for s in plan['sessions']))
+        self.assertFalse(plan['execution_enabled']);self.assertTrue(plan['campaign_executor_implemented'])
         self.assertEqual(plan['max_campaign_runtime_ms'],3600000)
         self.assertTrue(all(s['max_runtime_ms']<=180000 for s in plan['sessions']))
         self.assertTrue(all('--sessions' in s['single_session_command'] and s['single_session_command'][s['single_session_command'].index('--sessions')+1]=='1' for s in plan['sessions']))

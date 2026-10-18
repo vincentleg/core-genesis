@@ -1,10 +1,11 @@
 /** Local-only streaming inference. Transport injection is for unit tests, never browser evidence. */
 const fs=require('fs'),path=require('path');
-async function infer({dir,name,input,model,signal,deadline,onAttempt=()=>{},onResult=()=>{},fetchImpl=fetch,attemptLimits=[60000,25000],minRetryMs=8000,verifyTimeoutRecovery=false}){
+async function infer({dir,name,input,model,signal,deadline,onAttempt=()=>{},onResult=()=>{},fetchImpl=fetch,attemptLimits=[60000,25000],minRetryMs=8000,verifyTimeoutRecovery=false,beforeAttempt=()=>{}}){
  const stageDeadline=Math.min(deadline,Date.now()+90000);
  let last;
  for(let attempt=1;attempt<=2;attempt++){
   if(signal.aborted||stageDeadline-Date.now()<(attempt===1?1:minRetryMs))break;
+  beforeAttempt();
   const started=Date.now(),record={attempt,model,input,status:'running',started_at:new Date().toISOString(),partial_content:'',usage:null};
   const file=path.join(dir,`${name}-attempt-${attempt}.json`),save=()=>{fs.writeFileSync(file+'.tmp',JSON.stringify(record,null,2));fs.renameSync(file+'.tmp',file);};save();onAttempt();
   let status,final;const timeoutController=new AbortController();

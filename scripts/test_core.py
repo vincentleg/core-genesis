@@ -7,6 +7,7 @@ import mimetypes
 import re
 from pathlib import Path, PurePosixPath
 import subprocess
+import signal
 import sys
 import threading
 import time
@@ -40,10 +41,19 @@ def run_bounded(command, out, budget_seconds):
     """Reserve termination grace inside the deadline; retain finalized and partial reports."""
     process = subprocess.Popen(command, cwd=ROOT)
     watchdog = None
+    class StopRequested(Exception): pass
+    interrupted=False
+    def stop(signum,frame):
+        nonlocal interrupted
+        if not interrupted:
+            interrupted=True
+            raise StopRequested()
+    previous={sig:signal.getsignal(sig) for sig in [signal.SIGTERM,signal.SIGINT]}
+    for sig in previous: signal.signal(sig,stop)
     try:
         process.wait(timeout=max(0.01, budget_seconds-8))
-    except subprocess.TimeoutExpired:
-        watchdog = {'reason':'Harness deadline', 'termination':'SIGTERM', 'partial_artifacts_retained':True}
+    except (subprocess.TimeoutExpired,StopRequested):
+        watchdog = {'reason':'Interrupted' if interrupted else 'Harness deadline', 'termination':'SIGTERM', 'partial_artifacts_retained':True}
         process.terminate()
         try:
             process.wait(timeout=min(7, max(0.01, budget_seconds-0.01)))
@@ -51,6 +61,8 @@ def run_bounded(command, out, budget_seconds):
             process.kill()
             process.wait(timeout=1)
             watchdog['termination']='SIGKILL_after_grace'
+    finally:
+        for sig,handler in previous.items(): signal.signal(sig,handler)
     if watchdog:
         (out/'watchdog.json').write_text(json.dumps(watchdog,indent=2))
     if not (out/'summary.json').exists():
@@ -70,6 +82,8 @@ def run_bounded(command, out, budget_seconds):
 def main():
     launched = time.monotonic()
     p = argparse.ArgumentParser()
+    p.add_argument('--run-id',help='Reserved unique capture ID; existing captures are never overwritten')
+    p.add_argument('--viewport',default='1440x1000')
     p.add_argument('--smoke-run',help='Verified successful combined smoke capture prerequisite')
     p.add_argument('--resume', help='Continue only unrun personas of an existing pilot within its original deadline')
     p.add_argument('--entry', choices=['earth','room','mixed'], default='earth', help='Explicit product entry; no silent fallback')
@@ -117,6 +131,10 @@ def main():
         if match['requires_map_assets'] and a.map_network!='public-assets': p.error('This journey requires explicit public map assets')
         a.entry=match['entry']
     elif a.scenario or a.variant: p.error('Scenario/variant requires journey suite')
+    if a.run_id and not re.fullmatch(r'\d{8}T\d{6}Z-[a-f0-9]{6}',a.run_id): p.error('Invalid reserved capture ID')
+    if not re.fullmatch(r'\d{3,4}x\d{3,4}',a.viewport): p.error('Viewport must be WIDTHxHEIGHT')
+    width,height=map(int,a.viewport.split('x'))
+    if not 320<=width<=1920 or not 480<=height<=1600:p.error('Viewport outside bounded test sizes')
     snapshot = inspect_core(a.repo, a.ref)
     if a.suite == 'pilot' and (a.mode != 'local-agent' or not a.execute_pilot): p.error('Pilot requires local-agent mode and --execute-pilot')
     if a.suite in {'product','earth-diagnostic'} and a.sessions != 1: p.error('Product preflight is one session')
@@ -162,7 +180,7 @@ def main():
         resume_root=a.resume
         start_index=len(ids)
     if a.suite=='pilot' and not a.resume and not a.smoke_run: p.error('New pilots require --smoke-run with a verified combined smoke')
-    run = dt.datetime.now(dt.timezone.utc).strftime('%Y%m%dT%H%M%SZ-') + uuid.uuid4().hex[:6]
+    run = a.run_id or dt.datetime.now(dt.timezone.utc).strftime('%Y%m%dT%H%M%SZ-') + uuid.uuid4().hex[:6]
     out = ROOT/'company/core-browser'/run
     out.mkdir(parents=True)
     # Evidence contains paths/hashes only; source bodies never go to browser models or public output.
@@ -171,7 +189,7 @@ def main():
     (out/'provenance.json').write_text(json.dumps(provenance, indent=2))
     server = ThreadingHTTPServer(('127.0.0.1',0), handler(snapshot['local_path'], snapshot['commit'], set(snapshot['structure'])))
     threading.Thread(target=server.serve_forever, daemon=True).start()
-    config = {'base': 'http://127.0.0.1:'+str(server.server_port), 'commit': snapshot['commit'], 'output': str(out),
+    config = {'viewport':{'width':width,'height':height},'max_inference_calls':4,'base': 'http://127.0.0.1:'+str(server.server_port), 'commit': snapshot['commit'], 'output': str(out),
               'suite':a.suite,'entry':a.entry,'scenario':a.scenario,'variant':a.variant,'smoke_run':a.smoke_run,'smoke_summary_sha256':smoke_hash,'resume_root':resume_root,'start_index':start_index,'total_budget_ms':total_budget_ms,'mode':a.mode,'model':a.model,'sessions':a.sessions,'max_steps':12,'max_model_calls':12,
               'external_network':a.map_network,'verify_earth_mission':a.verify_earth_mission,'verify_timeout_recovery':a.verify_timeout_recovery,'environment':'local_immutable_commit','max_cost_usd':0}
     config['harness_sha256']={str(file.relative_to(ROOT)):hashlib.sha256(file.read_bytes()).hexdigest() for file in [Path(__file__).resolve(),ROOT/'testing/core-v92-journeys.json',*sorted((ROOT/'scripts').glob('core_*.cjs'))]}
