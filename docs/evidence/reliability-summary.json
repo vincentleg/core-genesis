@@ -1,0 +1,51 @@
+{
+  "commit": "da51a1b9b3e5af0e8921fa3a9b9f5c9df68109b5",
+  "kind": "focused_reliability_followup",
+  "new_ai_pilot_sessions": 0,
+  "human_participants": 0,
+  "paid_api_cost_usd": 0,
+  "captures": [
+    {
+      "id": "20261018T023154Z-43eb7d",
+      "checksums_sha256": "638b9e40c0f7cf2cd3613bb0ff1fd16a5502a8edbdfddfd9a99d388be6f01428",
+      "files": {
+        "summary.json": "d66bb9cd39498862a2f268d4c82b3eaf8d0d722893a81f4ae6a0c8a8f4688ba8",
+        "before.png": "8a2083470d502227e6865cca1b9bb04f45bc2deace56e2df87791e90776dfc15",
+        "provenance.json": "f974ef3cc148562bd5a710db556e699179706ab825a5468804932a7627cb38ca",
+        "after.png": "146936c892daa3eaf429400e98f03a627b9ad1bc918a1f40048f7db1dcd89246",
+        "config.json": "5bfdf3470e3fc15328ad7b671c78637f24ea10eef05d3abbe0f60449f0c8f9d5",
+        "diagnostic.json": "18a07e136c8024e0462e08108093fe9b3964905029cc26bbbcf2bb33b9f04ce1",
+        "diagnostic-trace.zip": "7fe028cf30cf8950683b17da609d4f43b01ef8aee80f6ce8f4cf1753c85cf9be"
+      }
+    },
+    {
+      "id": "20261018T023512Z-53d7d1",
+      "checksums_sha256": "8831a89ee9f560a0b6e8d9cc5b7c341376917fc066ccbf1ce1b150b4f5be3f3a",
+      "files": {
+        "summary.json": "42de0368a996c085161a2edd8e7e1971d6b79efdecee9544f761b4a2b528ccf0",
+        "provenance.json": "00ae29bf6d7c3eeae8dd89feaceb5e1f8e41a3020e41986cc0a9c34bed632793",
+        "config.json": "ea6e030f490bef2813a851d427803acca425fba4c1e0843b1f9bd98c892cc7fd",
+        "session-01/report.json": "8950a50f7cfec71152c1838a9d68f98d94fe25946d6948b4ec7b77ded38e82c0",
+        "session-01/03.png": "dd8581f36a839f007e472aa137fc802ebb7a4f73f1eecbd65b60fd2397e82847",
+        "session-01/06.png": "1314b5ee1920cac07b64433405f7142cfe157d8cc51fa5533815af4c011cc762",
+        "session-01/07.png": "b0f0d665b498f7ea0662c6a62a0f323964934bff020902278953149a35bdbb7a",
+        "session-01/05.png": "3620b3a6337851bffa34e9480c360d5609a2bf393ea62cbc6ee236bdacf4fb21",
+        "session-01/trace.zip": "10088cbdd92dfa6d98c3ec7a510eb908eec8a06724966ebb586878b557dc6c66",
+        "session-01/04.png": "949faef04f44a209fbe900f500d5d3e2aab563d9fb225e69dced3952de8648a3",
+        "session-01/09.png": "e4c8d4150b7b90aab6c44f176475e26e3436b37416cced3ffbf71ff5faf9d7c2",
+        "session-01/08.png": "10efbf9c71a89107469f6dc4f56dc8a09208870f2ab91cd08c6be88261d0ce7b",
+        "session-01/first-impression.json": "e63a82304faf9ced2c814895a2ca1e2e06b185c2d185608858fb773da40fe9e5",
+        "session-01/mission-catalog.json": "15c5fae7c30afc052b5937b1e8f7b1b69f8b690a78486203d3ef2086f9bb9191"
+      }
+    },
+    {
+      "id": "reliability-inference-smoke-1792290867204",
+      "checksums_sha256": "961c6e8a51a2e295ef17dca71f748321c3b3258c58509ebc286b45f3fe7e15f2",
+      "files": {
+        "rendered-evaluation-attempt-1.json": "68ab53dbb700904f994021410f061abec2698f316d0ab0b4a5e887b0ebfe187a",
+        "rendered-evaluation.json": "a273cc6576de1834b82582b4023242a74ea1984c52f8a24f5bedcb89033c753e",
+        "summary.json": "c4defa519eac7cb8d022d712ab5cfc9dfdf2fd38422dd3160333b79067780c57"
+      }
+    }
+  ]
+}

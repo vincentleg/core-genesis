@@ -36,12 +36,43 @@ def handler(repo, sha, paths):
         def log_message(self, *args): pass
     return Handler
 
+def run_bounded(command, out, budget_seconds):
+    """Reserve termination grace inside the deadline; retain finalized and partial reports."""
+    process = subprocess.Popen(command, cwd=ROOT)
+    watchdog = None
+    try:
+        process.wait(timeout=max(0.01, budget_seconds-8))
+    except subprocess.TimeoutExpired:
+        watchdog = {'reason':'Harness deadline', 'termination':'SIGTERM', 'partial_artifacts_retained':True}
+        process.terminate()
+        try:
+            process.wait(timeout=min(7, max(0.01, budget_seconds-0.01)))
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait(timeout=1)
+            watchdog['termination']='SIGKILL_after_grace'
+    if watchdog:
+        (out/'watchdog.json').write_text(json.dumps(watchdog,indent=2))
+    if not (out/'summary.json').exists():
+        records, unreadable = [], []
+        for file in sorted(out.glob('session-*/report.json')):
+            try: records.append(json.loads(file.read_text()))
+            except (OSError, ValueError) as error: unreadable.append({'file':str(file.relative_to(out)), 'error':str(error)})
+        finished = {'completed','completed_with_failure','completed_evaluation_failure'}
+        summary = {'passed':False,'recovered':True,'error':'Runner ended without final summary',
+                   'attempted':len(records),'completed':sum(r.get('status') in finished for r in records),
+                   'incomplete':sum(r.get('status') not in finished for r in records),
+                   'browser_task_successes':sum(r.get('browser_tasks_passed') is True for r in records),
+                   'sessions':records,'unreadable_reports':unreadable,'returncode':process.returncode}
+        (out/'summary.json').write_text(json.dumps(summary,indent=2))
+    return process.returncode if not watchdog else 1
+
 def main():
     launched = time.monotonic()
     p = argparse.ArgumentParser()
     p.add_argument('--resume', help='Continue only unrun personas of an existing pilot within its original deadline')
     p.add_argument('--entry', choices=['earth','room'], default='earth', help='Explicit product entry; no silent fallback')
-    p.add_argument('--suite', choices=['navigation','product','pilot'], default='navigation')
+    p.add_argument('--suite', choices=['navigation','product','pilot','earth-diagnostic'], default='navigation')
     p.add_argument('--repo')
     p.add_argument('--ref')
     p.add_argument('--mode', choices=['scripted','local-agent'], default='scripted')
@@ -68,7 +99,7 @@ def main():
     if a.mode == 'local-agent' and not a.model: p.error('--model required; no automatic model selection or download')
     snapshot = inspect_core(a.repo, a.ref)
     if a.suite == 'pilot' and (a.mode != 'local-agent' or not a.execute_pilot): p.error('Pilot requires local-agent mode and --execute-pilot')
-    if a.suite == 'product' and a.sessions != 1: p.error('Product preflight is one session')
+    if a.suite in {'product','earth-diagnostic'} and a.sessions != 1: p.error('Product preflight is one session')
     if a.sessions > 1 or a.suite == 'pilot':
         if not a.execute_pilot: p.error('Multi-session runs require --execute-pilot')
         prior = []
@@ -116,17 +147,14 @@ def main():
               'external_network':'blocked','environment':'local_immutable_commit','max_cost_usd':0}
     (out/'config.json').write_text(json.dumps(config, indent=2))
     try:
-        runner = 'core_browser.cjs' if a.suite == 'navigation' else 'core_product_browser.cjs'
-        result = subprocess.run(['node',str(ROOT/'scripts'/runner),str(out/'config.json')], cwd=ROOT, timeout=min(1800,config['total_budget_ms']/1000) if a.suite == 'pilot' else 240*a.sessions)
-        if not (out/'summary.json').exists():
-            (out/'summary.json').write_text(json.dumps({'passed':False,'completed':0,'mode':a.mode,'error':'Browser process ended without summary','returncode':result.returncode}))
-    except subprocess.TimeoutExpired:
-        (out/'summary.json').write_text(json.dumps({'passed':False,'completed':0,'mode':a.mode,'error':'Harness time limit exceeded; partial artifacts retained'}))
-        result = None
+        runner = {'navigation':'core_browser.cjs','earth-diagnostic':'diagnose_core_earth.cjs'}.get(a.suite,'core_product_browser.cjs')
+        returncode = run_bounded(['node',str(ROOT/'scripts'/runner),str(out/'config.json')], out, min(1800,config['total_budget_ms']/1000) if a.suite == 'pilot' else 240*a.sessions)
+        if a.suite == 'earth-diagnostic':
+            (out/'summary.json').write_text(json.dumps({'suite':'earth-diagnostic','commit':snapshot['commit'],'completed':0,'pilot_sessions':0,'model_calls':0,'note':'See diagnostic.json; this is not a product pass or an AI session'}))
     finally:
         server.shutdown(); server.server_close()
     manifest = {str(f.relative_to(out)):hashlib.sha256(f.read_bytes()).hexdigest() for f in out.rglob('*') if f.is_file()}
     (out/'checksums.json').write_text(json.dumps(manifest,indent=2))
     print('Evidence:',out)
-    return result.returncode if result else 1
+    return returncode
 if __name__ == '__main__': sys.exit(main())

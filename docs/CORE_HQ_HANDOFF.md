@@ -1,6 +1,6 @@
 # CORE HQ implementation handoff
 
-Phase 1 is committed locally as `5dc8a4e` on `feat/core-hq-real-core-testing`. The completed product pilot infrastructure and reports are preserved in the next local checkpoint commit. Verified baseline: 10 attempts, 9 completed, 1 incomplete, 6 end-to-end passes; 41 screenshots and 9 traces. The reliability follow-up will be a separate change. No push, deployment, paid API request, CORE write, recruitment or public contribution occurred.
+Phase 1 is committed locally as `5dc8a4e` on `feat/core-hq-real-core-testing`. The completed product pilot infrastructure and reports are preserved in local checkpoint `0d27d7d` (clean tree confirmed immediately after that commit). Verified baseline: 10 attempts, 9 completed, 1 incomplete, 6 end-to-end passes; 41 screenshots and 9 traces. The reliability follow-up is documented separately below. No push, deployment, paid API request, CORE write, recruitment or public contribution occurred.
 
 Implemented: current CORE HQ branding and metadata; status page; local full-file Git inspection with explicit ref selection; privacy and paid-inference gates; immutable local CORE browser server; Playwright scripted baseline and genuine local-Ollama decision adapter; isolated serial pilot harness; evidence-linked review records; consent-aware human-export ingestion; resource migration plan. Existing orchestration, Nemotron client, budget ledger, replay and historical prototype builder are retained. The default legacy remote mission now reads local CORE and stops before transmitting private source.
 
@@ -37,3 +37,10 @@ New essential validation: product-room browser preflight 9/9; pilot raw browser 
 Next: human review of this diff and CORE issue evidence. Request a CORE-team investigation of map-independent mission startup; do not write CORE from HQ. Improve semantic UX review and broaden missions/task coverage before scaling. No extra sessions, source-sharing approval, paid service connection or recruitment was performed.
 
 No new service/key/payment approval is needed for the local path already verified. Future paid inference, private-data disclosure, cloud browsers, panel recruitment, external resource renames, push or deployment require separate explicit approval. The existing Crusoe key is not used by this local browser adapter.
+
+
+## Focused reliability follow-up
+
+See [reliability results and exact environment conditions](CORE_HQ_RELIABILITY.md). The original pilot totals above remain unchanged. Three failed evaluations followed successful browser assertions; their old artifacts cannot establish the inference bottleneck. Streaming now saves partial output/timing/unknown usage, retries at most once within existing deadlines, and reports browser/evaluator results separately. Graceful watchdog shutdown recovers existing partial reports without overwriting a finalized summary.
+
+A 22.474-second real offline Earth probe recovered application readiness after an actual wheel gesture, with map load observed; imagery remained unavailable. This narrows HQ-CORE-001 without fixing CORE or validating the complete Earth journey. One scripted room regression passed 9/9 actions; one local inference transport fixture passed (200 reported tokens, $0). Eight inference tests, four safety-gate tests and two recovery tests passed. Neither check adds AI pilot participants. The combined revised AI controller still needs one short end-to-end smoke before a second room pilot; no full ten-session rerun occurred. Reliable globe rendering and 100+ scaling remain unverified. Historical evidence is retained.
